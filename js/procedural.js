@@ -1,34 +1,44 @@
 var procedural = {};
 
-procedural.terrain = function(w, h, color) {
-	var d = makeCanvas(w, h);
+procedural.terrain = function(s, color) {
+	var d = makeCanvas(s, s);
 	d.context.fillStyle = color.toString();
-	d.context.fillRect(0, 0, w, h);
-	color.mul(0.8);
+	d.context.fillRect(0, 0, s, s);
+	color = color.mul(0.8);
 	d.context.fillStyle = color.toString();
 	for(var i = 0; i < 128; i++) {
-		var x = Math.random() * w | 0;
-		var y = Math.random() * h | 0;
+		var x = Math.random() * s | 0;
+		var y = Math.random() * s | 0;
 		d.context.fillRect(x, y, Math.random() * 4 | 0, Math.random() * 4 | 0);
 	}
 	return d.canvas;
 };
 
-procedural.noise = function(w, h, res, lvl, color) {
+procedural.terrainltr = function(s, color1, color2) {
+	var d = makeCanvas(s, s),
+  		grad = d.context.createLinearGradient(0,s / 2,s,s / 2);
+    grad.addColorStop(0, color2.toString());
+    grad.addColorStop(1, color1.toString());
+    d.context.fillStyle = grad;
+    d.context.fillRect(0, 0, s, s);
+    return d.canvas;
+};
+
+procedural.noise = function(s, res, lvl, color) {
 	var resolution = res || 10,
 		noise = new SimplexNoise();
-	var c = makeCanvas(w, h);
-	var noisedImage = c.context.createImageData(w, h);
+	var c = makeCanvas(s, s);
+	var noisedImage = c.context.createImageData(s, s);
 	var basecolor = color || bt.Color("#11A600");
 	var levels = lvl || 3;
 
-	for(var x = 0; x < w; x++) {
-		for(var y = 0; y < h; y++) {
+	for(var x = 0; x < s; x++) {
+		for(var y = 0; y < s; y++) {
 			var shade = parseInt((((noise.noise(x / resolution, y / resolution) + 1 )/ 2)  * levels), 10) * (256 / levels);
-			noisedImage.data[(x * 4) + (y * (w * 4))] = basecolor.red / 255.0 * shade;
-			noisedImage.data[(x * 4) + (y * (w * 4)) + 1] = basecolor.green / 255.0 * shade;
-			noisedImage.data[(x * 4) + (y * (w * 4)) + 2] = basecolor.blue / 255.0 * shade;
-			noisedImage.data[(x * 4) + (y * (w * 4)) + 3] = 255;
+			noisedImage.data[(x * 4) + (y * (s * 4))] = basecolor.red / 255.0 * shade;
+			noisedImage.data[(x * 4) + (y * (s * 4)) + 1] = basecolor.green / 255.0 * shade;
+			noisedImage.data[(x * 4) + (y * (s * 4)) + 2] = basecolor.blue / 255.0 * shade;
+			noisedImage.data[(x * 4) + (y * (s * 4)) + 3] = 255;
 		}
 	}
 

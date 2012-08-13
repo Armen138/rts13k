@@ -1,18 +1,25 @@
 //merge into Map object
 function gameView(w, h) {
-    var c = makeCanvas(w, h);
+    var c = makeCanvas(w, h),
+        colors = [  bt.Color("#618C32"),
+                    bt.Color("#CCE010"),
+                    bt.Color("#E6DFC8"),
+                    bt.Color("#7A6212")
+                ];
     gameView.canvas = c.canvas;
     gameView.context = c.context;
     gameView.width = w;
     gameView.height = h;
 
     var tiles = [
-    	procedural.terrain(tileSize, tileSize, bt.Color("#618C32")),
-    	procedural.terrain(tileSize, tileSize, bt.Color("#CCE010")),
-    	procedural.terrain(tileSize, tileSize, bt.Color("#E6DFC8")),
-    	procedural.terrain(tileSize, tileSize, bt.Color("#7A6212"))
+    	procedural.terrain(tileSize, colors[0]),
+    	procedural.terrain(tileSize, colors[1]),
+    	procedural.terrain(tileSize, colors[2]),
+    	procedural.terrain(tileSize, colors[3]),
+        procedural.terrainltr(tileSize, colors[0], colors[1]),
+        procedural.terrainltr(tileSize, colors[1], colors[0])
     ];
-    game.map = ts.TileSet(tiles, procedural.noiseMap(4096, 4096, 40, 4), gameView.canvas, w, h);
+    game.map = ts.TileSet(tiles, procedural.noiseMap(256, 256, 40, 4), gameView.canvas, w, h);
     game.mousePosition = bt.Vector(0, 0);
     game.root.add(gameView);
     console.log(game.map.height);

@@ -2,6 +2,16 @@
 	ts tile system. A way to organise tiles to render in an orthographic way. Requeres ns (nodes), bt (basictypes)
 */
 var ts = {};
+ts.pickTile = function(map, x, y) {
+	var t = map[x][y];
+	if(x > 0 && map[x-1][y] !== t) {
+		return 4;
+	}
+	if(x < map.length - 1 && map[x + 1][y] !== t) {
+		return 5;
+	}
+	return t;
+};
 
 ts.TileSet = function(tilearray, map, canvas, w, h) {
 	console.log(tilearray);
@@ -31,7 +41,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					tileSet.offset.X -= d;
 					for(var y = 0 + tileSet.offset.Y; y < tileSet.offset.Y + screenSize.Y; y++) {
 						var x = (d < 0 ? screenSize.X : 0) + tileSet.offset.X - (d < 0 ? 1 : 0);
-						context.drawImage(tilearray[map[x][y]], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+						context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
 					}
 				}
 			},
@@ -41,7 +51,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					tileSet.offset.Y -= d;
 					for(var x = 0 + tileSet.offset.X; x < tileSet.offset.X + screenSize.X; x++) {
 						var y = (d < 0 ? screenSize.Y : 0) + tileSet.offset.Y - (d < 0 ? 1 : 0);
-						context.drawImage(tilearray[map[x][y]], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+						context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
 					}
 				}
 			},
@@ -52,7 +62,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 						var br = tileSet.offset.add(screenSize);
 						for(var x = tileSet.offset.X; x < br.X; x++) {
 							for(var y = tileSet.offset.Y; y < br.Y; y++) {
-								context.drawImage(tilearray[map[x][y]], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+								context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
 							}
 						}
 						br.release();
@@ -65,7 +75,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 	for(var x = 0; x < map.length; x++) {
 		game.collisionMap[x] = new Uint8Array(map[0].length);
 		for(var y = 0; y < map[0].length; y++) {
-			if(map[x][y] === 0) {
+			if(ts.pickTile(map, x, y) === 0) {
 				game.collisionMap[x][y] = collision.UNPASSABLE;
 			} else {
 				game.collisionMap[x][y] = collision.PASSABLE;

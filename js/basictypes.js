@@ -73,9 +73,12 @@ bt.Color = function(input) {
 		},
 		mul: {
 			value: function(x) {
-			r = r * x | 0;
-			g = g * x | 0;
-			b = b * x | 0; }
+				var c = bt.Color("#FFF");
+				c.red = r * x | 0;
+				c.green = g * x | 0;
+				c.blue = b * x | 0;
+				return c;
+			}
 		}
 	});
 };
