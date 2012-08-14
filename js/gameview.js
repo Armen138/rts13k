@@ -1,7 +1,7 @@
 //merge into Map object
 function gameView(w, h) {
     var c = makeCanvas(w, h),
-        colors = [  bt.Color("#618C32"),
+        colors = [  bt.Color("#152568"),
                     bt.Color("#CCE010"),
                     bt.Color("#E6DFC8"),
                     bt.Color("#7A6212")

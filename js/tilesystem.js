@@ -4,12 +4,14 @@
 var ts = {};
 ts.pickTile = function(map, x, y) {
 	var t = map[x][y];
-	if(x > 0 && map[x-1][y] !== t) {
-		return 4;
-	}
-	if(x < map.length - 1 && map[x + 1][y] !== t) {
-		return 5;
-	}
+	/*if(t == 0) {
+		if(x > 0 && map[x-1][y] !== t) {
+			return 4;
+		}
+		if(x < map.length - 1 && map[x + 1][y] !== t) {
+			return 5;
+		}
+	}*/
 	return t;
 };
 

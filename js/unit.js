@@ -1,13 +1,14 @@
-Unit = function(tx, ty) {
+Unit = function(tx, ty, tc) {
 	var x = tx * tileSize,
 		y = ty * tileSize,
+		color = tc,
 		pathFinder = new Worker("js/astar.js"),
 		path = [],
 		angle = 0,
 		tileTime = 0,
 		selected = false,
 		moveDuration = 100,
-		color = "rgba(0, 200, 100, 1.0)",
+		//color = "rgba(0, 200, 100, 1.0)",
 		getAngle = function(x1, y1, x2, y2) {
 			var diff = bt.Vector(x1 - x2, y1 - y2);
 			if(diff.X < 0 && diff.Y < 0){ return 3 * Math.PI / 4; }
@@ -38,7 +39,7 @@ Unit = function(tx, ty) {
 		},
 		draw: function() {
 			game.context.save();
-			game.context.fillStyle = color;
+			game.context.fillStyle = color.toString();
 			game.context.strokeStyle = selected ? "yellow" : "black";
 			game.context.translate(x - game.map.offset.X * tileSize, y - game.map.offset.Y * tileSize);
 			game.context.rotate(angle);
