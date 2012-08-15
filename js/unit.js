@@ -30,6 +30,16 @@ Unit = function(tx, ty, tc) {
 			game.collisionMap[tx][ty] = collision.UNIT;
 		};
 	game.collisionMap[tx][ty] = collision.UNIT;
+	pathFinder.addEventListener("message", function(foundPath) {
+		path = foundPath.data;
+		tileTime = (new Date()).getTime();
+		if(path.length === 0) {
+			console.log("no path!");			
+		} else {
+			console.log("path");
+		}
+	});
+
 	var unit = {
 		select: function() {
 			selected = true;
@@ -53,14 +63,13 @@ Unit = function(tx, ty, tc) {
 			return (x > rect[0] + ox && x < rect[0] + ox + rect[2] && y > rect[1] + oy && y < rect[1] + oy + rect[3]);
 		},
 		go: function(dest) {
+			if(path.length > 0) {
+				game.collisionMap[path[path.length - 1].X][path[path.length - 1].Y] = collision.PASSABLE;
+			}
 			if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
 				game.collisionMap[tx][ty] = collision.PASSABLE;
-				game.collisionMap[dest.X][dest.Y] = collision.RESERVED;
+				//game.collisionMap[dest.X][dest.Y] = collision.RESERVED;				
 				pathFinder.postMessage({ collisionMap: game.collisionMap, x1: tx, y1: ty, x2: dest.X, y2: dest.Y });
-				pathFinder.addEventListener("message", function(foundPath) {
-					path = foundPath.data;
-					tileTime = (new Date()).getTime();
-				});
 			} else {
 				console.log("sir no sir, destination is: " + game.collisionMap[dest.X][dest.Y]);
 			}

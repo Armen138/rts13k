@@ -14,7 +14,26 @@ ts.pickTile = function(map, x, y) {
 	}*/
 	return t;
 };
-
+ts.collisionDebug = function() {
+	if(game.map.offset) {
+		var screenSize = bt.Vector(800 / tileSize, 800 / tileSize);
+		var br = game.map.offset.add(screenSize);
+		for(var x = game.map.offset.X; x < br.X; x++) {
+			for(var y = game.map.offset.Y; y < br.Y; y++) {
+				if(game.collisionMap[x][y] != 0) {
+					var fill = "rgba(255, 0, 0, 0.5)";
+					if(game.collisionMap[x][y] === collision.RESERVED) {
+						fill = "rgba(0, 0, 255, 0.5)";
+					}
+					game.context.fillStyle = fill;
+					game.context.fillRect((x - game.map.offset.X) * tileSize - tileSize / 2, (y - game.map.offset.Y) * tileSize - tileSize / 2, tileSize, tileSize);					
+				}
+				
+			}
+		}
+		br.release();
+	}
+}
 ts.TileSet = function(tilearray, map, canvas, w, h) {
 	console.log(tilearray);
 	var gridSize = map.length,

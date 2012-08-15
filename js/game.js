@@ -77,12 +77,14 @@ game.init = function() {
                         this.go(to);
                         idx++;
                     });
+                    console.log(idx + " paths");
                 }
             } else {
                 game.deselectAll();
             }
         } else {
             //select inside box
+            game.deselectAll();
             game.units.each(function() {
                 if(this.isInside(game.selection)) {
                     this.select();
@@ -99,8 +101,8 @@ game.init = function() {
             this.draw();
         });
     }
-    game.root.add(game.units);
     gameView(800, 800);
+    game.root.add(game.units);
 };
 
 game.addUnit = function(x, y, color) {
@@ -125,5 +127,6 @@ game.run = function() {
         game.context.fillStyle = "rgba(30, 210, 230, 0.5)";
         game.context.fillRect.apply(game.context, game.selection);
     }
-    setTimeout(render, 5);
+    ts.collisionDebug();
+    setTimeout(game.run, 5);
 };
