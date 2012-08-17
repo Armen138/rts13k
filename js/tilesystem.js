@@ -26,9 +26,9 @@ ts.collisionDebug = function() {
 						fill = "rgba(0, 0, 255, 0.5)";
 					}
 					game.context.fillStyle = fill;
-					game.context.fillRect((x - game.map.offset.X) * tileSize - tileSize / 2, (y - game.map.offset.Y) * tileSize - tileSize / 2, tileSize, tileSize);					
+					game.context.fillRect((x - game.map.offset.X) * tileSize, (y - game.map.offset.Y) * tileSize, tileSize, tileSize);
 				}
-				
+
 			}
 		}
 		br.release();

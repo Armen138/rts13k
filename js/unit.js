@@ -34,7 +34,7 @@ Unit = function(tx, ty, tc) {
 		path = foundPath.data;
 		tileTime = (new Date()).getTime();
 		if(path.length === 0) {
-			console.log("no path!");			
+			console.log("no path!");
 		} else {
 			console.log("path");
 		}
@@ -51,7 +51,7 @@ Unit = function(tx, ty, tc) {
 			game.context.save();
 			game.context.fillStyle = color.toString();
 			game.context.strokeStyle = selected ? "yellow" : "black";
-			game.context.translate(x - game.map.offset.X * tileSize, y - game.map.offset.Y * tileSize);
+			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
 			game.context.rotate(angle);
 			game.context.fillRect(-8, -16, 16, 32);
 			game.context.strokeRect(-8, -16, 16, 32);
@@ -68,7 +68,7 @@ Unit = function(tx, ty, tc) {
 			}
 			if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
 				game.collisionMap[tx][ty] = collision.PASSABLE;
-				//game.collisionMap[dest.X][dest.Y] = collision.RESERVED;				
+				//game.collisionMap[dest.X][dest.Y] = collision.RESERVED;
 				pathFinder.postMessage({ collisionMap: game.collisionMap, x1: tx, y1: ty, x2: dest.X, y2: dest.Y });
 			} else {
 				console.log("sir no sir, destination is: " + game.collisionMap[dest.X][dest.Y]);

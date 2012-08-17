@@ -1,5 +1,3 @@
-
-
 function makeCanvas(w, h) {
 	var canvas = document.createElement("canvas");
 	canvas.width = w;
@@ -9,11 +7,11 @@ function makeCanvas(w, h) {
 
 
 function testUnits() {
-	for( var i = 0; i < 13; i++) {
+	for( var i = 0; i < 25; i++) {
 		game.addUnit(10 + i, 10, "#3A3");
 	}
 
-	for( var i = 0; i < 13; i++) {
+	for( var i = 0; i < 25; i++) {
 		game.addUnit(10 + i, 15, "#A33");
 	}
 }
