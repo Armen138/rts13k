@@ -47,7 +47,9 @@ Unit = function(tx, ty, tc) {
 		}
 	});
 
+	var cannonAngle = 0;
 	var unit = {
+		target: {X: 0, Y: 0},
 		select: function() {
 			selected = true;
 		},
@@ -62,6 +64,15 @@ Unit = function(tx, ty, tc) {
 			game.context.rotate(angle);
 			game.context.fillRect(-8, -16, 16, 32);
 			game.context.strokeRect(-8, -16, 16, 32);
+
+			//cannon
+			game.context.rotate(-angle);			
+			game.context.rotate(cannonAngle);
+
+			game.context.fillRect(-2, -16, 4, 24);
+			game.context.strokeRect(-2, -16, 4, 24);
+			game.context.fillRect(-5, -5, 10, 10);
+			game.context.strokeRect(-5, -5, 10, 10);						
 			game.context.restore();
 			this.update();
 		},
@@ -114,6 +125,9 @@ Unit = function(tx, ty, tc) {
 					angle = getAngle(xdest, ydest, xtarg, ytarg);
 				}
 			}
+			//aim cannon
+			cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );// * (Math.PI / 180);
+			//console.log(Math.atan((unit.target.Y - y) / (unit.target.X - x)) * (Math.PI / 180));
 		}
 	}
 	Events.attach(unit);

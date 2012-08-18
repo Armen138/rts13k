@@ -22,7 +22,6 @@ function gameView(w, h) {
     game.map = ts.TileSet(tiles, procedural.noiseMap(256, 256, 40, 4), gameView.canvas, w, h);
     game.mousePosition = bt.Vector(0, 0);
     game.root.add(gameView);
-    console.log(game.map.height);
     game.map.draw();
 	setInterval(gameView.scrollHandler, 32);
 }

@@ -114,7 +114,7 @@ game.run = function() {
         game.context.fillStyle = "rgba(30, 210, 230, 0.5)";
         game.context.fillRect.apply(game.context, game.selection);
     }
-    ts.collisionDebug();
+    //ts.collisionDebug();
     setTimeout(game.run, 5);
 };
 
