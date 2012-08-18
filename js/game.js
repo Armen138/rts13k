@@ -60,24 +60,11 @@ game.init = function() {
                     };
                 });
                 if(!selected) {
-                    var idx = 0,
-                        p = game.map.at(e.clientX, e.clientY);
-                    game.selectedUnits.each(function() {
-                        var to = (function() {
-                            var np = p.add(procedural.spiral(idx));
-                            while(  np.X > 0 && np.Y > 0 &&
-                                    np.X < game.collisionMap.length &&
-                                    np.Y < game.collisionMap[0].length &&
-                                    game.collisionMap[np.X][np.Y] !== collision.PASSABLE) {
-                                idx++;
-                                np = p.add(procedural.spiral(idx));
-                            }
-                            return np;
-                        }());
-                        this.go(to);
-                        idx++;
-                    });
-                    console.log(idx + " paths");
+                    var p = game.map.at(e.clientX, e.clientY),
+                        destinations = game.spiral(game.selectedUnits.length, p);
+                    game.selectedUnits.each(function() {                        
+                        this.go(destinations.shift());
+                    });                    
                 }
             } else {
                 game.deselectAll();
@@ -130,3 +117,26 @@ game.run = function() {
     ts.collisionDebug();
     setTimeout(game.run, 5);
 };
+
+game.spiral = function(n, p) {
+    var x = 0,
+    y = 0,
+    dx = 0,
+    dy = -1,
+    t,
+    positions = [{X: p.X, Y: p.Y}];
+
+    while(positions.length < n) {
+        if( (x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1-y))){
+            t = dx;
+            dx = -dy;
+            dy = t;
+        }
+        x += dx;
+        y += dy;        
+        if(game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
+            positions.push({X: p.X + x, Y: p.Y + y});
+        }
+    }
+    return positions;
+}

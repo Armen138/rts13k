@@ -75,6 +75,11 @@ ns.Node = function() {
 				get: function() {
 					return Object.getPrototypeOf(this);
 				}
+			},
+			length: {
+				get: function() {
+					return children.length;
+				}
 			}
 		});
 	}

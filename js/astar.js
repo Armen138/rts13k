@@ -54,7 +54,7 @@ function findPath(collisionMap, s, e) {
 					}
 					return path;
 				}
-				if(isInList(node, closedList) === -1 && (collisionMap[node.P.X][node.P.Y] === 0 || collisionMap[node.P.X][node.P.Y] === 3) /* collision.PASSABLE */){
+				if(isInList(node, closedList) === -1 && (collisionMap[node.P.X][node.P.Y] === 0 || collisionMap[node.P.X][node.P.Y] === 2) /* collision.PASSABLE */){
 					node.H = node.P.distanceTo(end);
 					node.F = node.G + node.H;
 					var listNode = openList[isInList(node, openList)];

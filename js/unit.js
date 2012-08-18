@@ -21,13 +21,13 @@ Unit = function(tx, ty, tc) {
 			if(diff.X > 0 && diff.Y > 0){ return 7 * Math.PI / 4; }
 			return 0;
 		},
-		setTile = function(ntx, nty) {
-			game.collisionMap[tx][ty] = collision.PASSABLE;
+		setTile = function(ntx, nty, collide) {
+			//if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
 			tx = ntx;
 			ty = nty;
 			x = ntx * tileSize;
 			y = nty * tileSize;
-			game.collisionMap[tx][ty] = collision.UNIT;
+			if(collide)game.collisionMap[tx][ty] = collision.UNIT;
 		};
 	game.collisionMap[tx][ty] = collision.UNIT;
 	pathFinder.addEventListener("message", function(foundPath) {
@@ -91,7 +91,7 @@ Unit = function(tx, ty, tc) {
 				curTime = (new Date()).getTime() - tileTime;
 				if(curTime > moveDuration) {
 					var to = path.shift();
-					setTile(to.X, to.Y);
+					setTile(to.X, to.Y, path.length === 0);
 					tileTime = (new Date()).getTime();
 				}
 				else {
