@@ -124,7 +124,10 @@ game.spiral = function(n, p) {
     dx = 0,
     dy = -1,
     t,
-    positions = [{X: p.X, Y: p.Y}];
+    positions = [];
+    if(game.collisionMap[p.X][p.Y] === collision.PASSABLE) {
+        positions.push({X: p.X, Y: p.Y});
+    }
 
     while(positions.length < n) {
         if( (x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1-y))){
