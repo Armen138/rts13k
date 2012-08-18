@@ -82,5 +82,5 @@ function findPath(collisionMap, s, e) {
 	return [];
 }
 onmessage = function(e) {
-	postMessage(findPath(e.data.collisionMap, Vector(e.data.x1, e.data.y1), Vector(e.data.x2, e.data.y2)));
+	postMessage({id: e.data.id, path: findPath(e.data.collisionMap, Vector(e.data.x1, e.data.y1), Vector(e.data.x2, e.data.y2))});
 };
