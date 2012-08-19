@@ -2,7 +2,7 @@ Unit = function(tx, ty, tc) {
 	var x = tx * tileSize,
 		y = ty * tileSize,
 		color = tc,
-		pathFinder = new Worker("js/astar.js"),
+		//pathFinder = new Worker("js/astar.js"),
 		path = [],
 		angle = 0,
 		tileTime = 0,
@@ -35,9 +35,18 @@ Unit = function(tx, ty, tc) {
 					game.collisionMap[tx][ty] = collision.UNIT;
 				}
 			}
+		},
+		followPath = function(foundPath) {
+			path = foundPath;
+			tileTime = (new Date()).getTime();
+			if(path.length === 0) {
+				console.log("no path!");
+			} else {
+				console.log("path");
+			}
 		};
 	game.collisionMap[tx][ty] = collision.UNIT;
-	pathFinder.addEventListener("message", function(foundPath) {
+	/*pathFinder.addEventListener("message", function(foundPath) {
 		path = foundPath.data;
 		tileTime = (new Date()).getTime();
 		if(path.length === 0) {
@@ -45,7 +54,8 @@ Unit = function(tx, ty, tc) {
 		} else {
 			console.log("path");
 		}
-	});
+	});*/
+
 
 	var cannonAngle = 0;
 	var unit = {
@@ -87,7 +97,8 @@ Unit = function(tx, ty, tc) {
 			if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
 				if(!evading) game.collisionMap[tx][ty] = collision.PASSABLE;
 				//game.collisionMap[dest.X][dest.Y] = collision.RESERVED;
-				pathFinder.postMessage({ collisionMap: game.collisionMap, x1: tx, y1: ty, x2: dest.X, y2: dest.Y });
+				//pathFinder.postMessage({ collisionMap: game.collisionMap, x1: tx, y1: ty, x2: dest.X, y2: dest.Y });
+				pathFinder.find({X: tx, Y: ty}, dest, followPath);
 			} else {
 				console.log("sir no sir, destination is: " + game.collisionMap[dest.X][dest.Y]);
 			}
