@@ -46,16 +46,6 @@ Unit = function(tx, ty, tc) {
 			}
 		};
 	game.collisionMap[tx][ty] = collision.UNIT;
-	/*pathFinder.addEventListener("message", function(foundPath) {
-		path = foundPath.data;
-		tileTime = (new Date()).getTime();
-		if(path.length === 0) {
-			console.log("no path!");
-		} else {
-			console.log("path");
-		}
-	});*/
-
 
 	var cannonAngle = 0;
 	var unit = {
@@ -137,8 +127,11 @@ Unit = function(tx, ty, tc) {
 				}
 			}
 			//aim cannon
-			cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );// * (Math.PI / 180);
-			//console.log(Math.atan((unit.target.Y - y) / (unit.target.X - x)) * (Math.PI / 180));
+			if(unit.target.X !== 0 && unit.target.Y !== 0) {
+				cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );// * (Math.PI / 180);			
+			} else {
+				cannonAngle = 0;
+			}
 		}
 	}
 	Events.attach(unit);

@@ -19,7 +19,7 @@ function gameView(w, h) {
         procedural.terrainltr(tileSize, colors[0], colors[1]),
         procedural.terrainltr(tileSize, colors[1], colors[0])
     ];
-    game.map = ts.TileSet(tiles, procedural.noiseMap(256, 256, 40, 4), gameView.canvas, w, h);
+    game.map = ts.TileSet(tiles, procedural.noiseMap(128, 128, 40, 4), gameView.canvas, w, h);
     game.mousePosition = bt.Vector(0, 0);
     game.root.add(gameView);
     game.map.draw();
