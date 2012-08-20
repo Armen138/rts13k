@@ -2,14 +2,14 @@ Unit = function(tx, ty, tc) {
 	var x = tx * tileSize,
 		y = ty * tileSize,
 		color = tc,
-		//pathFinder = new Worker("js/astar.js"),
 		path = [],
 		range = 5,
+		health = 100,
 		angle = 0,
 		tileTime = 0,
 		selected = false,
 		moveDuration = 100,
-		//color = "rgba(0, 200, 100, 1.0)",
+		mode = Unit.GUARD,
 		getAngle = function(x1, y1, x2, y2) {
 			var diff = bt.Vector(x1 - x2, y1 - y2);
 			if(diff.X < 0 && diff.Y < 0){ return 3 * Math.PI / 4; }
@@ -135,18 +135,13 @@ Unit = function(tx, ty, tc) {
 			}
 			rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
 			game.units.each(function() {
-				if(this.owner.id !== unit.owner.id) {// && this.isInside(rangeBox, true)) {
-					if( this.position.X > unit.position.X - range * tileSize && this.position.X < unit.position.X + range * tileSize &&
-						this.position.Y > unit.position.Y - range * tileSize && this.position.Y < unit.position.Y + range * tileSize) {
-						unit.target = this.position;
-						//console.log(unit.target);
-					}
+				if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
+					unit.target = this.position;
 				}
-				//console.log(rangeBox);
 			});
 			//aim cannon
 			if(unit.target.X !== 0 && unit.target.Y !== 0) {
-				cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );// * (Math.PI / 180);			
+				cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
 			} else {
 				cannonAngle = 0;
 			}
@@ -155,3 +150,8 @@ Unit = function(tx, ty, tc) {
 	Events.attach(unit);
 	return unit;
 };
+
+//enum unit modes.
+Unit.GUARD = 0; //Fire when enemy is in range, do not chase
+Unit.AGRESSIVE = 1; // Move into range to attack nearby enemies
+Unit.CEASEFIRE = 0; // Do not fire on anything ever
