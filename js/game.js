@@ -8,8 +8,14 @@ var tileSize = 32,
     	units: ns.Node(),
         enemy: ns.Node(),
     	fps: 0,
+        playerCount: 0,
         collisionMap: [],
-        map: []
+        map: [],
+        colors: [
+            "#3A3",
+            "#A3A",
+            "#AA3"
+        ]
     }, collision = {
         PASSABLE: 0,
         UNPASSABLE: 1,
@@ -73,7 +79,7 @@ game.init = function() {
             //select inside box
             game.deselectAll();
             game.units.each(function() {
-                if(this.isInside(game.selection)) {
+                if(this.isInside(game.selection) && this.owner.local) {
                     this.select();
                     game.selectedUnits.add(this);
                 }
@@ -82,16 +88,16 @@ game.init = function() {
         game.selection = null;
         return false;
     });
-
+/*
     game.units.draw = function() {
         game.units.each(function() {
             this.draw();
         });
-    }
+    }*/
     gameView(800, 800);
-    game.root.add(game.units);
+    //game.root.add(game.units);
 };
-
+/*
 game.addUnit = function(x, y, color) {
     var unit = Unit(x, y, color);
     //game.selectedUnits.add(unit);
@@ -103,7 +109,7 @@ game.addUnit = function(x, y, color) {
         }
     }(unit)));
     game.units.add(unit);
-};
+};*/
 
 game.run = function() {
     game.frames++;

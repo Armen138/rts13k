@@ -4,6 +4,7 @@ Unit = function(tx, ty, tc) {
 		color = tc,
 		//pathFinder = new Worker("js/astar.js"),
 		path = [],
+		range = 5,
 		angle = 0,
 		tileTime = 0,
 		selected = false,
@@ -49,6 +50,9 @@ Unit = function(tx, ty, tc) {
 
 	var cannonAngle = 0;
 	var unit = {
+		get position() {
+			return {X: x, Y: y};
+		},
 		target: {X: 0, Y: 0},
 		select: function() {
 			selected = true;
@@ -76,8 +80,11 @@ Unit = function(tx, ty, tc) {
 			game.context.restore();
 			this.update();
 		},
-		isInside: function(rect) {
+		isInside: function(rect, noffset) {
 			var ox = game.map.offset.X * tileSize, oy = game.map.offset.Y * tileSize;
+			if(noffset) {
+				ox = 0; oy = 0;
+			}
 			return (x > rect[0] + ox && x < rect[0] + ox + rect[2] && y > rect[1] + oy && y < rect[1] + oy + rect[3]);
 		},
 		go: function(dest, evading) {
@@ -126,6 +133,17 @@ Unit = function(tx, ty, tc) {
 					angle = getAngle(xdest, ydest, xtarg, ytarg);
 				}
 			}
+			rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
+			game.units.each(function() {
+				if(this.owner.id !== unit.owner.id) {// && this.isInside(rangeBox, true)) {
+					if( this.position.X > unit.position.X - range * tileSize && this.position.X < unit.position.X + range * tileSize &&
+						this.position.Y > unit.position.Y - range * tileSize && this.position.Y < unit.position.Y + range * tileSize) {
+						unit.target = this.position;
+						//console.log(unit.target);
+					}
+				}
+				//console.log(rangeBox);
+			});
 			//aim cannon
 			if(unit.target.X !== 0 && unit.target.Y !== 0) {
 				cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );// * (Math.PI / 180);			

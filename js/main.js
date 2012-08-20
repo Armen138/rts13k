@@ -7,16 +7,8 @@ function makeCanvas(w, h) {
 
 
 function testUnits() {
-	var p1 = game.spiral(25, {X: 10, Y: 10}),
-		p2 = game.spiral(25, {X: 10, Y: 20});
-
-	for( var i = 0; i < 25; i++) {
-		game.addUnit(p1[i].X, p1[i].Y, "#3A3");
-	}
-
-	for( var i = 0; i < 25; i++) {
-		game.addUnit(p2[i].X, p2[i].Y, "#A33");		
-	}
+	player = Player(10, 10, Player.modes.LOCAL);
+	ai = Player(20, 10, Player.modes.AI);
 }
 
 if(!navigator.isCocoonJS) {
