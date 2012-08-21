@@ -8,7 +8,7 @@ function makeCanvas(w, h) {
 
 function testUnits() {
 	player = Player(10, 10, Player.modes.LOCAL);
-	ai = Player(20, 10, Player.modes.AI);
+	ai = Player(100, 100, Player.modes.AI);
 }
 
 if(!navigator.isCocoonJS) {

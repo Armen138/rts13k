@@ -5,6 +5,8 @@ Unit = function(tx, ty, tc) {
 		path = [],
 		range = 5,
 		health = 100,
+		loadTime = 1000,
+		fireTime = 0,
 		angle = 0,
 		tileTime = 0,
 		selected = false,
@@ -70,8 +72,10 @@ Unit = function(tx, ty, tc) {
 			game.context.strokeRect(-8, -16, 16, 32);
 
 			//cannon
-			game.context.rotate(-angle);			
-			game.context.rotate(cannonAngle);
+			if(cannonAngle != 0) {
+				game.context.rotate(-angle);			
+				game.context.rotate(cannonAngle);
+			}
 
 			game.context.fillRect(-2, -16, 4, 24);
 			game.context.strokeRect(-2, -16, 4, 24);
@@ -134,14 +138,21 @@ Unit = function(tx, ty, tc) {
 				}
 			}
 			rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
+			unit.target = { X: 0, Y: 0};
 			game.units.each(function() {
 				if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
 					unit.target = this.position;
 				}
 			});
+			var now = (new Date()).getTime();
 			//aim cannon
 			if(unit.target.X !== 0 && unit.target.Y !== 0) {
 				cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
+				if(now - fireTime > loadTime) {
+					var b = Bullet({X: x, Y: y}, unit.target, 10);
+					game.root.add(b);
+					fireTime = now;
+				}
 			} else {
 				cannonAngle = 0;
 			}
