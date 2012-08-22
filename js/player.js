@@ -1,4 +1,4 @@
-Player = function(x, y, inputMode) {
+var Player = function(x, y, inputMode) {
 	var player = {
 			local: (inputMode === Player.modes.LOCAL),
 			id: game.playerCount++,
@@ -37,8 +37,7 @@ Player = function(x, y, inputMode) {
             this.draw();
             if(this.dead) {
             	units.remove(this);
-            	game.units.remove(this);
-            	console.log("unit died");
+            	game.units.remove(this);            	
             }
         });
     }		
@@ -51,7 +50,7 @@ Player = function(x, y, inputMode) {
 		addUnit(p1[i].X, p1[i].Y);
 	}
 	return player; 
-}
+};
 
 Player.modes = {
 	LOCAL: 0,

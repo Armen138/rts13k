@@ -16,8 +16,7 @@ var Bullet = function(from, to, damage) {
 				bullet.update();
 			},
 			update: function() {
-				d = (new Date).getTime() - fired;
-
+				var d = (new Date).getTime() - fired;
 				x = from.X + fractX * d;
 				y = from.Y + fractY * d;
 				if(d > travelTime) {
@@ -30,4 +29,4 @@ var Bullet = function(from, to, damage) {
 			}
 		};
 	return bullet;
-}
+};

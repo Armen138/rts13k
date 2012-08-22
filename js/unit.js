@@ -12,18 +12,6 @@ Unit = function(tx, ty, tc) {
 		selected = false,
 		moveDuration = 100,
 		mode = Unit.GUARD,
-		getAngle = function(x1, y1, x2, y2) {
-			var diff = bt.Vector(x1 - x2, y1 - y2);
-			if(diff.X < 0 && diff.Y < 0){ return 3 * Math.PI / 4; }
-			if(diff.X === 0 && diff.Y < 0){ return Math.PI; }
-			if(diff.X > 0 && diff.Y < 0){ return Math.PI / 4; }
-			if(diff.X < 0 && diff.Y === 0){ return Math.PI / 2; }
-			if(diff.X > 0 && diff.Y === 0){ return 3 * Math.PI / 2; }
-			if(diff.X < 0 && diff.Y > 0){ return 5 * Math.PI / 4; }
-			if(diff.X === 0 && diff.Y > 0){ return 0; }
-			if(diff.X > 0 && diff.Y > 0){ return 7 * Math.PI / 4; }
-			return 0;
-		},
 		setTile = function(ntx, nty, collide) {
 			//if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
 			tx = ntx;
@@ -45,13 +33,11 @@ Unit = function(tx, ty, tc) {
 			if(path.length === 0) {
 				console.log("no path!");
 			} else {
-				console.log("path");
+				//console.log("path");
 			}
-		};
-	game.collisionMap[tx][ty] = collision.UNIT;
-
-	var cannonAngle = 0;
-	var unit = {
+		},
+		cannonAngle = 0,
+		unit = {
 		get position() {
 			return {X: x, Y: y};
 		},
@@ -143,7 +129,7 @@ Unit = function(tx, ty, tc) {
 						fract = parseFloat(curTime) / parseFloat(moveDuration);
 					x = xtarg + (fract * xdiff) | 0;
 					y = ytarg + (fract * ydiff) | 0;
-					angle = getAngle(xdest, ydest, xtarg, ytarg);
+					angle = Math.atan2((path[0].X - tx), (ty - path[0].Y));
 				}
 			}
 			rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
@@ -166,7 +152,8 @@ Unit = function(tx, ty, tc) {
 				cannonAngle = 0;
 			}
 		}
-	}
+	};
+	game.collisionMap[tx][ty] = collision.UNIT;
 	Events.attach(unit);
 	return unit;
 };

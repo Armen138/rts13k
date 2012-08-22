@@ -9,6 +9,7 @@ var tileSize = 32,
         enemy: ns.Node(),
     	fps: 0,
         playerCount: 0,
+        players: [],
         collisionMap: [],
         map: [],
         colors: [
@@ -32,10 +33,6 @@ game.deselectAll = function() {
 
 game.init = function() {
     game.canvas = document.getElementById("game");
-    /*if(!game.canvas) {
-        game.canvas = makeCanvas(800, 800).canvas;
-        document.body.appendChild(game.canvas);
-    }*/
     game.context = game.canvas.getContext("2d");
 
     game.canvas.addEventListener("mousedown", function(e) {
@@ -88,31 +85,15 @@ game.init = function() {
         game.selection = null;
         return false;
     });
-/*
-    game.units.draw = function() {
-        game.units.each(function() {
-            this.draw();
-        });
-    }*/
     gameView(800, 800);
-    //game.root.add(game.units);
 };
-/*
-game.addUnit = function(x, y, color) {
-    var unit = Unit(x, y, color);
-    //game.selectedUnits.add(unit);
-    unit.on("click", (function(unit) {
-        return function() {
-            game.deselectAll();
-            unit.select();
-            game.selectedUnits.add(unit);
-        }
-    }(unit)));
-    game.units.add(unit);
-};*/
+
 
 game.run = function() {
     game.frames++;
+    for(var i = 0; i < game.players.length; i++) {
+        game.players[i].update();
+    }
     game.root.each(function() {
         this.draw();
     });
@@ -160,4 +141,4 @@ game.spiral = function(n, p) {
         }
     }
     return positions;
-}
+};
