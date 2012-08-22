@@ -124,6 +124,18 @@ game.run = function() {
     setTimeout(game.run, 5);
 };
 
+game.unitAt = function(pos) {
+    var unit = null
+    game.units.each(function(){
+        //console.log(this.tile);
+        //console.log(pos);
+        if(this.tile.X === pos.X && this.tile.Y === pos.Y) {
+            unit = this;            
+        }
+    });
+    return unit;
+};
+
 game.spiral = function(n, p) {
     var x = 0,
     y = 0,
@@ -136,7 +148,7 @@ game.spiral = function(n, p) {
     }
 
     while(positions.length < n) {
-        if( (x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1-y))){
+        if( (x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1-y))) {
             t = dx;
             dx = -dy;
             dy = t;

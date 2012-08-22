@@ -22,6 +22,10 @@ var Bullet = function(from, to, damage) {
 				y = from.Y + fractY * d;
 				if(d > travelTime) {
 					game.root.remove(bullet);
+					var u = game.unitAt({ X: to.X / tileSize | 0, Y: to.Y / tileSize | 0 });
+					if(u) {
+						u.hit(damage);
+					}
 				}
 			}
 		};

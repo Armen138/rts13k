@@ -55,6 +55,9 @@ Unit = function(tx, ty, tc) {
 		get position() {
 			return {X: x, Y: y};
 		},
+		get tile() {
+			return {X: tx, Y: ty};
+		},
 		target: {X: 0, Y: 0},
 		select: function() {
 			selected = true;
@@ -83,6 +86,12 @@ Unit = function(tx, ty, tc) {
 			game.context.strokeRect(-5, -5, 10, 10);						
 			game.context.restore();
 			this.update();
+		},
+		hit: function(damage) {
+			health -= damage;			
+			if(health < 0) {
+				unit.dead = true;
+			}
 		},
 		isInside: function(rect, noffset) {
 			var ox = game.map.offset.X * tileSize, oy = game.map.offset.Y * tileSize;

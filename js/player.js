@@ -1,7 +1,15 @@
 Player = function(x, y, inputMode) {
 	var player = {
 			local: (inputMode === Player.modes.LOCAL),
-			id: game.playerCount++
+			id: game.playerCount++,
+			update: function() {
+				if(!player.defeated) {
+					if(units.length === 0) {
+						player.defeated = true;
+						console.log("player " + player.id + " was defeated.");
+					}
+				}
+			}
 		},
 		units = ns.Node(),
 		input = inputMode,
@@ -27,14 +35,19 @@ Player = function(x, y, inputMode) {
     units.draw = function() {
         units.each(function() {
             this.draw();
+            if(this.dead) {
+            	units.remove(this);
+            	game.units.remove(this);
+            	console.log("unit died");
+            }
         });
     }		
 
     game.root.add(units);
 
 	//initial units.
-	var p1 = game.spiral(25, {X: x, Y: y});
-	for( var i = 0; i < 25; i++) {
+	var p1 = game.spiral(13, {X: x, Y: y});
+	for( var i = 0; i < 13; i++) {
 		addUnit(p1[i].X, p1[i].Y);
 	}
 	return player; 
