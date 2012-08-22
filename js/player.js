@@ -16,15 +16,15 @@ var Player = function(x, y, inputMode) {
 		name = "Player666",
 		color = game.colors[player.id],
 		addUnit = function(x, y) {
-		    var unit = Unit(x, y, color);
-		    if(input === 0 /* LOCAL */) {
-			    unit.on("click", (function(unit) {
-			        return function() {
-			            game.deselectAll();
-			            unit.select();
-			            game.selectedUnits.add(unit);
-			        }
-			    }(unit)));
+			var unit = Unit(x, y, color, def.tank);
+			if(input === 0 /* LOCAL */) {
+				unit.on("click", (function(unit) {
+					return function() {
+						game.deselectAll();
+						unit.select();
+						game.selectedUnits.add(unit);
+					};
+				}(unit)));
 			}
 			unit.owner = player;
 			game.units.add(unit);
@@ -36,11 +36,11 @@ var Player = function(x, y, inputMode) {
         units.each(function() {
             this.draw();
             if(this.dead) {
-            	units.remove(this);
-            	game.units.remove(this);            	
-            }
-        });
-    }		
+				units.remove(this);
+				game.units.remove(this);
+			}
+		});
+	};
 
     game.root.add(units);
 
