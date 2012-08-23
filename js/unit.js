@@ -20,6 +20,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 		health = unitObject.health || 100,
 		loadTime = unitObject.loadTime || 1000,
 		mode = Unit.GUARD,
+		collider = unitObject.collision || collision.UNIT,
 		moveDuration = unitObject.moveDuration || 100,
 		path = [],		
 		range = unitObject.range || 5,
@@ -32,11 +33,11 @@ var Unit = function(tx, ty, tc, unitObject) {
 			x = ntx * tileSize;
 			y = nty * tileSize;
 			if(collide) {
-				if(game.collisionMap[tx][ty] === collision.UNIT) {
+				if(game.collisionMap[tx][ty] === collider) {
 					console.log("collision, evading.");
 					unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
 				} else {
-					game.collisionMap[tx][ty] = collision.UNIT;
+					game.collisionMap[tx][ty] = collider;
 				}
 			}
 		},
@@ -48,6 +49,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 			} 
 		},
 		unit = {
+			mobile: unitObject.mobile,
 			target: {X: 0, Y: 0},
 			select: function() {
 				selected = true;
@@ -63,6 +65,12 @@ var Unit = function(tx, ty, tc, unitObject) {
 				health -= damage;			
 				if(health < 0) {
 					unit.dead = true;
+					game.collisionMap[tx][ty] = collision.PASSABLE;
+					if(unitObject.big) {
+						game.collisionMap[tx][ty + 1] = collision.PASSABLE;
+						game.collisionMap[tx + 1][ty] = collision.PASSABLE;
+						game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
+					}					
 				}
 			},
 			isInside: function(rect, noffset) {
@@ -76,13 +84,15 @@ var Unit = function(tx, ty, tc, unitObject) {
 				/*if(path.length > 0) {
 					game.collisionMap[path[path.length - 1].X][path[path.length - 1].Y] = collision.PASSABLE;
 				}*/
-				if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
-					if(!evading) game.collisionMap[tx][ty] = collision.PASSABLE;
-					//game.collisionMap[dest.X][dest.Y] = collision.RESERVED;
-					//pathFinder.postMessage({ collisionMap: game.collisionMap, x1: tx, y1: ty, x2: dest.X, y2: dest.Y });
-					pathFinder.find({X: tx, Y: ty}, dest, followPath);
-				} else {
-					console.log("sir no sir, destination is: " + game.collisionMap[dest.X][dest.Y]);
+				if(unitObject.mobile) {
+					if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
+						if(!evading) game.collisionMap[tx][ty] = collision.PASSABLE;
+						//game.collisionMap[dest.X][dest.Y] = collision.RESERVED;
+						//pathFinder.postMessage({ collisionMap: game.collisionMap, x1: tx, y1: ty, x2: dest.X, y2: dest.Y });
+						pathFinder.find({X: tx, Y: ty}, dest, followPath);
+					} else {
+						console.log("sir no sir, destination is: " + game.collisionMap[dest.X][dest.Y]);
+					}
 				}
 			},
 			click: function(clickx, clicky) {
@@ -118,30 +128,37 @@ var Unit = function(tx, ty, tc, unitObject) {
 						angle = Math.atan2((path[0].X - tx), (ty - path[0].Y));
 					}
 				}
-				rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
-				unit.target = { X: 0, Y: 0};
-				game.units.each(function() {
-					if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
-						unit.target = this.position;
+				if(unit.mobile) {
+					rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
+					unit.target = { X: 0, Y: 0};
+					game.units.each(function() {
+						if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
+							unit.target = this.position;
+						}
+					});
+					var now = (new Date()).getTime();
+					//aim cannon
+					if(unit.target.X !== 0 && unit.target.Y !== 0) {
+						cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
+						if(now - fireTime > loadTime) {
+							var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
+							game.root.add(b);
+							fireTime = now;
+						}
+					} else {
+						cannonAngle = 0;
 					}
-				});
-				var now = (new Date()).getTime();
-				//aim cannon
-				if(unit.target.X !== 0 && unit.target.Y !== 0) {
-					cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
-					if(now - fireTime > loadTime) {
-						var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
-						game.root.add(b);
-						fireTime = now;
-					}
-				} else {
-					cannonAngle = 0;
 				}
 			}
 		};
 	Object.defineProperty( unit, "position", { get: function() { return { X: x,  Y: y}; }});	
 	Object.defineProperty( unit, "tile", { get: function() { return { X: tx,  Y: ty}; }});
-	game.collisionMap[tx][ty] = collision.UNIT;
+	game.collisionMap[tx][ty] = collider;
+	if(unitObject.big) {
+		game.collisionMap[tx][ty + 1] = collider;
+		game.collisionMap[tx + 1][ty] = collider;
+		game.collisionMap[tx + 1][ty + 1] = collider;
+	}
 	Events.attach(unit);
 	return unit;
 };

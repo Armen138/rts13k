@@ -15,6 +15,21 @@ var Player = function(x, y, inputMode) {
 		input = inputMode,
 		name = "Player666",
 		color = game.colors[player.id],
+		addStructure = function(x, y, def) {
+			var unit = Unit(x, y, color, def);
+			if(input === 0 /* LOCAL */) {
+				unit.on("click", (function(unit) {
+					return function() {
+						game.deselectAll();
+						unit.select();
+						game.selectedUnits.add(unit);
+					};
+				}(unit)));
+			}
+			unit.owner = player;
+			game.units.add(unit);
+			units.add(unit);
+		},
 		addUnit = function(x, y) {
 			var unit = Unit(x, y, color, def.tank);
 			if(input === 0 /* LOCAL */) {
@@ -45,6 +60,7 @@ var Player = function(x, y, inputMode) {
     game.root.add(units);
 
 	//initial units.
+	addStructure(x, y, def.base);
 	var p1 = game.spiral(13, {X: x, Y: y});
 	for( var i = 0; i < 13; i++) {
 		addUnit(p1[i].X, p1[i].Y);

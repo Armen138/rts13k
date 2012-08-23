@@ -12,6 +12,8 @@ var tileSize = 32,
         players: [],
         collisionMap: [],
         map: [],
+        energy: 0,
+        enegyMax: 0,
         colors: [
             "#3A3",
             "#A3A",
@@ -21,7 +23,8 @@ var tileSize = 32,
         PASSABLE: 0,
         UNPASSABLE: 1,
         UNIT: 2,
-        RESERVED: 3
+        STRUCTURE: 3,
+        RESERVED: 4
     };
 
 game.deselectAll = function() {
@@ -76,7 +79,7 @@ game.init = function() {
             //select inside box
             game.deselectAll();
             game.units.each(function() {
-                if(this.isInside(game.selection) && this.owner.local) {
+                if(this.isInside(game.selection) && this.owner.local && this.mobile) {
                     this.select();
                     game.selectedUnits.add(this);
                 }
@@ -101,6 +104,7 @@ game.run = function() {
         game.context.fillStyle = "rgba(30, 210, 230, 0.5)";
         game.context.fillRect.apply(game.context, game.selection);
     }
+    ui.draw();
     //ts.collisionDebug();
     setTimeout(game.run, 5);
 };

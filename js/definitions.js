@@ -28,12 +28,17 @@ var def = {
 		damage: 20,
 		range: 7,
 		art: art.turret,
-		loadTime: 700
+		loadTime: 700,
+		//collision.STRUCTURE
+		collision: 3
 	},
 	base: {
 		mobile: false,
 		health: 1000,		
 		art: art.base,
-		range: 5
+		range: 5,
+		//collision.STRUCTURE
+		collision: 3,
+		big: true
 	}
 };

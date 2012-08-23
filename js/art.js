@@ -23,8 +23,8 @@ var art = {
 		game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
 		game.context.fillStyle = fill;
 		game.context.strokeStyle = stroke;
-		game.context.fillRect(-32, -32, 64, 64);
-		game.context.strokeRect(-32, -32, 64, 64);
+		game.context.fillRect(-16, -16, 64, 64);
+		game.context.strokeRect(-16, -16, 64, 64);
 		art.lines(lines);
 		game.context.restore();
 	},

@@ -20,6 +20,13 @@ if(!navigator.isCocoonJS) {
 }
 
 window.addEventListener("load", function() {
+	document.getElementById('fps').style.display = "none";
+	document.addEventListener("keyup", function(e) {
+		if(e.keyCode == 13) {
+			document.getElementById('fps').style.display = "block";		
+		}
+	});
+	
 	game.init();
 	testUnits();
 	game.run();
