@@ -39,6 +39,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 	var gridSize = map.length,
 		screenSize = bt.Vector(w / tileSize, h / tileSize),
 		context = canvas.getContext("2d"),
+		color = ["#152568", "#CCE010", "#E6DFC8", "#7A6212"],
 		tileSet = Object.create(ns.Node(), {
 			at: {
 				value: function(x, y) {
@@ -79,7 +80,6 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 			draw: {
 				value: function() {
 					if(tileSet.offset) {
-
 						var br = tileSet.offset.add(screenSize);
 						for(var x = tileSet.offset.X; x < br.X; x++) {
 							for(var y = tileSet.offset.Y; y < br.Y; y++) {
@@ -89,7 +89,28 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 						br.release();
 					}
 				}
-			}
+			},
+			drawMini: {
+				value: function() {
+					var minicanvas = document.createElement('canvas');
+					minicanvas.width = 128;
+					minicanvas.height = 128;
+					var minicontext = minicanvas.getContext('2d');
+					if(tileSet.offset) {
+						var br = tileSet.offset.add(screenSize);
+						for(var x = 0; x < 128; x++) {
+							for(var y = 0; y < 128; y++) {
+								//context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+								minicontext.fillStyle = color[map[x][y]];
+								minicontext.fillRect(x, y, 1, 1);//tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+							}
+						}
+						br.release();
+					}
+					return minicanvas;
+				}
+			},			
+			map: map
 		});
 
 	//create initial collision map

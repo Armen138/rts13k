@@ -17,6 +17,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 		cannonAngle = 0,
 		color = tc,
 		fireTime = 0,
+		kills = 0,
 		health = unitObject.health || 100,
 		loadTime = unitObject.loadTime || 1000,
 		mode = Unit.GUARD,
@@ -48,7 +49,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 				console.log("no path!");
 			} 
 		},
-		unit = {
+		unit = {			
 			mobile: unitObject.mobile,
 			target: {X: 0, Y: 0},
 			select: function() {
@@ -65,13 +66,16 @@ var Unit = function(tx, ty, tc, unitObject) {
 				health -= damage;			
 				if(health < 0) {
 					unit.dead = true;
+					unit.owner.deaths++;
 					game.collisionMap[tx][ty] = collision.PASSABLE;
 					if(unitObject.big) {
 						game.collisionMap[tx][ty + 1] = collision.PASSABLE;
 						game.collisionMap[tx + 1][ty] = collision.PASSABLE;
 						game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
-					}					
+					}
+					return true;					
 				}
+				return false;
 			},
 			isInside: function(rect, noffset) {
 				var ox = game.map.offset.X * tileSize, oy = game.map.offset.Y * tileSize;
@@ -142,6 +146,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 						cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
 						if(now - fireTime > loadTime) {
 							var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
+							b.owner = unit;
 							game.root.add(b);
 							fireTime = now;
 						}
@@ -149,10 +154,17 @@ var Unit = function(tx, ty, tc, unitObject) {
 						cannonAngle = 0;
 					}
 				}
+			},
+			kill: function() {
+				kills++;
+				unit.owner.kills++;
 			}
 		};
 	Object.defineProperty( unit, "position", { get: function() { return { X: x,  Y: y}; }});	
 	Object.defineProperty( unit, "tile", { get: function() { return { X: tx,  Y: ty}; }});
+	Object.defineProperty( unit, "kills", { 
+		get: function() { return kills;}		
+	});
 	game.collisionMap[tx][ty] = collider;
 	if(unitObject.big) {
 		game.collisionMap[tx][ty + 1] = collider;

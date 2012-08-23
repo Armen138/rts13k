@@ -23,7 +23,9 @@ var Bullet = function(from, to, damage) {
 					game.root.remove(bullet);
 					var u = game.unitAt({ X: to.X / tileSize | 0, Y: to.Y / tileSize | 0 });
 					if(u) {
-						u.hit(damage);
+						if(u.hit(damage)) {
+							bullet.owner.kill();
+						}
 					}
 				}
 			}

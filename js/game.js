@@ -105,6 +105,7 @@ game.run = function() {
         game.context.fillRect.apply(game.context, game.selection);
     }
     ui.draw();
+    ui.minimap();
     //ts.collisionDebug();
     setTimeout(game.run, 5);
 };

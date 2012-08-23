@@ -2,6 +2,11 @@ var Player = function(x, y, inputMode) {
 	var player = {
 			local: (inputMode === Player.modes.LOCAL),
 			id: game.playerCount++,
+			energy: 0,
+			energyMax: 0,
+			kills: 0,
+			deaths: 0,
+			credits: 500,
 			update: function() {
 				if(!player.defeated) {
 					if(units.length === 0) {
