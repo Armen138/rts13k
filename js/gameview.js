@@ -1,5 +1,7 @@
 //merge into Map object
-function gameView(w, h) {
+function gameView(wx, hx) {
+    var w = wx - wx % 32 + 32,
+        h = hx - hx % 32 + 32;
     var c = makeCanvas(w, h),
         colors = [  bt.Color("#152568"),
                     bt.Color("#CCE010"),
@@ -12,10 +14,10 @@ function gameView(w, h) {
     gameView.height = h;
 
     var tiles = [
-    	procedural.terrain(tileSize, colors[0]),
-    	procedural.terrain(tileSize, colors[1]),
-    	procedural.terrain(tileSize, colors[2]),
-    	procedural.terrain(tileSize, colors[3]),
+        procedural.terrain(tileSize, colors[0]),
+        procedural.terrain(tileSize, colors[1]),
+        procedural.terrain(tileSize, colors[2]),
+        procedural.terrain(tileSize, colors[3]),
         procedural.terrainltr(tileSize, colors[0], colors[1]),
         procedural.terrainltr(tileSize, colors[1], colors[0])
     ];
@@ -29,7 +31,7 @@ function gameView(w, h) {
 gameView.draw = function() {
 
     game.context.drawImage(gameView.canvas, 0 ,0);
-}
+};
 
 gameView.scrollHandler = function() {
     if(!game.map) return;

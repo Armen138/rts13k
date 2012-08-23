@@ -13,20 +13,20 @@ var ui = {
 		game.context.lineWidth = 4;
 		game.context.fillStyle = "yellow";
 		game.context.strokeStyle = "black";
-		game.context.font = "30px Arial";
+		game.context.font = "30px Arial Unicode MS, Arial";
 		game.context.strokeText("⚡", 20, ui.topline);
 		game.context.fillText("⚡",  20, ui.topline);
 				
 		game.context.strokeText("$", 20, ui.topline + 40);
 		game.context.fillText("$",  20, ui.topline + 40);
 
-		game.context.font = "20px Arial";
+		game.context.font = "20px Arial Unicode MS, Arial";
 		game.context.strokeText("⚔", 20, ui.topline + 80);
 		game.context.fillText("⚔",  20, ui.topline + 80);
 
 
 		game.context.fillStyle = "black";
-		game.context.font = "16px Arial";
+		game.context.font = "16px Arial Unicode MS, Arial";
 		game.context.fillText(player.energy + "/" + player.energyMax, 50, ui.topline);
 		game.context.fillText(player.credits, 50, ui.topline + 40);
 		game.context.fillText(player.kills + "/" + player.deaths, 50, ui.topline + 80);
@@ -34,13 +34,6 @@ var ui = {
 		game.context.restore();
 	},
 	minimap: function() {
-        /*colors = [ "#152568", "#CCE010", "#E6DFC8", "#7A6212" ];	
-		for(var x = 0; x < game.map.length; x++) {
-			for(y = 0; y < game.map[0].length; y++) {
-				ui.minimapImage.context.fillStyle = colors[game.map[x][y]];
-				ui.minimapImage.context.fillRect(x * 2, y * 2, 2, 2);
-			}
-		}*/
 		if(!ui.minimapImage) {
 			ui.minimapImage = game.map.drawMini();
 		}
@@ -51,10 +44,10 @@ var ui = {
 				ui.minimapUnits.context.fillRect(this.tile.X, this.tile.Y, 2, 2);
 
 			}
-		})
+		});
 		game.context.globalAlpha = 0.5;
-		game.context.drawImage(ui.minimapImage, 16, 656);
+		game.context.drawImage(ui.minimapImage, 16, game.canvas.height - 144);
 		game.context.globalAlpha = 1.0;
-		game.context.drawImage(ui.minimapUnits.canvas, 16, 656);
+		game.context.drawImage(ui.minimapUnits.canvas, 16, game.canvas.height - 144);
 	}
-}
+};

@@ -1,13 +1,14 @@
 var tileSize = 32,
     game = {
         tileSize: 32,
-    	root: ns.Node(),
-    	count: 0,
-    	frames: 0,
-    	selectedUnits: ns.Node(),
-    	units: ns.Node(),
+        root: ns.Node(),
+        count: 0,
+        frames: 0,
+        selectedUnits: ns.Node(),
+        mousePosition: {X: 0, Y: 0},
+        units: ns.Node(),
         enemy: ns.Node(),
-    	fps: 0,
+        fps: 0,
         playerCount: 0,
         players: [],
         collisionMap: [],
@@ -37,7 +38,8 @@ game.deselectAll = function() {
 game.init = function() {
     game.canvas = document.getElementById("game");
     game.context = game.canvas.getContext("2d");
-
+    game.canvas.width = window.innerWidth;
+    game.canvas.height = window.innerHeight;
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
         game.dragStart = bt.Vector(e.clientX, e.clientY);
@@ -57,20 +59,20 @@ game.init = function() {
     game.canvas.addEventListener("mouseup", function(e) {
         game.dragStart.release();
         game.mouseDown = false;
-        if(game.dragStart.distanceTo({X: e.clientX, Y: e.clientY }) < 16) {
+        if(game.dragStart.distanceTo({X: e.clientX, Y: e.clientY }) < 32) {
             var selected = false;
             if(e.button === 0) {
                 game.units.each(function() {
                     if(this.click(e.clientX, e.clientY)) {
                         selected = true;
-                    };
+                    }
                 });
                 if(!selected) {
                     var p = game.map.at(e.clientX, e.clientY),
                         destinations = game.spiral(game.selectedUnits.length, p);
-                    game.selectedUnits.each(function() {                        
+                    game.selectedUnits.each(function() {
                         this.go(destinations.shift());
-                    });                    
+                    });
                 }
             } else {
                 game.deselectAll();
@@ -88,7 +90,8 @@ game.init = function() {
         game.selection = null;
         return false;
     });
-    gameView(800, 800);
+    //gameView(800, 800);
+    gameView(window.innerWidth, window.innerHeight);
 };
 
 
@@ -111,12 +114,12 @@ game.run = function() {
 };
 
 game.unitAt = function(pos) {
-    var unit = null
+    var unit = null;
     game.units.each(function(){
         //console.log(this.tile);
         //console.log(pos);
         if(this.tile.X === pos.X && this.tile.Y === pos.Y) {
-            unit = this;            
+            unit = this;
         }
     });
     return unit;
@@ -140,7 +143,7 @@ game.spiral = function(n, p) {
             dy = t;
         }
         x += dx;
-        y += dy;        
+        y += dy;
         if(game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
             positions.push({X: p.X + x, Y: p.Y + y});
         }

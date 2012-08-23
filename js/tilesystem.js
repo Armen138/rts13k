@@ -62,7 +62,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					context.drawImage(canvas, tileSize * d, 0);
 					tileSet.offset.X -= d;
 					for(var y = 0 + tileSet.offset.Y; y < tileSet.offset.Y + screenSize.Y; y++) {
-						var x = (d < 0 ? screenSize.X : 0) + tileSet.offset.X - (d < 0 ? 1 : 0);
+						var x = (d < 0 ? screenSize.X: 0) + tileSet.offset.X - (d < 0 ? 1 : 0);
 						context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
 					}
 				}

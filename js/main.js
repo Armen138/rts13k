@@ -14,7 +14,7 @@ function testUnits() {
 if(!navigator.isCocoonJS) {
 	setInterval(function() {
 		game.fps = game.frames;
-	    document.getElementById("fps").innerHTML = game.fps;
+		document.getElementById("fps").innerHTML = game.fps;
 		game.frames = 0;
 	}, 1000);
 }
@@ -23,7 +23,7 @@ window.addEventListener("load", function() {
 	document.getElementById('fps').style.display = "none";
 	document.addEventListener("keyup", function(e) {
 		if(e.keyCode == 13) {
-			document.getElementById('fps').style.display = "block";		
+			document.getElementById('fps').style.display = "block";
 		}
 	});
 	
