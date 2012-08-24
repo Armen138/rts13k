@@ -41,8 +41,13 @@ game.init = function() {
     game.canvas.width = window.innerWidth;
     game.canvas.height = window.innerHeight;
     game.canvas.addEventListener("mousedown", function(e) {
-        game.mouseDown = true;
-        game.dragStart = bt.Vector(e.clientX, e.clientY);
+        if( e.clientX > ui.hudPosition.X && e.clientX < ui.hudPosition.X + ui.hudSize.W &&
+            e.clientY > ui.hudPosition.Y && e.clientY < ui.hudPosition.Y + ui.hudSize.H) {
+            ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
+        } else {
+            game.mouseDown = true;        
+            game.dragStart = bt.Vector(e.clientX, e.clientY);
+        }
     });
     game.canvas.addEventListener("mousemove", function(e) {
         game.mousePosition.X = e.clientX;
@@ -108,7 +113,6 @@ game.run = function() {
         game.context.fillRect.apply(game.context, game.selection);
     }
     ui.draw();
-    ui.minimap();
     //ts.collisionDebug();
     setTimeout(game.run, 5);
 };
