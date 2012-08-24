@@ -41,12 +41,12 @@ game.init = function() {
     game.canvas.width = window.innerWidth;
     game.canvas.height = window.innerHeight;
     game.canvas.addEventListener("mousedown", function(e) {
-        if( e.clientX > ui.hudPosition.X && e.clientX < ui.hudPosition.X + ui.hudSize.W &&
-            e.clientY > ui.hudPosition.Y && e.clientY < ui.hudPosition.Y + ui.hudSize.H) {
+        game.mouseDown = true;
+        game.dragStart = bt.Vector(e.clientX, e.clientY);
+
+        if( ui.has(e.clientX, e.clientY) ) {
             ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
-        } else {
-            game.mouseDown = true;        
-            game.dragStart = bt.Vector(e.clientX, e.clientY);
+            game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
         }
     });
     game.canvas.addEventListener("mousemove", function(e) {
@@ -56,41 +56,52 @@ game.init = function() {
             var topLeft= game.dragStart.shallow(),
                 w = e.clientX - game.dragStart.X,
                 h = e.clientY - game.dragStart.Y;
-            if(w < 0) { topLeft.X += w; w *= -1; }
-            if(h < 0) { topLeft.Y += h; h *= -1; }
-            game.selection = [topLeft.X, topLeft.Y,  w, h];
+
+            if(!game.uiDrag) {
+                if(w < 0) { topLeft.X += w; w *= -1; }
+                if(h < 0) { topLeft.Y += h; h *= -1; }
+                game.selection = [topLeft.X, topLeft.Y,  w, h];
+            } else {
+                ui.alpha = 0.5;
+                ui.hudPosition = {X: topLeft.X + w - game.uiDrag.X, Y: topLeft.Y + h - game.uiDrag.Y};
+            }
         }
     });
     game.canvas.addEventListener("mouseup", function(e) {
         game.dragStart.release();
         game.mouseDown = false;
-        if(game.dragStart.distanceTo({X: e.clientX, Y: e.clientY }) < 32) {
-            var selected = false;
-            if(e.button === 0) {
-                game.units.each(function() {
-                    if(this.click(e.clientX, e.clientY)) {
-                        selected = true;
-                    }
-                });
-                if(!selected) {
-                    var p = game.map.at(e.clientX, e.clientY),
-                        destinations = game.spiral(game.selectedUnits.length, p);
-                    game.selectedUnits.each(function() {
-                        this.go(destinations.shift());
+        if(!game.uiDrag) {
+            if(game.dragStart.distanceTo({X: e.clientX, Y: e.clientY }) < 32) {
+                var selected = false;
+                if(e.button === 0) {
+                    game.units.each(function() {
+                        if(this.click(e.clientX, e.clientY)) {
+                            selected = true;
+                        }
                     });
+                    if(!selected) {
+                        var p = game.map.at(e.clientX, e.clientY),
+                            destinations = game.spiral(game.selectedUnits.length, p);
+                        game.selectedUnits.each(function() {
+                            this.go(destinations.shift());
+                        });
+                    }
+                } else {
+                    game.deselectAll();
                 }
             } else {
+                //select inside box
                 game.deselectAll();
+                game.units.each(function() {
+                    if(this.isInside(game.selection) && this.owner.local && this.mobile) {
+                        this.select();
+                        game.selectedUnits.add(this);
+                    }
+                });
             }
         } else {
-            //select inside box
-            game.deselectAll();
-            game.units.each(function() {
-                if(this.isInside(game.selection) && this.owner.local && this.mobile) {
-                    this.select();
-                    game.selectedUnits.add(this);
-                }
-            });
+            game.uiDrag = false;
+            ui.alpha = 1.0;
         }
         game.selection = null;
         return false;

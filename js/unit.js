@@ -10,7 +10,7 @@
 		optional moveDuration: int (ms)
 	}
 */
-var Unit = function(tx, ty, tc, unitObject) {	
+var Unit = function(tx, ty, tc, unitObject) {
 	var x = tx * tileSize,
 		y = ty * tileSize,
 		angle = 0,
@@ -23,11 +23,11 @@ var Unit = function(tx, ty, tc, unitObject) {
 		mode = Unit.GUARD,
 		collider = unitObject.collision || collision.UNIT,
 		moveDuration = unitObject.moveDuration || 100,
-		path = [],		
+		path = [],
 		range = unitObject.range || 5,
 		selected = false,
 		tileTime = 0,
-		setTile = function(ntx, nty, collide) {		
+		setTile = function(ntx, nty, collide) {
 			//if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
 			tx = ntx;
 			ty = nty;
@@ -47,23 +47,24 @@ var Unit = function(tx, ty, tc, unitObject) {
 			tileTime = (new Date()).getTime();
 			if(path.length === 0) {
 				console.log("no path!");
-			} 
+			}
 		},
-		unit = {			
+		unit = {
 			mobile: unitObject.mobile,
 			target: {X: 0, Y: 0},
+			art: unitObject.art,
 			select: function() {
 				selected = true;
 			},
 			deselect: function() {
 				selected = false;
 			},
-			draw: function() {				
+			draw: function() {
 				unitObject.art(x, y, color.toString(), selected ? "yellow" : "black", angle, cannonAngle);
 				this.update();
 			},
 			hit: function(damage) {
-				health -= damage;			
+				health -= damage;
 				if(health < 0) {
 					unit.dead = true;
 					unit.owner.deaths++;
@@ -73,7 +74,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 						game.collisionMap[tx + 1][ty] = collision.PASSABLE;
 						game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
 					}
-					return true;					
+					return true;
 				}
 				return false;
 			},
@@ -160,10 +161,11 @@ var Unit = function(tx, ty, tc, unitObject) {
 				unit.owner.kills++;
 			}
 		};
-	Object.defineProperty( unit, "position", { get: function() { return { X: x,  Y: y}; }});	
+	Object.defineProperty( unit, "position", { get: function() { return { X: x,  Y: y}; }});
 	Object.defineProperty( unit, "tile", { get: function() { return { X: tx,  Y: ty}; }});
-	Object.defineProperty( unit, "kills", { 
-		get: function() { return kills;}		
+	Object.defineProperty( unit, "percent", { get: function() { return health / unitObject.health; }});
+	Object.defineProperty( unit, "kills", {
+		get: function() { return kills;}
 	});
 	game.collisionMap[tx][ty] = collider;
 	if(unitObject.big) {

@@ -34,7 +34,7 @@ gameView.draw = function() {
 };
 
 gameView.scrollHandler = function() {
-    if(!game.map) return;
+    if(!game.map || ui.has(game.mousePosition.X, game.mousePosition.Y)) return;
     if(game.mousePosition.X < tileSize * 2)
         if(game.map.offset.X > 0) game.map.horizontal(1);
     if(game.mousePosition.X > gameView.width - tileSize * 2)
@@ -42,6 +42,6 @@ gameView.scrollHandler = function() {
     if(game.mousePosition.Y < tileSize * 2)
         if(game.map.offset.Y > 0) game.map.vertical(1);
     if(game.mousePosition.Y > game.canvas.height - tileSize * 2)
-        if(game.map.offset.Y < game.map.height - ((game.canvas.height / tileSize + .5) | 0)) game.map.vertical(-1);
+        if(game.map.offset.Y < game.map.height - ((game.canvas.height / tileSize + 0.5) | 0)) game.map.vertical(-1);
 };
 

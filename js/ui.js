@@ -3,21 +3,47 @@ var ui = {
 	minimapImage: null,
 	hudPosition: {X: 10, Y: 10},
 	hudSize: {W: 512, H: 160},
+	alpha: 1.0,
+	actionButtons: [],
+	modalMessage: "",
 	minimapUnits: (function(){
 		var canvas = document.createElement('canvas');
 		canvas.width = 128;
 		canvas.height = 128;
 		return {canvas: canvas, context: canvas.getContext('2d') };
 	}()),
+	has: function(x, y) {
+		return (x > ui.hudPosition.X && x < ui.hudPosition.X + ui.hudSize.W &&
+				y > ui.hudPosition.Y && y < ui.hudPosition.Y + ui.hudSize.H);
+	},
+	modal: function() {
+		game.context.save();
+		game.context.fillStyle = "rgba(0, 0, 0, 0.5)";
+		game.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+		game.context.strokeStyle = "yellow";
+		game.context.fillStyle = "black";
+		game.context.font = "50px Arial Unicode MS, Arial";
+		game.context.textAlign = "center";
+		game.context.strokeText(ui.modalMessage ,  game.canvas.width / 2, game.canvas.height / 2);
+		game.context.fillText(ui.modalMessage ,  game.canvas.width / 2, game.canvas.height / 2);
+		game.context.restore();
+	},
 	draw: function() {
 		ui.hud();
 		ui.stats();
 		ui.minimap();
+		if(game.selectedUnits.length > 0) {
+			ui.selection();
+		}
+		if(ui.modalMessage !== "") {
+			ui.modal();
+		}
 	},
 	stats: function() {
 		var player = game.players[0];
 		game.context.save();
-		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);		
+		game.context.globalAlpha = ui.alpha;
+		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
 		game.context.lineWidth = 4;
 		game.context.fillStyle = "yellow";
 		game.context.strokeStyle = "black";
@@ -43,8 +69,9 @@ var ui = {
 	},
 	hud: function() {
 		game.context.save();
+		game.context.globalAlpha = ui.alpha;
 		game.context.fillStyle = "grey";
-		game.context.strokeStyle = "black";		
+		game.context.strokeStyle = "black";
 		game.context.lineWidth = 4;
 		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
 		game.context.fillRect(0, 0, ui.hudSize.W, ui.hudSize.H);
@@ -63,12 +90,41 @@ var ui = {
 			}
 		});
 		ui.minimapUnits.context.strokeRect(game.map.offset.X, game.map.offset.Y, game.canvas.width / tileSize, game.canvas.height / tileSize);
-		game.context.globalAlpha = 0.5;
+		game.context.globalAlpha = 0.5 * ui.alpha;
 		game.context.drawImage(ui.minimapImage, ui.hudPosition.X + 368, ui.hudPosition.Y + 16);
-		game.context.globalAlpha = 1.0;
+		game.context.globalAlpha = ui.alpha;
 		game.context.drawImage(ui.minimapUnits.canvas, ui.hudPosition.X + 368, ui.hudPosition.Y + 16);
+	},
+	selection: function() {
+		game.context.save();
+		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
+		game.context.globalAlpha = ui.alpha;
+		var x = 0, y = 0;
+		var c = bt.Color("#0F0");
+		game.selectedUnits.each(function() {
+			if(!this.dead) {
+				c.red = (1.0 - this.percent) * 255 | 0;
+				c.green = (this.percent) * 255 | 0;
+				this.art(100 + x, 16 + y, c.toString(), "black", 0, 0, true);
+				x+= 32;
+				if(x > 225) {
+					x = 0; y+= 48;
+				}
+			}
+		});
+		c.release();
+		game.context.restore();
 	},
 	click: function(x, y) {
 		console.log({X: x, Y: y});
+		var minimap = {X: x - 368, Y: y - 16},
+			screenTiles = { X: game.canvas.width / tileSize | 0, Y: game.canvas.height / tileSize | 0 };
+
+		if(minimap.X > 0 && minimap.X < 128 && minimap.Y > 0 && minimap.Y < 128) {
+			game.map.offset.X = minimap.X & (127 - screenTiles.X) | 0;
+			game.map.offset.Y = minimap.Y & (127 - screenTiles.Y) | 0;
+			console.log(game.map.offset);
+			game.map.draw();
+		}
 	}
 };

@@ -19,7 +19,7 @@ bt.Vector = function(x, y) {
 			isInside: { value: function(rect) { return (vector.X > rect[0] && vector.X < rect[0] + rect[2] && vector.Y > rect[1] && vector.Y < rect[1] + rect[3]); }},
 			distanceTo: { value: function(other) {
 				var xdiff = Math.abs(vector.X - other.X),
-		            ydiff = Math.abs(vector.Y - other.Y);
+					ydiff = Math.abs(vector.Y - other.Y);
 				return Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)); }
 			},
 			type: { value: "vector" }
@@ -68,8 +68,7 @@ bt.Color = function(input) {
 			set: function(blue) { b = blue; }
 		},
 		toString: {
-			value : function() {
-			return "rgba(" + r + "," + g + "," + b + ",1.0)" }
+			value : function() { return "rgba(" + r + "," + g + "," + b + ",1.0)"; }
 		},
 		mul: {
 			value: function(x) {
@@ -79,6 +78,7 @@ bt.Color = function(input) {
 				c.blue = b * x | 0;
 				return c;
 			}
-		}
+		},
+		type: { value: "color" }
 	});
 };

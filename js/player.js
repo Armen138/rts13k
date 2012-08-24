@@ -11,6 +11,7 @@ var Player = function(x, y, inputMode) {
 				if(!player.defeated) {
 					if(units.length === 0) {
 						player.defeated = true;
+						ui.modalMessage = "☠ player " + player.id + " was defeated.";
 						console.log("player " + player.id + " was defeated.");
 					}
 				}
