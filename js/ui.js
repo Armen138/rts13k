@@ -96,6 +96,7 @@ var ui = {
 		game.context.drawImage(ui.minimapUnits.canvas, ui.hudPosition.X + 368, ui.hudPosition.Y + 16);
 	},
 	selection: function() {
+		ui.actionButtons = [];
 		game.context.save();
 		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
 		game.context.globalAlpha = ui.alpha;
@@ -103,12 +104,19 @@ var ui = {
 		var c = bt.Color("#0F0");
 		game.selectedUnits.each(function() {
 			if(!this.dead) {
+				(function(unit) {
+					ui.actionButtons.push(function() {				
+						game.deselectAll();
+						game.selectedUnits.add(unit);
+						unit.select();						
+					});
+				}(this));
 				c.red = (1.0 - this.percent) * 255 | 0;
 				c.green = (this.percent) * 255 | 0;
 				this.art(100 + x, 16 + y, c.toString(), "black", 0, 0, true);
-				x+= 32;
+				x+= 40;
 				if(x > 225) {
-					x = 0; y+= 48;
+					x = 0; y+= 40;
 				}
 			}
 		});
@@ -118,13 +126,21 @@ var ui = {
 	click: function(x, y) {
 		console.log({X: x, Y: y});
 		var minimap = {X: x - 368, Y: y - 16},
-			screenTiles = { X: game.canvas.width / tileSize | 0, Y: game.canvas.height / tileSize | 0 };
+			screenTiles = { X: game.canvas.width / tileSize | 0, Y: game.canvas.height / tileSize | 0 },
+			actionArea = {X: x - 100, Y: y - 16};
 
 		if(minimap.X > 0 && minimap.X < 128 && minimap.Y > 0 && minimap.Y < 128) {
 			game.map.offset.X = minimap.X & (127 - screenTiles.X) | 0;
 			game.map.offset.Y = minimap.Y & (127 - screenTiles.Y) | 0;
 			console.log(game.map.offset);
 			game.map.draw();
+		}
+
+		if(actionArea.X > 0 && actionArea.X < 240 && actionArea.Y > 0 && actionArea.Y < 120) {
+			var button = (actionArea.X / 40 | 0) + (actionArea.Y / 40 | 0) * 6;
+			if(ui.actionButtons.length > button) {
+				ui.actionButtons[button]();
+			}
 		}
 	}
 };
