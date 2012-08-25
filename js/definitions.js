@@ -32,6 +32,15 @@ var def = {
 		//collision.STRUCTURE
 		collision: 3
 	},
+	powerplant: {
+		mobile: false,
+		health: 100,		
+		range: 7,
+		upkeep: 50,
+		art: art.powerplant,
+		//collision.STRUCTURE
+		collision: 3
+	},	
 	base: {
 		mobile: false,
 		health: 1000,		

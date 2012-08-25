@@ -38,11 +38,15 @@ var art = {
 		art.lines(lines);
 		game.context.restore();
 	},
-	turret: function (x, y, fill, stroke, angle, cannonAngle) {
+	turret: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
 		game.context.save();
 		game.context.fillStyle = fill;
 		game.context.strokeStyle = stroke;
-		game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		if(!notranslate) {
+			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		} else {
+			game.context.translate(x + tileSize / 2, y + tileSize / 2);
+		}
 		game.context.rotate(angle);
 		game.context.fillRect(-16, -16, 32, 32);
 		game.context.strokeRect(-16, -16, 32, 32);
@@ -56,12 +60,17 @@ var art = {
 		game.context.strokeRect(-10, -10, 20, 20);
 		game.context.restore();
 	},
-	powerplant: function(x, y, fill, stroke) {
+	powerplant: function(x, y, fill, stroke, z, a, notranslate) {
 		var lines = [[{"X":-1,"Y":-3},{"X":11,"Y":-2}],[{"X":11,"Y":-2},{"X":-10,"Y":10}],[{"X":-10,"Y":10},{"X":1,"Y":0}],[{"X":1,"Y":0},{"X":-13,"Y":-2}],[{"X":-13,"Y":-2},{"X":10,"Y":-10}],[{"X":10,"Y":-10},{"X":-1,"Y":-3}]];
 		game.context.save();
 		game.context.fillStyle = fill;
 		game.context.strokeStyle = stroke;
-		game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		//game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		if(!notranslate) {
+			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		} else {
+			game.context.translate(x + tileSize / 2, y + tileSize / 2);
+		}		
 		game.context.fillRect(-16, -16, 32, 32);
 		game.context.strokeRect(-16, -16, 32, 32);
 		art.lines(lines);

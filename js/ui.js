@@ -5,6 +5,7 @@ var ui = {
 	hudSize: {W: 512, H: 160},
 	alpha: 1.0,
 	actionButtons: [],
+	buildables: [ def.turret, def.powerplant ],
 	modalMessage: "",
 	minimapUnits: (function(){
 		var canvas = document.createElement('canvas');
@@ -34,10 +35,24 @@ var ui = {
 		ui.minimap();
 		if(game.selectedUnits.length > 0) {
 			ui.selection();
+		} else {
+			ui.factory();
 		}
 		if(ui.modalMessage !== "") {
 			ui.modal();
 		}
+	},
+	factory: function() {
+		var actionArea = { X: 100, Y: 16 };
+		ui.actionButtons = [];
+		game.context.save();
+		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
+		game.context.globalAlpha = ui.alpha;		
+		for(var i = 0; i < ui.buildables.length; i++) {
+			ui.buildables[i].art(actionArea.X + i * 40, actionArea.Y, "grey", "black", 0, 0, true);
+			ui.actionButtons.push(function() { console.log ("build"); });
+		}
+		game.context.restore();
 	},
 	stats: function() {
 		var player = game.players[0];
