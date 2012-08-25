@@ -19,7 +19,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 		fireTime = 0,
 		kills = 0,
 		health = unitObject.health || 100,
-		loadTime = unitObject.loadTime || 1000,
+		loadTime = unitObject.loadTime || null,
 		mode = Unit.GUARD,
 		collider = unitObject.collision || collision.UNIT,
 		moveDuration = unitObject.moveDuration || 100,
@@ -133,7 +133,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 						angle = Math.atan2((path[0].X - tx), (ty - path[0].Y));
 					}
 				}
-				if(unit.mobile) {
+				if(unitObject.loadTime) {
 					rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
 					unit.target = { X: 0, Y: 0};
 					game.units.each(function() {

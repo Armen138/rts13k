@@ -11,6 +11,7 @@ var tileSize = 32,
         fps: 0,
         playerCount: 0,
         players: [],
+        buildMode: null,
         collisionMap: [],
         map: [],
         energy: 0,
@@ -43,11 +44,6 @@ game.init = function() {
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
         game.dragStart = bt.Vector(e.clientX, e.clientY);
-
-        if( ui.has(e.clientX, e.clientY) ) {
-            ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
-            game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
-        }
     });
     game.canvas.addEventListener("mousemove", function(e) {
         game.mousePosition.X = e.clientX;
@@ -56,6 +52,9 @@ game.init = function() {
             var topLeft= game.dragStart.shallow(),
                 w = e.clientX - game.dragStart.X,
                 h = e.clientY - game.dragStart.Y;
+            if( ui.has(e.clientX, e.clientY) ) {
+                game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
+            }        
 
             if(!game.uiDrag) {
                 if(w < 0) { topLeft.X += w; w *= -1; }
@@ -70,39 +69,55 @@ game.init = function() {
     game.canvas.addEventListener("mouseup", function(e) {
         game.dragStart.release();
         game.mouseDown = false;
-        if(!game.uiDrag) {
-            if(game.dragStart.distanceTo({X: e.clientX, Y: e.clientY }) < 32) {
-                var selected = false;
+        if( ui.has(e.clientX, e.clientY) ) {
+            ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
+        } else {
+            if(game.buildMode) {
                 if(e.button === 0) {
-                    game.units.each(function() {
-                        if(this.click(e.clientX, e.clientY)) {
-                            selected = true;
-                        }
-                    });
-                    if(!selected) {
-                        var p = game.map.at(e.clientX, e.clientY),
-                            destinations = game.spiral(game.selectedUnits.length, p);
-                        game.selectedUnits.each(function() {
-                            this.go(destinations.shift());
-                        });
-                    }
-                } else {
-                    game.deselectAll();
+                    var buildable = game.buildMode,
+                        pos = {X: (e.clientX / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y) | 0};
+                    console.log(game.players[0]);
+                    game.players[0].build(pos.X, pos.Y, buildable);
+                }
+                if(!e.shiftKey) {
+                    game.buildMode = null;
                 }
             } else {
-                //select inside box
-                game.deselectAll();
-                game.units.each(function() {
-                    if(this.isInside(game.selection) && this.owner.local && this.mobile) {
-                        this.select();
-                        game.selectedUnits.add(this);
+                if(!game.uiDrag) {
+                    if(game.dragStart.distanceTo({X: e.clientX, Y: e.clientY }) < 32) {
+                        var selected = false;
+                        if(e.button === 0) {
+                            game.units.each(function() {
+                                if(this.click(e.clientX, e.clientY)) {
+                                    selected = true;
+                                }
+                            });
+                            if(!selected) {
+                                var p = game.map.at(e.clientX, e.clientY),
+                                    destinations = game.spiral(game.selectedUnits.length, p);
+                                game.selectedUnits.each(function() {
+                                    this.go(destinations.shift());
+                                });
+                            }
+                        } else {
+                            game.deselectAll();
+                        }
+                    } else {
+                        //select inside box
+                        game.deselectAll();
+                        game.units.each(function() {
+                            if(this.isInside(game.selection) && this.owner.local && this.mobile) {
+                                this.select();
+                                game.selectedUnits.add(this);
+                            }
+                        });
                     }
-                });
+                }                 
             }
-        } else {
-            game.uiDrag = false;
-            ui.alpha = 1.0;
         }
+        game.uiDrag = false;
+        ui.alpha = 1.0;
+        
         game.selection = null;
         return false;
     });
@@ -123,7 +138,12 @@ game.run = function() {
         game.context.fillStyle = "rgba(30, 210, 230, 0.5)";
         game.context.fillRect.apply(game.context, game.selection);
     }
+    if(game.buildMode) {
+        game.buildMode.art(game.mousePosition.X - game.mousePosition.X % 32 , game.mousePosition.Y - game.mousePosition.Y % 32 , "grey", "black", 0, 0, true);
+        //sconsole.log(game.mousePosition.X - game.mousePosition.X % 32 );
+    }
     ui.draw();
+
     //ts.collisionDebug();
     setTimeout(game.run, 5);
 };

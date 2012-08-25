@@ -29,6 +29,8 @@ var def = {
 		range: 7,
 		art: art.turret,
 		loadTime: 700,
+		upkeep: -10,
+		cost: 100,
 		//collision.STRUCTURE
 		collision: 3
 	},
@@ -37,6 +39,7 @@ var def = {
 		health: 100,		
 		range: 7,
 		upkeep: 50,
+		cost: 50,
 		art: art.powerplant,
 		//collision.STRUCTURE
 		collision: 3
@@ -48,6 +51,7 @@ var def = {
 		range: 5,
 		//collision.STRUCTURE
 		collision: 3,
+		cost: 2000,
 		big: true
 	}
 };

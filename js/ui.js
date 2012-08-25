@@ -50,7 +50,11 @@ var ui = {
 		game.context.globalAlpha = ui.alpha;		
 		for(var i = 0; i < ui.buildables.length; i++) {
 			ui.buildables[i].art(actionArea.X + i * 40, actionArea.Y, "grey", "black", 0, 0, true);
-			ui.actionButtons.push(function() { console.log ("build"); });
+			(function(buildable) {
+				ui.actionButtons.push(function() { 
+					game.buildMode = buildable;
+				});
+			}(ui.buildables[i]));
 		}
 		game.context.restore();
 	},
@@ -76,7 +80,7 @@ var ui = {
 
 		game.context.fillStyle = "black";
 		game.context.font = "16px Arial Unicode MS, Arial";
-		game.context.fillText(player.energy + "/" + player.energyMax, 50, ui.topline);
+		game.context.fillText(player.energy, 50, ui.topline);
 		game.context.fillText(player.credits, 50, ui.topline + 40);
 		game.context.fillText(player.kills + "/" + player.deaths, 50, ui.topline + 80);
 
@@ -104,11 +108,13 @@ var ui = {
 				ui.minimapUnits.context.fillRect(this.tile.X, this.tile.Y, 2, 2);
 			}
 		});
+		game.context.save();
 		ui.minimapUnits.context.strokeRect(game.map.offset.X, game.map.offset.Y, game.canvas.width / tileSize, game.canvas.height / tileSize);
 		game.context.globalAlpha = 0.5 * ui.alpha;
 		game.context.drawImage(ui.minimapImage, ui.hudPosition.X + 368, ui.hudPosition.Y + 16);
 		game.context.globalAlpha = ui.alpha;
 		game.context.drawImage(ui.minimapUnits.canvas, ui.hudPosition.X + 368, ui.hudPosition.Y + 16);
+		game.context.restore();
 	},
 	selection: function() {
 		ui.actionButtons = [];

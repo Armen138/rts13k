@@ -7,6 +7,17 @@ var Player = function(x, y, inputMode) {
 			kills: 0,
 			deaths: 0,
 			credits: 500,
+			build: function(x, y, def) {
+				if(player.credits >= def.cost) {
+					addStructure(x, y, def);
+					if(def.upkeep != null) {
+						player.energy += def.upkeep;
+					}
+					if(def.cost != null) {
+						player.credits -= def.cost;
+					}
+				}
+			},
 			update: function() {
 				if(!player.defeated) {
 					if(units.length === 0) {
