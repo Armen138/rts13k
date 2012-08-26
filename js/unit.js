@@ -18,6 +18,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 		color = tc,
 		fireTime = 0,
 		kills = 0,
+		incomeTime = 0,
 		health = unitObject.health || 100,
 		loadTime = unitObject.loadTime || null,
 		mode = Unit.GUARD,
@@ -113,24 +114,33 @@ var Unit = function(tx, ty, tc, unitObject) {
 				return false;
 			},
 			update: function() {
-				if(path.length > 0) {
-					curTime = (new Date()).getTime() - tileTime;
-					if(curTime > moveDuration) {
-						var to = path.shift();
-						setTile(to.X, to.Y, path.length === 0);
-						tileTime = (new Date()).getTime();
+				if(unitObject.income) {
+					var now = (new Date()).getTime();
+					if(now - incomeTime > 1000 && unit.owner.energy > 0) {
+						unit.owner.credits += unitObject.income;
+						incomeTime = now;
 					}
-					else {
-						var xdest = path[0].X * tileSize,
-							ydest = path[0].Y * tileSize,
-							xtarg = tx * tileSize,
-							ytarg = ty * tileSize,
-							xdiff = xdest - xtarg,
-							ydiff = ydest - ytarg,
-							fract = parseFloat(curTime) / parseFloat(moveDuration);
-						x = xtarg + (fract * xdiff) | 0;
-						y = ytarg + (fract * ydiff) | 0;
-						angle = Math.atan2((path[0].X - tx), (ty - path[0].Y));
+				}
+				if(unitObject.mobile) {
+					if(path.length > 0) {
+						curTime = (new Date()).getTime() - tileTime;
+						if(curTime > moveDuration) {
+							var to = path.shift();
+							setTile(to.X, to.Y, path.length === 0);
+							tileTime = (new Date()).getTime();
+						}
+						else {
+							var xdest = path[0].X * tileSize,
+								ydest = path[0].Y * tileSize,
+								xtarg = tx * tileSize,
+								ytarg = ty * tileSize,
+								xdiff = xdest - xtarg,
+								ydiff = ydest - ytarg,
+								fract = parseFloat(curTime) / parseFloat(moveDuration);
+							x = xtarg + (fract * xdiff) | 0;
+							y = ytarg + (fract * ydiff) | 0;
+							angle = Math.atan2((path[0].X - tx), (ty - path[0].Y));
+						}
 					}
 				}
 				if(unitObject.loadTime) {

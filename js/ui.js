@@ -5,7 +5,7 @@ var ui = {
 	hudSize: {W: 512, H: 160},
 	alpha: 1.0,
 	actionButtons: [],
-	buildables: [ def.turret, def.powerplant ],
+	buildables: [ def.mine, def.powerplant, def.turret ],
 	modalMessage: "",
 	minimapUnits: (function(){
 		var canvas = document.createElement('canvas');

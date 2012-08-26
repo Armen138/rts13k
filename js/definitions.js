@@ -34,6 +34,17 @@ var def = {
 		//collision.STRUCTURE
 		collision: 3
 	},
+	mine: {
+		mobile: false,
+		health: 100,		
+		range: 7,
+		upkeep: -25,
+		cost: 150,
+		income: 10,
+		art: art.mine,
+		//collision.STRUCTURE
+		collision: 3
+	},
 	powerplant: {
 		mobile: false,
 		health: 100,		
