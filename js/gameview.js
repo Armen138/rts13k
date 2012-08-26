@@ -6,7 +6,8 @@ function gameView(wx, hx) {
         colors = [  bt.Color("#152568"),
                     bt.Color("#CCE010"),
                     bt.Color("#E6DFC8"),
-                    bt.Color("#7A6212")
+                    bt.Color("#7A6212"),
+                    bt.Color("#00e17f")
                 ];
     gameView.canvas = c.canvas;
     gameView.context = c.context;
@@ -18,7 +19,7 @@ function gameView(wx, hx) {
         procedural.terrain(tileSize, colors[1]),
         procedural.terrain(tileSize, colors[2]),
         procedural.terrain(tileSize, colors[3]),
-        procedural.terrainltr(tileSize, colors[0], colors[1]),
+        procedural.terrain(tileSize, colors[4]),
         procedural.terrainltr(tileSize, colors[1], colors[0])
     ];
     game.map = ts.TileSet(tiles, procedural.noiseMap(128, 128, 40, 4), gameView.canvas, w, h);

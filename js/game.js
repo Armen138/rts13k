@@ -66,6 +66,27 @@ game.init = function() {
             }
         }
     });
+    document.addEventListener("keydown", function(e) {
+        var nr = e.keyCode - 48;
+        if(e.ctrlKey) {            
+            e.preventDefault();
+            if(nr > 0 && nr < 10 ) {
+                game.units.each(function() {
+                    if(this.team === nr) {
+                        this.team = 0;
+                    }
+                });
+                game.selectedUnits.each(function() {
+                    this.team = nr;
+                });
+                return false;
+            }
+        } else {
+            if(nr > 0 && nr < 10 ) {
+                game.players[0].selectTeam(nr);
+            }
+        }
+    });
     game.canvas.addEventListener("mouseup", function(e) {
         game.dragStart.release();
         game.mouseDown = false;

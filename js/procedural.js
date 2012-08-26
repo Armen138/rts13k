@@ -68,8 +68,3 @@ procedural.spiral = function(n) {
 	}
 	return {X: xn, Y: yn};
 };
-/*
-for(var i = 0; i < 100; i++){
-	console.log(procedural.spiral(i));
-}
-*/

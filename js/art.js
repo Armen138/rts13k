@@ -21,6 +21,34 @@ var art = {
 		game.context.strokeRect(-5, -5, 10, 10);
 		game.context.restore();
 	},
+	heavyTank: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
+		game.context.save();
+		game.context.fillStyle = fill;
+		game.context.strokeStyle = stroke;
+		if(!notranslate) {
+			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		} else {
+			game.context.translate(x + tileSize / 2, y + tileSize / 2);
+		}
+		game.context.rotate(angle);
+		game.context.fillRect(-8, -16, 16, 32);
+		game.context.strokeRect(-8, -16, 16, 32);
+		if(cannonAngle !== 0) {
+			game.context.rotate(-angle);
+			game.context.rotate(cannonAngle);
+		}
+		game.context.fillRect(-6, -16, 4, 24);
+		game.context.strokeRect(-6, -16, 4, 24);
+		game.context.fillRect(-5, -5, 10, 10);
+		game.context.strokeRect(-5, -5, 10, 10);
+
+		game.context.fillRect(2, -16, 4, 24);
+		game.context.strokeRect(2, -16, 4, 24);
+		game.context.fillRect(-5, -5, 10, 10);
+		game.context.strokeRect(-5, -5, 10, 10);
+
+		game.context.restore();
+	},	
 	base: function(x, y, fill, stroke, angle, cannonAngle, notranslate) {
 		var lines = [[{"X":0,"Y":-14},{"X":-14,"Y":3}],[{"X":-14,"Y":3},{"X":14,"Y":1}],[{"X":14,"Y":1},{"X":0,"Y":-14}],[{"X":-8,"Y":3},{"X":-9,"Y":13}],[{"X":-9,"Y":13},{"X":10,"Y":13}],[{"X":10,"Y":13},{"X":8,"Y":2}]];
 
@@ -37,6 +65,26 @@ var art = {
 		game.context.strokeRect(-16, -16, 64, 64);
 		art.lines(lines);
 		game.context.restore();
+	},
+	factory: function(x, y, fill, stroke, angle, cannonAngle, notranslate) {
+		var lines = [[{"X":-12,"Y":3},{"X":11,"Y":3}],[{"X":10,"Y":3},{"X":10,"Y":-1}],[{"X":10,"Y":-1},{"X":-12,"Y":-1}],[{"X":-12,"Y":-1},{"X":-12,"Y":3}],[{"X":-6,"Y":-1},{"X":-6,"Y":-5}],[{"X":-6,"Y":-5},{"X":2,"Y":-5}],[{"X":2,"Y":-5},{"X":2,"Y":-1}],[{"X":2,"Y":-4},{"X":14,"Y":-4}],[{"X":13,"Y":-3},{"X":2,"Y":-3}],[{"X":-11,"Y":2},{"X":-13,"Y":5}],[{"X":-13,"Y":5},{"X":-10,"Y":7}],[{"X":-10,"Y":7},{"X":10,"Y":7}],[{"X":10,"Y":6},{"X":12,"Y":5}],[{"X":12,"Y":5},{"X":11,"Y":3}]];
+		game.context.save();
+		if(!notranslate) {
+			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		} else {
+			game.context.translate(x + tileSize / 2, y + tileSize / 2);
+		}
+		game.context.fillStyle = fill;
+		game.context.strokeStyle = stroke;
+		if(notranslate) {
+			game.context.fillRect(-16, -16, 32, 32);
+			game.context.strokeRect(-16, -16, 32, 32);
+		} else {
+			game.context.fillRect(-16, -16, 64, 64);
+			game.context.strokeRect(-16, -16, 64, 64);
+		}
+		art.lines(lines);
+		game.context.restore();		
 	},
 	turret: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
 		game.context.save();

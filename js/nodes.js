@@ -53,6 +53,11 @@ ns.Node = function() {
 				},
 				enumerable: true
 			},
+			get: {
+				value: function(idx) {
+					return children[idx];
+				}
+			},
 			clear: {
 				value: function() {
 					children.length = 0;

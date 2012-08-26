@@ -5,7 +5,8 @@ var ui = {
 	hudSize: {W: 512, H: 160},
 	alpha: 1.0,
 	actionButtons: [],
-	buildables: [ def.mine, def.powerplant, def.turret ],
+	buildables: [ def.mine, def.powerplant, def.turret, def.factory ],
+	unitBuildables: [def.tank, def.heavyTank],
 	modalMessage: "",
 	minimapUnits: (function(){
 		var canvas = document.createElement('canvas');
@@ -33,28 +34,39 @@ var ui = {
 		ui.hud();
 		ui.stats();
 		ui.minimap();
-		if(game.selectedUnits.length > 0) {
-			ui.selection();
+		if(game.selectedUnits.length === 1 && game.selectedUnits.get(0).factory) {
+			ui.factory(game.selectedUnits.get(0));
 		} else {
-			ui.factory();
+			if(game.selectedUnits.length > 0) {
+				ui.selection();
+			} else {
+				ui.factory();
+			}			
 		}
 		if(ui.modalMessage !== "") {
 			ui.modal();
 		}
 	},
-	factory: function() {
+	factory: function(units) {		
 		var actionArea = { X: 100, Y: 16 };
+		var buildables = units ? ui.unitBuildables : ui.buildables;
 		ui.actionButtons = [];
 		game.context.save();
 		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
 		game.context.globalAlpha = ui.alpha;		
-		for(var i = 0; i < ui.buildables.length; i++) {
-			ui.buildables[i].art(actionArea.X + i * 40, actionArea.Y, "grey", "black", 0, 0, true);
+		for(var i = 0; i < buildables.length; i++) {
+			buildables[i].art(actionArea.X + i * 40, actionArea.Y, "grey", "black", 0, 0, true);
 			(function(buildable) {
 				ui.actionButtons.push(function() { 
-					game.buildMode = buildable;
+					if(units) {
+						var u = game.players[0].unit(units.tile.X, units.tile.Y, buildable);
+						var rallyPoint = game.spiral(1, units.rallyPoint || units.tile)[0];
+						u.go(rallyPoint, true);
+					} else {
+						game.buildMode = buildable;
+					}
 				});
-			}(ui.buildables[i]));
+			}(buildables[i]));
 		}
 		game.context.restore();
 	},
@@ -123,8 +135,10 @@ var ui = {
 		game.context.globalAlpha = ui.alpha;
 		var x = 0, y = 0;
 		var c = bt.Color("#0F0");
+		var max = 18;
+		var count = 0;
 		game.selectedUnits.each(function() {
-			if(!this.dead) {
+			if(!this.dead && count < max) {
 				(function(unit) {
 					ui.actionButtons.push(function() {				
 						game.deselectAll();
@@ -139,6 +153,7 @@ var ui = {
 				if(x > 225) {
 					x = 0; y+= 40;
 				}
+				count++;
 			}
 		});
 		c.release();

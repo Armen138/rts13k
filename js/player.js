@@ -7,6 +7,10 @@ var Player = function(x, y, inputMode) {
 			kills: 0,
 			deaths: 0,
 			credits: 500,
+			unit: function(x, y, def) {
+				var u = addUnit(x, y, def);
+				return u; 
+			},
 			build: function(x, y, def) {
 				if(player.credits >= def.cost) {
 					addStructure(x, y, def);
@@ -26,6 +30,15 @@ var Player = function(x, y, inputMode) {
 						console.log("player " + player.id + " was defeated.");
 					}
 				}
+			},
+			selectTeam: function(nr) {
+				game.deselectAll();
+				units.each(function() {
+					if(this.team === nr) {
+						game.selectedUnits.add(this);
+						this.select();
+					}
+				})
 			}
 		},
 		units = ns.Node(),
@@ -47,8 +60,8 @@ var Player = function(x, y, inputMode) {
 			game.units.add(unit);
 			units.add(unit);
 		},
-		addUnit = function(x, y) {
-			var unit = Unit(x, y, color, def.tank);
+		addUnit = function(x, y, unitdef) {
+			var unit = Unit(x, y, color, unitdef || def.tank);
 			if(input === 0 /* LOCAL */) {
 				unit.on("click", (function(unit) {
 					return function() {
@@ -61,6 +74,7 @@ var Player = function(x, y, inputMode) {
 			unit.owner = player;
 			game.units.add(unit);
 			units.add(unit);
+			return unit;
 		};
 		console.log(player.id);
 

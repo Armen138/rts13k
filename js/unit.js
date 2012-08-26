@@ -54,6 +54,9 @@ var Unit = function(tx, ty, tc, unitObject) {
 			mobile: unitObject.mobile,
 			target: {X: 0, Y: 0},
 			art: unitObject.art,
+			badge: "",
+			team: 0,
+			factory: unitObject.factory,
 			select: function() {
 				selected = true;
 			},
@@ -62,6 +65,12 @@ var Unit = function(tx, ty, tc, unitObject) {
 			},
 			draw: function() {
 				unitObject.art(x, y, color.toString(), selected ? "yellow" : "black", angle, cannonAngle);
+				if(unit.badge !== "") {				
+					game.context.fillStyle = "black";
+					game.context.font = "10px Arial Unicode MS, Arial";
+					game.context.textAlign = "left";					
+					game.context.fillText(unit.badge ,  x - game.map.offset.X * tileSize, y - game.map.offset.Y * tileSize);					
+				}
 				this.update();
 			},
 			hit: function(damage) {
@@ -99,6 +108,8 @@ var Unit = function(tx, ty, tc, unitObject) {
 					} else {
 						console.log("sir no sir, destination is: " + game.collisionMap[dest.X][dest.Y]);
 					}
+				} else {
+					unit.rallyPoint = dest;
 				}
 			},
 			click: function(clickx, clicky) {
@@ -114,6 +125,11 @@ var Unit = function(tx, ty, tc, unitObject) {
 				return false;
 			},
 			update: function() {
+				if (unit.owner.energy < 0 && !unitObject.mobile) {
+					unit.badge = "⚡";
+				} else {
+					unit.badge = "" + (unit.team > 0 ? unit.team : "");
+				}
 				if(unitObject.income) {
 					var now = (new Date()).getTime();
 					if(now - incomeTime > 1000 && unit.owner.energy > 0) {
@@ -143,7 +159,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 						}
 					}
 				}
-				if(unitObject.loadTime) {
+				if(unitObject.loadTime && !(!unitObject.mobile && unit.owner.energy < 0)) {
 					rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
 					unit.target = { X: 0, Y: 0};
 					game.units.each(function() {
