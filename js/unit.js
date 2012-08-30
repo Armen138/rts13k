@@ -114,11 +114,12 @@ var Unit = function(tx, ty, tc, unitObject) {
 			},
 			click: function(clickx, clicky) {
 				var sx = x - game.map.offset.X * tileSize,
-					sy = y - game.map.offset.Y * tileSize;
-				if( clickx > sx - 16 &&
-					clickx <  sx + 16 &&
-					clicky > sy - 16 &&
-					clicky < sy + 16) {
+					sy = y - game.map.offset.Y * tileSize,
+					unitSize = unitObject.big ? 64 : 32;
+				if( clickx > sx &&
+					clickx < sx + unitSize &&
+					clicky > sy &&
+					clicky < sy + unitSize) {
 					unit.fire("click");
 					return true;
 				}
@@ -132,7 +133,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 				}
 				if(unitObject.income) {
 					var now = (new Date()).getTime();
-					if(now - incomeTime > 1000 && unit.owner.energy > 0) {
+					if(now - incomeTime > 1000 && unit.owner.energy >= 0) {
 						unit.owner.credits += unitObject.income;
 						incomeTime = now;
 					}

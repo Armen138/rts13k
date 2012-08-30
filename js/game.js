@@ -97,8 +97,9 @@ game.init = function() {
                 if(e.button === 0) {
                     var buildable = game.buildMode,
                         pos = {X: (e.clientX / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y) | 0};
-                    console.log(game.players[0]);
-                    game.players[0].build(pos.X, pos.Y, buildable);
+                    if(game.legalPosition(pos, game.buildMode.big)) {
+                        game.players[0].build(pos.X, pos.Y, buildable);
+                    }
                 }
                 if(!e.shiftKey) {
                     game.buildMode = null;
@@ -133,7 +134,7 @@ game.init = function() {
                             }
                         });
                     }
-                }                 
+                }
             }
         }
         game.uiDrag = false;
@@ -160,8 +161,12 @@ game.run = function() {
         game.context.fillRect.apply(game.context, game.selection);
     }
     if(game.buildMode) {
-        game.buildMode.art(game.mousePosition.X - game.mousePosition.X % 32 , game.mousePosition.Y - game.mousePosition.Y % 32 , "grey", "black", 0, 0, true);
-        //sconsole.log(game.mousePosition.X - game.mousePosition.X % 32 );
+        var color = "grey",
+            pos = game.map.at(game.mousePosition.X, game.mousePosition.Y);
+        if(!game.legalPosition(pos, game.buildMode.big) || game.buildMode.cost > game.players[0].credits) {
+            color = "red";
+        }
+        game.buildMode.art(game.mousePosition.X - game.mousePosition.X % 32 , game.mousePosition.Y - game.mousePosition.Y % 32 , color, "black", 0, 0, true);
     }
     ui.draw();
 
@@ -205,4 +210,19 @@ game.spiral = function(n, p) {
         }
     }
     return positions;
+};
+
+game.legalPosition = function(position, big) {
+    if(big) {
+        return (game.map.map[position.X][position.Y] !== 0 &&
+                game.map.map[position.X + 1][position.Y] !== 0 &&
+                game.map.map[position.X][position.Y + 1] !== 0 &&
+                game.map.map[position.X + 1][position.Y + 1] !== 0 &&
+                game.collisionMap[position.X][position.Y] === collision.PASSABLE &&
+                game.collisionMap[position.X + 1][position.Y] === collision.PASSABLE &&
+                game.collisionMap[position.X][position.Y + 1] === collision.PASSABLE &&
+                game.collisionMap[position.X + 1][position.Y + 1] === collision.PASSABLE);
+    }
+    return (game.map.map[position.X][position.Y] !== 0 &&
+            game.collisionMap[position.X][position.Y] === collision.PASSABLE);
 };

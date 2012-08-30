@@ -8,8 +8,12 @@ var Player = function(x, y, inputMode) {
 			deaths: 0,
 			credits: 500,
 			unit: function(x, y, def) {
-				var u = addUnit(x, y, def);
-				return u; 
+				if(player.credits >= def.cost) {
+					var u = addUnit(x, y, def);
+					player.credits -= def.cost;
+					return u; 
+				}
+				return null;
 			},
 			build: function(x, y, def) {
 				if(player.credits >= def.cost) {

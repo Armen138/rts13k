@@ -43,7 +43,7 @@ var def = {
 		upkeep: -10,
 		cost: 100,
 		//collision.STRUCTURE
-		collision: 3
+		collision: 3		
 	},
 	mine: {
 		mobile: false,
@@ -85,7 +85,7 @@ var def = {
 		factory: true,
 		range: 5,
 		//collision.STRUCTURE
-		collision: 3,
+		//collision: 3,
 		cost: 150,
 		upkeep: -100,
 		big: true

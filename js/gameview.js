@@ -3,11 +3,11 @@ function gameView(wx, hx) {
     var w = wx - wx % 32 + 32,
         h = hx - hx % 32 + 32;
     var c = makeCanvas(w, h),
-        colors = [  bt.Color("#152568"),
+        colors = [  bt.Color("#152568"), //0
                     bt.Color("#CCE010"),
                     bt.Color("#E6DFC8"),
                     bt.Color("#7A6212"),
-                    bt.Color("#00e17f")
+                    bt.Color("#00e17f") //4
                 ];
     gameView.canvas = c.canvas;
     gameView.context = c.context;

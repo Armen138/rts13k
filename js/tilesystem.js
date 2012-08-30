@@ -110,7 +110,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					return minicanvas;
 				}
 			},			
-			map: map
+			map: { value : map }
 		});
 
 	//create initial collision map

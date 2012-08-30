@@ -48,20 +48,24 @@ var ui = {
 		}
 	},
 	factory: function(units) {		
-		var actionArea = { X: 100, Y: 16 };
-		var buildables = units ? ui.unitBuildables : ui.buildables;
+		var actionArea = { X: 100, Y: 16 },
+			color = "grey",
+			buildables = units ? ui.unitBuildables : ui.buildables;
 		ui.actionButtons = [];
 		game.context.save();
 		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
 		game.context.globalAlpha = ui.alpha;		
 		for(var i = 0; i < buildables.length; i++) {
-			buildables[i].art(actionArea.X + i * 40, actionArea.Y, "grey", "black", 0, 0, true);
+			color = buildables[i].cost < game.players[0].credits ? "grey" : "red";
+			buildables[i].art(actionArea.X + i * 40, actionArea.Y, color, "black", 0, 0, true);
 			(function(buildable) {
 				ui.actionButtons.push(function() { 
 					if(units) {
 						var u = game.players[0].unit(units.tile.X, units.tile.Y, buildable);
-						var rallyPoint = game.spiral(1, units.rallyPoint || units.tile)[0];
-						u.go(rallyPoint, true);
+						if(u) {
+							var rallyPoint = game.spiral(1, units.rallyPoint || units.tile)[0];
+							u.go(rallyPoint, true);
+						}
 					} else {
 						game.buildMode = buildable;
 					}
