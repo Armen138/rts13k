@@ -53,6 +53,8 @@ var def = {
 		cost: 150,
 		income: 10,
 		art: art.mine,
+		//resource crystal thingies
+		terrain: 3,
 		//collision.STRUCTURE
 		collision: 3
 	},

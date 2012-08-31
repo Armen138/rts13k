@@ -18,10 +18,11 @@ function gameView(wx, hx) {
         procedural.terrain(tileSize, colors[0]),
         procedural.terrain(tileSize, colors[1]),
         procedural.terrain(tileSize, colors[2]),
-        procedural.terrain(tileSize, colors[3]),
-        procedural.terrain(tileSize, colors[4]),
-        procedural.terrainltr(tileSize, colors[1], colors[0])
+        procedural.terrain(tileSize, colors[2]),
+         //terrain(tileSize, colors[3]),
+        procedural.terrain(tileSize, colors[4])
     ];
+    tiles[3].getContext('2d').drawImage(procedural.noise(tileSize, 10, 12, colors[1], 6), 0, 0);
     game.map = ts.TileSet(tiles, procedural.noiseMap(128, 128, 40, 4), gameView.canvas, w, h);
     game.mousePosition = bt.Vector(0, 0);
     game.root.add(gameView);

@@ -120,6 +120,7 @@ var art = {
 		}		
 		game.context.fillRect(-16, -16, 32, 32);
 		game.context.strokeRect(-16, -16, 32, 32);
+		game.context.strokeRect(-16 - 128, -16 - 128, 256 + 32, 256 + 32);
 		art.lines(lines);
 		game.context.restore();		
 	},

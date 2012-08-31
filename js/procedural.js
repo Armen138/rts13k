@@ -24,13 +24,13 @@ procedural.terrainltr = function(s, color1, color2) {
     return d.canvas;
 };
 
-procedural.noise = function(s, res, lvl, color) {
+procedural.noise = function(s, res, lvl, color, alphaLevel) {
 	var resolution = res || 10,
-		noise = new SimplexNoise();
-	var c = makeCanvas(s, s);
-	var noisedImage = c.context.createImageData(s, s);
-	var basecolor = color || bt.Color("#11A600");
-	var levels = lvl || 3;
+		noise = new SimplexNoise(),
+		c = makeCanvas(s, s),
+		noisedImage = c.context.createImageData(s, s),
+		basecolor = color || bt.Color("#11A600"),
+		levels = lvl || 3;
 
 	for(var x = 0; x < s; x++) {
 		for(var y = 0; y < s; y++) {
@@ -39,6 +39,12 @@ procedural.noise = function(s, res, lvl, color) {
 			noisedImage.data[(x * 4) + (y * (s * 4)) + 1] = basecolor.green / 255.0 * shade;
 			noisedImage.data[(x * 4) + (y * (s * 4)) + 2] = basecolor.blue / 255.0 * shade;
 			noisedImage.data[(x * 4) + (y * (s * 4)) + 3] = 255;
+			if(alphaLevel) {
+				
+				if(shade < 160) {
+					noisedImage.data[(x * 4) + (y * (s * 4)) + 3] = 0;
+				}
+			}
 		}
 	}
 
