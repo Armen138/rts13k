@@ -120,7 +120,23 @@ var art = {
 		}		
 		game.context.fillRect(-16, -16, 32, 32);
 		game.context.strokeRect(-16, -16, 32, 32);
-		game.context.strokeRect(-16 - 128, -16 - 128, 256 + 32, 256 + 32);
+		//game.context.strokeRect(-16 - 128, -16 - 128, 256 + 32, 256 + 32);
+		art.lines(lines);
+		game.context.restore();		
+	},
+	hydroplant: function(x, y, fill, stroke, z, a, notranslate) {
+		var lines = [[{"X":-13,"Y":0},{"X":-4,"Y":-10}],[{"X":-4,"Y":-10},{"X":2,"Y":0}],[{"X":2,"Y":0},{"X":9,"Y":-10}],[{"X":-12,"Y":7},{"X":-4,"Y":-2}],[{"X":-4,"Y":-2},{"X":2,"Y":7}],[{"X":2,"Y":7},{"X":9,"Y":-2}]];
+		game.context.save();
+		game.context.fillStyle = fill;
+		game.context.strokeStyle = stroke;
+		//game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		if(!notranslate) {
+			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		} else {
+			game.context.translate(x + tileSize / 2, y + tileSize / 2);
+		}		
+		game.context.fillRect(-16, -16, 32, 32);
+		game.context.strokeRect(-16, -16, 32, 32);
 		art.lines(lines);
 		game.context.restore();		
 	},

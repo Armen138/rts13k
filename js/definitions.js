@@ -68,6 +68,17 @@ var def = {
 		//collision.STRUCTURE
 		collision: 3
 	},	
+	hydroplant: {
+		mobile: false,
+		health: 100,		
+		range: 7,
+		upkeep: 800,
+		cost: 500,
+		art: art.hydroplant,
+		terrain: 0,
+		//collision.STRUCTURE
+		collision: 3
+	},		
 	base: {
 		mobile: false,
 		health: 1000,		

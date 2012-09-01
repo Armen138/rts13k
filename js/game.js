@@ -97,7 +97,7 @@ game.init = function() {
                 if(e.button === 0) {
                     var buildable = game.buildMode,
                         pos = {X: (e.clientX / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y) | 0};
-                    if(game.legalPosition(pos, game.buildMode.big, game.buildMode.terrain)) {
+                    if(game.legalPosition(pos, game.buildMode)) {
                         game.players[0].build(pos.X, pos.Y, buildable);
                     }
                 }
@@ -163,7 +163,7 @@ game.run = function() {
     if(game.buildMode) {
         var color = "grey",
             pos = game.map.at(game.mousePosition.X, game.mousePosition.Y);
-        if(!game.legalPosition(pos, game.buildMode.big, game.buildMode.terrain) || game.buildMode.cost > game.players[0].credits) {
+        if(!game.legalPosition(pos, game.buildMode) || game.buildMode.cost > game.players[0].credits) {
             color = "red";
         }
         game.buildMode.art(game.mousePosition.X - game.mousePosition.X % 32 , game.mousePosition.Y - game.mousePosition.Y % 32 , color, "black", 0, 0, true);
@@ -212,8 +212,19 @@ game.spiral = function(n, p) {
     return positions;
 };
 
-game.legalPosition = function(position, big, spec) {
-    if(big) {
+game.legalPosition = function(position, spec) {
+    if(typeof(spec.terrain) === 'number') {
+        var proximity = false;
+        game.players[0].units.each(function() {
+            if(this.spec == spec && bt.Vec.distance(this.tile, position) < 6) {
+                proximity = true;
+            }
+        });
+        if(proximity) return false;
+        return  (game.map.map[position.X][position.Y] === spec.terrain &&
+                (game.collisionMap[position.X][position.Y] !== collision.UNIT || collision.STRUCTURE));
+    }    
+    if(spec.big) {
         return (game.map.map[position.X][position.Y] !== 0 &&
                 game.map.map[position.X + 1][position.Y] !== 0 &&
                 game.map.map[position.X][position.Y + 1] !== 0 &&
@@ -222,10 +233,6 @@ game.legalPosition = function(position, big, spec) {
                 game.collisionMap[position.X + 1][position.Y] === collision.PASSABLE &&
                 game.collisionMap[position.X][position.Y + 1] === collision.PASSABLE &&
                 game.collisionMap[position.X + 1][position.Y + 1] === collision.PASSABLE);
-    }
-    if(spec) {
-        return (game.map.map[position.X][position.Y] === spec &&
-                game.collisionMap[position.X][position.Y] === collision.PASSABLE);
     }
     return (game.map.map[position.X][position.Y] !== 0 &&
             game.collisionMap[position.X][position.Y] === collision.PASSABLE);

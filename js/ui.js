@@ -5,7 +5,7 @@ var ui = {
 	hudSize: {W: 512, H: 160},
 	alpha: 1.0,
 	actionButtons: [],
-	buildables: [ def.mine, def.powerplant, def.turret, def.factory ],
+	buildables: [ def.mine, def.powerplant, def.hydroplant, def.turret, def.factory ],
 	unitBuildables: [def.tank, def.heavyTank],
 	modalMessage: "",
 	minimapUnits: (function(){

@@ -57,6 +57,12 @@ var Unit = function(tx, ty, tc, unitObject) {
 			badge: "",
 			team: 0,
 			factory: unitObject.factory,
+			get spec() {
+				return unitObject;
+			},
+			get idle() {
+				return path.length === 0;
+			},
 			select: function() {
 				selected = true;
 			},
@@ -73,17 +79,21 @@ var Unit = function(tx, ty, tc, unitObject) {
 				}
 				this.update();
 			},
+			die: function() {
+				unit.dead = true;
+				unit.owner.deaths++;
+				unit.owner.energy += unit.upkeep;
+				game.collisionMap[tx][ty] = collision.PASSABLE;
+				if(unitObject.big) {
+					game.collisionMap[tx][ty + 1] = collision.PASSABLE;
+					game.collisionMap[tx + 1][ty] = collision.PASSABLE;
+					game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
+				}
+			},
 			hit: function(damage) {
 				health -= damage;
-				if(health < 0) {
-					unit.dead = true;
-					unit.owner.deaths++;
-					game.collisionMap[tx][ty] = collision.PASSABLE;
-					if(unitObject.big) {
-						game.collisionMap[tx][ty + 1] = collision.PASSABLE;
-						game.collisionMap[tx + 1][ty] = collision.PASSABLE;
-						game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
-					}
+				if(!unit.dead && health < 0) {
+					unit.die();
 					return true;
 				}
 				return false;

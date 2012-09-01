@@ -30,6 +30,14 @@ bt.Vector = function(x, y) {
 	return vector;
 };
 
+bt.Vec = {
+	distance: function(vector, other) {
+		var xdiff = Math.abs(vector.X - other.X),
+			ydiff = Math.abs(vector.Y - other.Y);
+		return Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)); 
+	}
+};
+
 bt.Color = function(input) {
 	"use strict";
 	var r, g, b;
