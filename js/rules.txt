@@ -1,0 +1,4 @@
+rules.txt
+
+Mining structures can only be built on resource-fields, and cannot be built within 6 tiles of eachother
+Hydro-power plants can only be built on water, and cannot be built within 6 tiles of eachother

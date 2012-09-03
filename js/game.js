@@ -186,16 +186,16 @@ game.unitAt = function(pos) {
     return unit;
 };
 
-game.spiral = function(n, p) {
+game.spiral = function(n, p, spec) {
     var x = 0,
     y = 0,
     dx = 0,
     dy = -1,
     t,
     positions = [];
-    if(game.collisionMap[p.X][p.Y] === collision.PASSABLE) {
+    /*if(game.collisionMap[p.X][p.Y] === collision.PASSABLE && !spec) {
         positions.push({X: p.X, Y: p.Y});
-    }
+    }*/
 
     while(positions.length < n) {
         if( (x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1-y))) {
@@ -203,11 +203,17 @@ game.spiral = function(n, p) {
             dx = -dy;
             dy = t;
         }
+        if(spec) {
+            if(game.legalPosition({X: p.X + x, Y: p.Y + y}, spec)) {//game.collisionMap[p.X + x] && game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
+                positions.push({X: p.X + x, Y: p.Y + y});
+            }            
+        } else {
+            if(game.collisionMap[p.X + x] && game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
+                positions.push({X: p.X + x, Y: p.Y + y});
+            }
+        }        
         x += dx;
         y += dy;
-        if(game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
-            positions.push({X: p.X + x, Y: p.Y + y});
-        }
     }
     return positions;
 };
@@ -215,7 +221,7 @@ game.spiral = function(n, p) {
 game.legalPosition = function(position, spec) {
     if(typeof(spec.terrain) === 'number') {
         var proximity = false;
-        game.players[0].units.each(function() {
+        game.units.each(function() {
             if(this.spec == spec && bt.Vec.distance(this.tile, position) < 6) {
                 proximity = true;
             }

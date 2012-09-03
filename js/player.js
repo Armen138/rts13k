@@ -21,7 +21,7 @@ var Player = function(x, y, inputMode) {
 			},
 			build: function(x, y, def) {
 				if(player.credits >= def.cost) {
-					addStructure(x, y, def);
+					var u = addStructure(x, y, def);
 					if(def.upkeep != null) {
 						player.energy += def.upkeep;
 					}
@@ -29,6 +29,7 @@ var Player = function(x, y, inputMode) {
 						player.credits -= def.cost;
 					}
 				}
+				return u;
 			},
 			update: function() {
 				if(!player.defeated) {
@@ -70,6 +71,7 @@ var Player = function(x, y, inputMode) {
 			unit.owner = player;
 			game.units.add(unit);
 			units.add(unit);
+			return unit;
 		},
 		addUnit = function(x, y, unitdef) {
 			var unit = Unit(x, y, color, unitdef || def.tank);

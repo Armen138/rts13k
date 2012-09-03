@@ -82,13 +82,14 @@ var Unit = function(tx, ty, tc, unitObject) {
 			die: function() {
 				unit.dead = true;
 				unit.owner.deaths++;
-				unit.owner.energy += unit.upkeep;
+				if(unit.upkeep) { unit.owner.energy -= unit.upkeep };
 				game.collisionMap[tx][ty] = collision.PASSABLE;
 				if(unitObject.big) {
 					game.collisionMap[tx][ty + 1] = collision.PASSABLE;
 					game.collisionMap[tx + 1][ty] = collision.PASSABLE;
 					game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
 				}
+				if(unit.ondeath) { unit.ondeath(unitObject); }
 			},
 			hit: function(damage) {
 				health -= damage;

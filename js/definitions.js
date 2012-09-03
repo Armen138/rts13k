@@ -62,7 +62,7 @@ var def = {
 		mobile: false,
 		health: 100,		
 		range: 7,
-		upkeep: 50,
+		upkeep: 150,
 		cost: 50,
 		art: art.powerplant,
 		//collision.STRUCTURE
