@@ -227,11 +227,12 @@ game.legalPosition = function(position, spec) {
             }
         });
         if(proximity) return false;
-        return  (game.map.map[position.X][position.Y] === spec.terrain &&
+        return  (game.map.map[position.X] && game.map.map[position.X][position.Y] === spec.terrain &&
                 (game.collisionMap[position.X][position.Y] !== collision.UNIT || collision.STRUCTURE));
     }    
     if(spec.big) {
-        return (game.map.map[position.X][position.Y] !== 0 &&
+        return (game.map.map[position.X] &&
+                game.map.map[position.X][position.Y] !== 0 &&
                 game.map.map[position.X + 1][position.Y] !== 0 &&
                 game.map.map[position.X][position.Y + 1] !== 0 &&
                 game.map.map[position.X + 1][position.Y + 1] !== 0 &&
