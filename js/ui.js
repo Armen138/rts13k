@@ -122,6 +122,9 @@ var ui = {
 			if(this.owner === game.players[0]) {
 				ui.minimapUnits.context.fillStyle = "#7eff15";
 				ui.minimapUnits.context.fillRect(this.tile.X, this.tile.Y, 2, 2);
+			} else {
+				ui.minimapUnits.context.fillStyle = "#ff7e15";
+				ui.minimapUnits.context.fillRect(this.tile.X, this.tile.Y, 2, 2);				
 			}
 		});
 		game.context.save();

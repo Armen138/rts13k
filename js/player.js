@@ -5,6 +5,8 @@ var Player = function(x, y, inputMode) {
 			id: game.playerCount++,
 			energy: 0,
 			energyMax: 0,
+			unitCap: 100,
+			unitQueue: 0,
 			kills: 0,
 			deaths: 0,
 			credits: 500,
@@ -12,6 +14,7 @@ var Player = function(x, y, inputMode) {
 				return units;
 			},
 			unit: function(x, y, def) {
+				if(units.length > player.unitCap) return;
 				if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def);
 					player.credits -= def.cost;
@@ -20,6 +23,7 @@ var Player = function(x, y, inputMode) {
 				return null;
 			},
 			build: function(x, y, def) {
+				if(units.length > player.unitCap) return;
 				if(player.credits >= def.cost) {
 					var u = addStructure(x, y, def);
 					if(def.upkeep != null) {

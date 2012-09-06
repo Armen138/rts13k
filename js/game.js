@@ -44,6 +44,9 @@ game.init = function() {
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
         game.dragStart = bt.Vector(e.clientX, e.clientY);
+        if( ui.has(e.clientX, e.clientY) ) {
+            game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
+        }            
     });
     game.canvas.addEventListener("mousemove", function(e) {
         game.mousePosition.X = e.clientX;
@@ -52,9 +55,7 @@ game.init = function() {
             var topLeft= game.dragStart.shallow(),
                 w = e.clientX - game.dragStart.X,
                 h = e.clientY - game.dragStart.Y;
-            if( ui.has(e.clientX, e.clientY) ) {
-                game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
-            }        
+    
 
             if(!game.uiDrag) {
                 if(w < 0) { topLeft.X += w; w *= -1; }
@@ -241,6 +242,6 @@ game.legalPosition = function(position, spec) {
                 game.collisionMap[position.X][position.Y + 1] === collision.PASSABLE &&
                 game.collisionMap[position.X + 1][position.Y + 1] === collision.PASSABLE);
     }
-    return (game.map.map[position.X][position.Y] !== 0 &&
+    return (game.map.map[position.X] && game.map.map[position.X][position.Y] !== 0 &&
             game.collisionMap[position.X][position.Y] === collision.PASSABLE);
 };

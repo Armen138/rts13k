@@ -91,6 +91,13 @@ var def = {
 		cost: 2000,
 		big: true
 	},
+	relic: {
+		mobile: false,
+		health: 2000,
+		art: art.relic,
+		collision: 3,
+		big: true
+	},
 	factory: {
 		mobile: false,
 		health: 1000,		

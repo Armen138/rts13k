@@ -7,11 +7,14 @@ var AI = function(player) {
 			updateTimer = 3000,
 			maxTanks = 20,
 			tankCount = 0,
+			wave = [],
+			rolling = [],
 			buildorder =  [ def.powerplant, def.mine, def.powerplant, def.powerplant, def.factory, def.turret, def.turret, def.powerplant, def.mine, def.mine, def.mine, def.hydroplant, 
 							def.mine, def.mine, def.mine, def.powerplant, def.hydroplant ];		
 		var base = {
 			complete: false,
 			lastUpdate: 0,
+			attackSize: Math.random() * 20 | 0,
 			update: function() {
 				var now = (new Date()).getTime();
 				if(now - base.lastUpdate < updateTimer) return;
@@ -19,15 +22,22 @@ var AI = function(player) {
 					var structure = buildorder.shift(),
 						p = game.spiral(1, basePosition, structure);
 						s = player.build(p[0].X, p[0].Y, structure);
-						if(structure == def.factory) {
-							factory = s;
-							console.log("built factory");
-						}
-						s.ondeath = function(spec) {
+						if(structure == def.mine) {
+							var pt = game.spiral(1, p[0])[0];
+							player.build(pt.X, pt.Y, def.turret);
 							buildorder.push(def.powerplant);
-							buildorder.push(spec);
-							buildorder.push(def.turret);
-						};
+						}
+						if(s) {
+							if(structure == def.factory) {
+								factory = s;
+								console.log("built factory");
+							}
+							s.ondeath = function(spec) {
+								buildorder.push(def.powerplant);
+								buildorder.push(spec);
+								buildorder.push(def.turret);
+							};
+						}
 				}
 				if(factory && buildorder.length === 0 && tankCount < maxTanks) {
 					var u = null;
@@ -40,6 +50,7 @@ var AI = function(player) {
 							u = player.unit(factory.tile.X, factory.tile.Y, def.tank);
 						}	
 					}
+				
 					if(u) {
 						tankCount++;
 						var rallyPoint = game.spiral(1, factory.rallyPoint || factory.tile)[0];
@@ -47,12 +58,40 @@ var AI = function(player) {
 						u.ondeath = function() {
 							tankCount--;
 						}
+						wave.push(u);
+						if(wave.length >= base.attackSize) {
+							var target = game.players[0].units.get(0).tile;
+							var attackFormation = game.spiral(wave.length, target);
+							for(var i = 0; i < wave.length; i++) {
+								wave[i].go(attackFormation[i]);
+							}
+							rolling = rolling.concat(wave);
+							wave = [];
+						}
 					}
+					if(rolling.length > 0 && game.players[0].units.length > 0) {
+						var target = game.players[0].units.get(0).tile,
+							idlers = [];
+						for(var i = 0; i < rolling.length; i++) {							
+							if(rolling[i].idle) {
+								//rolling[i].go(target);								
+								idlers.push(rolling[i]);
+							}
+						}
+						if(idlers.length > 0) {
+							var to = game.spiral(idlers.length, target);
+							console.log("dispatching idlers: " + idlers.length);
+							for(var i = 0; i < idlers.length; i++) {
+								idlers[i].go(to[i]);
+							}
+						}		
+					}	
 					//buildorder.push(def.powerplant, def.mine);
 					base.complete = true;
 				}
 			}
 		};
+		player.credits += 2500; //cheat!
 		return base;
 	}
 
