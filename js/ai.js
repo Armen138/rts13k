@@ -7,7 +7,7 @@ var AI = function(player) {
 			updateTimer = 3000,
 			maxTanks = 20,
 			tankCount = 0,
-			wave = [],
+			wave = {target: null, units: [] },
 			rolling = [],
 			buildorder =  [ def.powerplant, def.mine, def.powerplant, def.powerplant, def.factory, def.turret, def.turret, def.powerplant, def.mine, def.mine, def.mine, def.hydroplant, 
 							def.mine, def.mine, def.mine, def.powerplant, def.hydroplant ];		
@@ -41,12 +41,10 @@ var AI = function(player) {
 				}
 				if(factory && buildorder.length === 0 && tankCount < maxTanks) {
 					var u = null;
-					if(player.credits > def.heavyTank.cost) {
-						console.log("tank");
+					if(player.credits > def.heavyTank.cost) {						
 						u = player.unit(factory.tile.X, factory.tile.Y, def.heavyTank);
 					} else {
-						if(player.credits > def.tank.cost) {
-							console.log("tank");
+						if(player.credits > def.tank.cost) {						
 							u = player.unit(factory.tile.X, factory.tile.Y, def.tank);
 						}	
 					}
@@ -58,37 +56,32 @@ var AI = function(player) {
 						u.ondeath = function() {
 							tankCount--;
 						}
-						wave.push(u);
-						if(wave.length >= base.attackSize) {
-							var target = game.players[0].units.get(0).tile;
-							var attackFormation = game.spiral(wave.length, target);
-							for(var i = 0; i < wave.length; i++) {
-								wave[i].go(attackFormation[i]);
+						wave.units.push(u);
+						if(wave.units.length >= base.attackSize) {
+							wave.target = game.players[0].units.get(0);
+							var attackFormation = game.spiral(wave.units.length, wave.target.tile);
+							for(var i = 0; i < wave.units.length; i++) {
+								wave.units[i].go(attackFormation[i]);
 							}
-							rolling = rolling.concat(wave);
-							wave = [];
+							rolling.push(wave);
+							wave = {target: null, units: [] };
 						}
 					}
-					if(rolling.length > 0 && game.players[0].units.length > 0) {
-						var target = game.players[0].units.get(0).tile,
-							idlers = [];
-						for(var i = 0; i < rolling.length; i++) {							
-							if(rolling[i].idle) {
-								//rolling[i].go(target);								
-								idlers.push(rolling[i]);
-							}
-						}
-						if(idlers.length > 0) {
-							var to = game.spiral(idlers.length, target);
-							console.log("dispatching idlers: " + idlers.length);
-							for(var i = 0; i < idlers.length; i++) {
-								idlers[i].go(to[i]);
-							}
-						}		
-					}	
+	
 					//buildorder.push(def.powerplant, def.mine);
 					base.complete = true;
 				}
+					if (rolling.length > 0 && game.players[0].units.length > 0) {
+						for(var i = 0; i < rolling.length; i++) {
+							if(!rolling[i].target || rolling[i].target.dead || bt.Vec.distance(rolling[i].target.tile, rolling[i].units[0].tile) > rolling[i].units[0].range) {
+								rolling[i].target = game.players[0].units.get(0);
+								var attackFormation = game.spiral(rolling[i].units.length, rolling[i].target.tile);								
+								for(var c = 0; c < rolling[i].units.length; c++) {
+									rolling[i].units[c].go(attackFormation[c]);
+								}
+							}
+						}
+					}				
 			}
 		};
 		player.credits += 2500; //cheat!

@@ -72,7 +72,8 @@ ns.Node = function() {
 			},
 			remove: {
 				value: function(child) {
-					children.splice(children.indexOf(child), 1);
+					var idx = children.indexOf(child);
+					if(idx !== -1) children.splice(idx, 1);
 				},
 				enumerable: true
 			},

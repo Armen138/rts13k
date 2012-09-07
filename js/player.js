@@ -7,6 +7,7 @@ var Player = function(x, y, inputMode) {
 			energyMax: 0,
 			unitCap: 100,
 			unitQueue: 0,
+
 			kills: 0,
 			deaths: 0,
 			credits: 500,
@@ -96,13 +97,17 @@ var Player = function(x, y, inputMode) {
 		console.log(player.id);
 
     units.draw = function() {
+    	var deadunits = [];
         units.each(function() {
             this.draw();
             if(this.dead) {
-				units.remove(this);
-				game.units.remove(this);
+            	deadunits.push(this);
 			}
 		});
+        for(var i = deadunits.length - 1; i >= 0; --i) {
+			units.remove(deadunits[i]);
+			game.units.remove(deadunits[i]);
+        }
 	};
 
     game.root.add(units);

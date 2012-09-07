@@ -56,6 +56,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 			art: unitObject.art,
 			badge: "",
 			team: 0,
+			dead: false,
 			factory: unitObject.factory,
 			get spec() {
 				return unitObject;
