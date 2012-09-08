@@ -5,6 +5,7 @@ var ui = {
 	hudSize: {W: 512, H: 160},
 	alpha: 1.0,
 	actionButtons: [],
+	tooltips: [],
 	buildables: [ def.mine, def.powerplant, def.hydroplant, def.turret, def.factory ],
 	unitBuildables: [def.tank, def.heavyTank],
 	modalMessage: "",
@@ -30,6 +31,18 @@ var ui = {
 		game.context.fillText(ui.modalMessage ,  game.canvas.width / 2, game.canvas.height / 2);
 		game.context.restore();
 	},
+	box: function(x, y, w, h) {
+		game.context.fillStyle = "rgba(0, 255, 0, 0.5)";
+		game.context.strokeStyle = "black";
+		game.context.fillRect(x, y, w, h);
+		game.context.strokeRect(x, y, w, h);		
+	},
+	label: function(text, x, y) {
+		game.context.textAlign = "left";
+
+		game.context.fillStyle = "black";		
+		game.context.fillText(text ,  x, y);	
+	},
 	draw: function() {
 		ui.hud();
 		ui.stats();
@@ -46,19 +59,34 @@ var ui = {
 		if(ui.modalMessage !== "") {
 			ui.modal();
 		}
+		var button = ui.buttonAt(game.mousePosition.X, game.mousePosition.Y);
+		if(button !== -1 && button < ui.actionButtons.length && button < ui.tooltips.length) {
+			var text = ui.tooltips[button].split(",");
+			ui.box(game.mousePosition.X, game.mousePosition.Y - 15, 80, 30);
+			for(var i = 0; i < text.length; i++) {
+				ui.label(text[i], game.mousePosition.X + 10, game.mousePosition.Y + i * 12);	
+			}			
+		}
 	},
 	factory: function(units) {		
 		var actionArea = { X: 100, Y: 16 },
 			color = "grey",
 			buildables = units ? ui.unitBuildables : ui.buildables;
 		ui.actionButtons = [];
+		ui.tooltips = [];
 		game.context.save();
 		game.context.translate(ui.hudPosition.X, ui.hudPosition.Y);
 		game.context.globalAlpha = ui.alpha;		
 		for(var i = 0; i < buildables.length; i++) {
 			color = buildables[i].cost < game.players[0].credits ? "grey" : "red";
-			buildables[i].art(actionArea.X + i * 40, actionArea.Y, color, "black", 0, 0, true);
+			buildables[i].art(actionArea.X + i * 40, actionArea.Y, color, "black", 0, 0, true);			
+			ui.label("$" + buildables[i].cost, actionArea.X + i * 40, actionArea.Y);
 			(function(buildable) {
+				var tt = buildable.name;
+				if(buildable.upkeep) {
+					tt += ",⚡" + buildable.upkeep;
+				}
+				ui.tooltips.push(tt);
 				ui.actionButtons.push(function() { 
 					if(units) {
 						var u = game.players[0].unit(units.tile.X, units.tile.Y, buildable);
@@ -144,9 +172,11 @@ var ui = {
 		var c = bt.Color("#0F0");
 		var max = 18;
 		var count = 0;
+		ui.tooltips = [];
 		game.selectedUnits.each(function() {
 			if(!this.dead && count < max) {
 				(function(unit) {
+					ui.tooltips.push(unit.health + "hp");
 					ui.actionButtons.push(function() {				
 						game.deselectAll();
 						game.selectedUnits.add(unit);
@@ -166,6 +196,16 @@ var ui = {
 		c.release();
 		game.context.restore();
 	},
+	buttonAt: function(x, y) {
+		var actionArea = {X: x - 100, Y: y - 16};
+		if(actionArea.X > 0 && actionArea.X < 240 && actionArea.Y > 0 && actionArea.Y < 120) {
+			var button = (actionArea.X / 40 | 0) + (actionArea.Y / 40 | 0) * 6;
+			if(ui.actionButtons.length > button) {
+				return button;
+			}
+		}
+		return -1;
+	},
 	click: function(x, y) {
 		console.log({X: x, Y: y});
 		var minimap = {X: x - 368, Y: y - 16},
@@ -178,12 +218,9 @@ var ui = {
 			console.log(game.map.offset);
 			game.map.draw();
 		}
-
-		if(actionArea.X > 0 && actionArea.X < 240 && actionArea.Y > 0 && actionArea.Y < 120) {
-			var button = (actionArea.X / 40 | 0) + (actionArea.Y / 40 | 0) * 6;
-			if(ui.actionButtons.length > button) {
-				ui.actionButtons[button]();
-			}
+		var button = ui.buttonAt(x, y);
+		if(button !== -1) {
+			ui.actionButtons[button]();	
 		}
 	}
 };

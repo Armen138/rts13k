@@ -14,6 +14,7 @@
 
 var def = {
 	tank: {
+		name: "tank",
 		mobile: true,
 		health: 100,
 		damage: 10,
@@ -24,6 +25,7 @@ var def = {
 		cost: 100
 	},
 	heavyTank: {
+		name: "heavy tank",
 		mobile: true,
 		health: 200,
 		damage: 15,
@@ -34,6 +36,7 @@ var def = {
 		cost: 200
 	},	
 	turret: {
+		name: "turret",
 		mobile: false,
 		health: 120,
 		damage: 20,
@@ -46,6 +49,7 @@ var def = {
 		collision: 3		
 	},
 	mine: {
+		name: "mining station",
 		mobile: false,
 		health: 100,		
 		range: 7,
@@ -59,6 +63,7 @@ var def = {
 		collision: 3
 	},
 	powerplant: {
+		name: "powerplant",
 		mobile: false,
 		health: 100,		
 		range: 7,
@@ -69,6 +74,7 @@ var def = {
 		collision: 3
 	},	
 	hydroplant: {
+		name: "hydroplant",
 		mobile: false,
 		health: 100,		
 		range: 7,
@@ -80,6 +86,7 @@ var def = {
 		collision: 3
 	},		
 	base: {
+		name: "home base",
 		mobile: false,
 		health: 1000,		
 		art: art.base,
@@ -99,6 +106,7 @@ var def = {
 		big: true
 	},
 	factory: {
+		name: "tank factory",
 		mobile: false,
 		health: 1000,		
 		art: art.factory,

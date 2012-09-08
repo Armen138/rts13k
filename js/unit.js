@@ -66,6 +66,9 @@ var Unit = function(tx, ty, tc, unitObject) {
 						unit.target.X === 0 &&
 						unit.target.Y === 0;
 			},
+			get health() {
+				return health;
+			},
 			select: function() {
 				selected = true;
 			},
