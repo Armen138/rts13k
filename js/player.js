@@ -37,15 +37,18 @@ var Player = function(x, y, inputMode) {
 				return u;
 			},
 			update: function() {
-				if(!player.defeated) {
-					if(units.length === 0) {
-						player.defeated = true;
-						ui.modalMessage = "☠ player " + player.id + " was defeated.";
-						console.log("player " + player.id + " was defeated.");
-					}
-				}
+				var now = (new Date()).getTime();					
 				if(ai) {
 					ai.update();
+				}				
+				if(!player.defeated && now - game.start > 1000) {
+					if(units.length === 0) {
+						player.defeated = true;
+						var seconds = (now - game.start) / 1000,
+							playTime = (seconds / 60 | 0) + " minutes and " + (seconds % 60 | 0) + " seconds";
+						ui.modalMessage = "☠ " + name + " was defeated. Playtime: " + playTime;
+						console.log("player " + player.id + " was defeated.");
+					}
 				}
 			},
 			selectTeam: function(nr) {
@@ -60,7 +63,7 @@ var Player = function(x, y, inputMode) {
 		},
 		units = ns.Node(),
 		input = inputMode,
-		name = "Player666",
+		name = inputMode == Player.modes.AI ? "AI" : "Human",
 		color = game.colors[player.id],
 		addStructure = function(x, y, def) {
 			var unit = Unit(x, y, color, def);
@@ -113,13 +116,15 @@ var Player = function(x, y, inputMode) {
     game.root.add(units);
 
 	//initial units.
-	addStructure(x, y, def.base);
-	var p1 = game.spiral(13, {X: x, Y: y});
-	for( var i = 0; i < 13; i++) {
-		addUnit(p1[i].X, p1[i].Y);
-	}
+	//addStructure(x, y, def.base);
+
 	if(inputMode == Player.modes.AI) {
 		ai = AI(player);
+	} else {
+		var p1 = game.spiral(13, {X: x, Y: y});
+		for( var i = 0; i < 13; i++) {
+			addUnit(p1[i].X, p1[i].Y);
+		}
 	}
 	return player; 
 };

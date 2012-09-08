@@ -27,7 +27,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 		path = [],
 		range = unitObject.range || 5,
 		selected = false,
-		tileTime = 0,
+		tileTime = 0,		
 		setTile = function(ntx, nty, collide) {
 			//if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
 			tx = ntx;
@@ -35,8 +35,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 			x = ntx * tileSize;
 			y = nty * tileSize;
 			if(collide) {
-				if(game.collisionMap[tx][ty] === collider) {
-					console.log("collision, evading.");
+				if(game.collisionMap[tx][ty] === collider) {					
 					unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
 				} else {
 					game.collisionMap[tx][ty] = collider;
@@ -52,7 +51,8 @@ var Unit = function(tx, ty, tc, unitObject) {
 		},
 		unit = {
 			mobile: unitObject.mobile,
-			target: {X: 0, Y: 0},
+			target: null,
+			targetUnit: null,
 			art: unitObject.art,
 			badge: "",
 			team: 0,
@@ -63,8 +63,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 			},
 			get idle() {
 				return  path.length === 0 &&
-						unit.target.X === 0 &&
-						unit.target.Y === 0;
+						!unit.target
 			},
 			get health() {
 				return health;
@@ -89,7 +88,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 				if(!unit.dead) {
 					unit.dead = true;
 					unit.owner.deaths++;
-					if(unit.upkeep) { unit.owner.energy -= unit.upkeep };
+					if(unitObject.upkeep) { unit.owner.energy -= unitObject.upkeep };
 					game.collisionMap[tx][ty] = collision.PASSABLE;
 					if(unitObject.big) {
 						game.collisionMap[tx][ty + 1] = collision.PASSABLE;
@@ -113,6 +112,9 @@ var Unit = function(tx, ty, tc, unitObject) {
 					ox = 0; oy = 0;
 				}
 				return (x > rect[0] + ox && x < rect[0] + ox + rect[2] && y > rect[1] + oy && y < rect[1] + oy + rect[3]);
+			},
+			attack: function(target) {
+				unit.targetUnit = target;				
 			},
 			go: function(dest, evading) {
 				/*if(path.length > 0) {
@@ -177,11 +179,16 @@ var Unit = function(tx, ty, tc, unitObject) {
 							y = ytarg + (fract * ydiff) | 0;
 							angle = Math.atan2((path[0].X - tx), (ty - path[0].Y));
 						}
+					} else {
+						if(unit.targetUnit && !unit.targetUnit.dead && bt.Vec.distance(unit.targetUnit.tile, unit.tile) > range) {
+							var to = game.spiral(1, unit.targetUnit.tile)[0];
+							unit.go(to);
+						}
 					}
 				}
 				if(unitObject.loadTime && !(!unitObject.mobile && unit.owner.energy < 0)) {
 					rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
-					unit.target = { X: 0, Y: 0};
+					unit.target = null;
 					game.units.each(function() {
 						if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
 							unit.target = this.position;
@@ -189,7 +196,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 					});
 					var now = (new Date()).getTime();
 					//aim cannon
-					if(unit.target.X !== 0 && unit.target.Y !== 0) {
+					if(unit.target) {
 						cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
 						if(now - fireTime > loadTime) {
 							var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);

@@ -21,7 +21,7 @@ var def = {
 		range: 5,
 		art: art.tank,
 		loadTime: 1000,
-		moveDuration: 100,
+		moveDuration: 400,
 		cost: 100
 	},
 	heavyTank: {
@@ -32,7 +32,7 @@ var def = {
 		range: 6,
 		art: art.heavyTank,
 		loadTime: 1500,
-		moveDuration: 200,
+		moveDuration: 600,
 		cost: 200
 	},	
 	turret: {
@@ -84,26 +84,6 @@ var def = {
 		terrain: 0,
 		//collision.STRUCTURE
 		collision: 3
-	},		
-	base: {
-		name: "home base",
-		mobile: false,
-		health: 1000,		
-		art: art.base,
-		range: 5,
-		upkeep: 10,
-		income: 1,
-		//collision.STRUCTURE
-		collision: 3,
-		cost: 2000,
-		big: true
-	},
-	relic: {
-		mobile: false,
-		health: 2000,
-		art: art.relic,
-		collision: 3,
-		big: true
 	},
 	factory: {
 		name: "tank factory",

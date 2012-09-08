@@ -25,7 +25,7 @@ var ui = {
 		game.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
 		game.context.strokeStyle = "yellow";
 		game.context.fillStyle = "black";
-		game.context.font = "50px Arial Unicode MS, Arial";
+		game.context.font = "24px Arial Unicode MS, Arial";
 		game.context.textAlign = "center";
 		game.context.strokeText(ui.modalMessage ,  game.canvas.width / 2, game.canvas.height / 2);
 		game.context.fillText(ui.modalMessage ,  game.canvas.width / 2, game.canvas.height / 2);
@@ -206,16 +206,13 @@ var ui = {
 		}
 		return -1;
 	},
-	click: function(x, y) {
-		console.log({X: x, Y: y});
+	click: function(x, y) {		
 		var minimap = {X: x - 368, Y: y - 16},
 			screenTiles = { X: game.canvas.width / tileSize | 0, Y: game.canvas.height / tileSize | 0 },
 			actionArea = {X: x - 100, Y: y - 16};
-
 		if(minimap.X > 0 && minimap.X < 128 && minimap.Y > 0 && minimap.Y < 128) {
 			game.map.offset.X = minimap.X & (127 - screenTiles.X) | 0;
-			game.map.offset.Y = minimap.Y & (127 - screenTiles.Y) | 0;
-			console.log(game.map.offset);
+			game.map.offset.Y = minimap.Y & (127 - screenTiles.Y) | 0;		
 			game.map.draw();
 		}
 		var button = ui.buttonAt(x, y);

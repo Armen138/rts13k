@@ -38,10 +38,10 @@ function findPath(collisionMap, s, e) {
 		closedList.push(parent);
 		openList.splice(isInList(parent, openList), 1);
 		for(n = 0; n < neighbors.length; n++){
-			if(	neighbors[n].P.X > 0 &&
-				neighbors[n].P.Y > 0 &&
+			if(	neighbors[n].P.X >= 0 &&
+				neighbors[n].P.Y >= 0 &&
 				neighbors[n].P.X < collisionMap.length &&
-				neighbors[n].P.Y < collisionMap[0].length ) {
+				neighbors[n].P.Y < collisionMap[0].length) {
 				node = neighbors[n];
 				if(node.P.is(end)){
 

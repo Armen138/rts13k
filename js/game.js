@@ -1,6 +1,7 @@
 var tileSize = 32,
     game = {
         tileSize: 32,
+        difficulty: 2,
         root: ns.Node(),
         count: 0,
         frames: 0,
@@ -20,7 +21,10 @@ var tileSize = 32,
             "#3A3",
             "#A3A",
             "#AA3"
-        ]
+        ],
+        EASY: 0,
+        MEDIUM: 1,
+        HARD: 2,
     }, collision = {
         PASSABLE: 0,
         UNPASSABLE: 1,
@@ -37,6 +41,7 @@ game.deselectAll = function() {
 };
 
 game.init = function() {
+    game.start = (new Date()).getTime();
     game.canvas = document.getElementById("game");
     game.context = game.canvas.getContext("2d");
     game.canvas.width = window.innerWidth;

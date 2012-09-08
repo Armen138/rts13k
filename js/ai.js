@@ -59,9 +59,10 @@ var AI = function(player) {
 						wave.units.push(u);
 						if(wave.units.length >= base.attackSize) {
 							wave.target = game.players[0].units.get(0);
-							var attackFormation = game.spiral(wave.units.length, wave.target.tile);
+							//var attackFormation = game.spiral(wave.units.length, wave.target.tile);
 							for(var i = 0; i < wave.units.length; i++) {
-								wave.units[i].go(attackFormation[i]);
+								//wave.units[i].go(attackFormation[i]);
+								wave.units[i].attack(wave.target);
 							}
 							rolling.push(wave);
 							wave = {target: null, units: [] };
@@ -75,16 +76,25 @@ var AI = function(player) {
 						for(var i = 0; i < rolling.length; i++) {
 							if(!rolling[i].target || rolling[i].target.dead || bt.Vec.distance(rolling[i].target.tile, rolling[i].units[0].tile) > rolling[i].units[0].range) {
 								rolling[i].target = game.players[0].units.get(0);
-								var attackFormation = game.spiral(rolling[i].units.length, rolling[i].target.tile);								
 								for(var c = 0; c < rolling[i].units.length; c++) {
-									rolling[i].units[c].go(attackFormation[c]);
+									rolling[i].units[c].attack(rolling[i].target);
 								}
 							}
 						}
 					}				
 			}
 		};
-		player.credits += 2500; //cheat!
+		switch(game.difficulty) {
+			case game.MEDIUM: 
+				player.credits += 1000; //cheat!
+			break;
+			case game.HARD:
+				player.credits += 2500; //cheat!
+			break;
+			default: 
+			break;
+		}
+		//player.credits += 2500; //cheat!
 		return base;
 	}
 
