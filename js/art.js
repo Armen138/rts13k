@@ -9,6 +9,15 @@ var art = {
 		game.context.fillRect(-8, -16, 16, 32);
 		game.context.strokeRect(-8, -16, 16, 32);
 	},
+	box: function(big) {
+		if(big) {
+			game.context.fillRect(-16, -16, 64, 64);
+			game.context.strokeRect(-16, -16, 64, 64);
+		} else {
+			game.context.fillRect(-16, -16, 32, 32);
+			game.context.strokeRect(-16, -16, 32, 32);
+		}
+	},
 	tank: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
 		art.open(fill, stroke);
 		if(!notranslate) {
@@ -59,14 +68,15 @@ var art = {
 		} else {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
 		}
-
+		art.box(!notranslate);
+		/*
 		if(notranslate) {
 			game.context.fillRect(-16, -16, 32, 32);
 			game.context.strokeRect(-16, -16, 32, 32);
 		} else {
 			game.context.fillRect(-16, -16, 64, 64);
 			game.context.strokeRect(-16, -16, 64, 64);
-		}
+		}*/
 		art.lines(lines);
 		game.context.restore();		
 	},
@@ -78,8 +88,7 @@ var art = {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
 		}
 		game.context.rotate(angle);
-		game.context.fillRect(-16, -16, 32, 32);
-		game.context.strokeRect(-16, -16, 32, 32);
+		art.box();
 		if(cannonAngle !== 0) {
 			game.context.rotate(-angle);
 			game.context.rotate(cannonAngle);
@@ -88,6 +97,18 @@ var art = {
 		game.context.strokeRect(-4, -20, 8, 32);
 		game.context.fillRect(-10, -10, 20, 20);
 		game.context.strokeRect(-10, -10, 20, 20);
+		game.context.restore();
+	},
+	sell: function(x, y, fill, stroke, z, a, n) {
+		art.open(fill, stroke);
+		game.context.translate(x + tileSize / 2, y + tileSize / 2);
+		art.box();
+		game.context.lineWidth = 4;
+		game.context.font = "20px Arial Unicode MS, Arial";
+		game.context.textAlign = "center";
+		game.context.fillStyle = "yellow";
+		game.context.strokeText("$", 0, 6);
+		game.context.fillText("$",  0, 6);
 		game.context.restore();
 	},
 	mine: function(x, y, fill, stroke, z, a, notranslate) {
@@ -103,8 +124,9 @@ var art = {
 		} else {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
 		}		
-		game.context.fillRect(-16, -16, 32, 32);
-		game.context.strokeRect(-16, -16, 32, 32);
+		art.box();
+		//game.context.fillRect(-16, -16, 32, 32);
+		//game.context.strokeRect(-16, -16, 32, 32);
 		//game.context.strokeRect(-16 - 128, -16 - 128, 256 + 32, 256 + 32);
 		art.lines(lines);
 
@@ -123,9 +145,10 @@ var art = {
 			}			
 		} else {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
-		}		
-		game.context.fillRect(-16, -16, 32, 32);
-		game.context.strokeRect(-16, -16, 32, 32);
+		}
+		art.box();		
+		//game.context.fillRect(-16, -16, 32, 32);
+		//game.context.strokeRect(-16, -16, 32, 32);
 		art.lines(lines);
 		game.context.restore();		
 	},
@@ -138,8 +161,9 @@ var art = {
 		} else {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
 		}		
-		game.context.fillRect(-16, -16, 32, 32);
-		game.context.strokeRect(-16, -16, 32, 32);
+		//game.context.fillRect(-16, -16, 32, 32);
+		//game.context.strokeRect(-16, -16, 32, 32);
+		art.box();
 		art.lines(lines);
 		game.context.restore();
 	},

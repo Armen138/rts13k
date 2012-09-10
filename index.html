@@ -19,9 +19,52 @@
 		<script src='js/ai.js'></script>
 		<script src='js/player.js'></script>		
 		<script src='js/main.js'></script>
+		<style type='text/css'>
+		body{
+			font-family: Arial Unicode MS;
+		}
+		a {
+			color: black;
+			text-decoration: none;		
+			font-size: 24px;	
+		}
+		a:hover {
+			color: green;			
+		}
+		#footer {
+			position: absolute;
+			text-align: center;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+		}
+		</style>
 	</head>
-	<body style="margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%" oncontextmenu="return false;">
-        <div id='fps' style='z-index: 1001; position: fixed; color: yellow; font-size: 44px'></div>
-        <canvas id='game' width=800 height=600></canvas>
+	<body style="margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%" oncontextmenu="return false;">        
+        <canvas id='game'></canvas>
+        <div id='menu' style='position: absolute; top: 0; left: 0;text-align: center; width: 100%; height: 100%'>
+        	<h1>☢ 13 tanks ☢</h1>
+        	<a id='play' href='#'>play</a><br/>
+        	<div style='display: none' id='difficulty'>
+        		<a id='easy' href='#'>♥ easy</a><br/>
+        		<a id='medium' href='#'>☣ medium</a><br/>
+        		<a id='hard' href='#'>☠ hardcore</a><br/>
+        	</div>
+        	<a id='help' href='#'>help</a>
+        	<div id='footer'>
+        		[<a href='https://twitter.com/Armen138'>@Armen138</a>] [<a href='http://www.js13kgames.com'>js13kgames 2012</a>]
+        	</div>
+        </div>
+    	<div style='display: none; padding: 10px; color: white; z-index: 9; position: absolute; top: 25%; left: 40%; width: 20%; background-color: rgba(0, 0, 0, 0.6); text-align: left;' id='shortcuts'>
+    		keyboard shortcuts:
+    		<ul>
+    			<li>F1: shortcuts help</li>
+    			<li>ctrl-(1-9): create numbered group</li>
+    			<li>(1-9): select numbered group</li>
+    			<li>(q-w-e-r-t): corresponds to buttons in HUD</li>
+    			<li>ESC: deselect all</li>
+    			<li>shift-click: when building, does not deselect current build setting</li>        			
+    		</ul>
+    	</div>        
 	</body>
 </html>

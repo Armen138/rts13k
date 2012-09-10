@@ -6,9 +6,10 @@ var ui = {
 	alpha: 1.0,
 	actionButtons: [],
 	tooltips: [],
-	buildables: [ def.mine, def.powerplant, def.hydroplant, def.turret, def.factory ],
+	buildables: [ def.mine, def.powerplant, def.turret, def.factory ],
 	unitBuildables: [def.tank, def.heavyTank],
 	modalMessage: "",
+	alertMessage: {time: 0, text: ""},
 	minimapUnits: (function(){
 		var canvas = document.createElement('canvas');
 		canvas.width = 128;
@@ -18,6 +19,24 @@ var ui = {
 	has: function(x, y) {
 		return (x > ui.hudPosition.X && x < ui.hudPosition.X + ui.hudSize.W &&
 				y > ui.hudPosition.Y && y < ui.hudPosition.Y + ui.hudSize.H);
+	},
+	alert: function(msg) {
+		ui.alertMessage = { time: (new Date()).getTime(), text: "⚠ " + msg };
+	},
+	drawAlert: function() {
+		var now = (new Date()).getTime();
+		if(now - ui.alertMessage.time > 2000) {
+			ui.alertMessage.time = 0;
+			return;
+		} 
+		game.context.save();
+		game.context.strokeStyle = "yellow";
+		game.context.fillStyle = "black";
+		game.context.font = "24px Arial Unicode MS, Arial";
+		game.context.textAlign = "center";
+		game.context.strokeText(ui.alertMessage.text ,  game.canvas.width / 2, 50);
+		game.context.fillText(ui.alertMessage.text ,  game.canvas.width / 2, 50);
+		game.context.restore();
 	},
 	modal: function() {
 		game.context.save();
@@ -58,8 +77,11 @@ var ui = {
 		}
 		if(ui.modalMessage !== "") {
 			ui.modal();
-		}
-		var button = ui.buttonAt(game.mousePosition.X, game.mousePosition.Y);
+		}	
+		if(ui.alertMessage.time > 0) {
+			ui.drawAlert();
+		}	
+		var button = ui.buttonAt(game.mousePosition.X - ui.hudPosition.X, game.mousePosition.Y - ui.hudPosition.Y);
 		if(button !== -1 && button < ui.actionButtons.length && button < ui.tooltips.length) {
 			var text = ui.tooltips[button].split(",");
 			ui.box(game.mousePosition.X, game.mousePosition.Y - 15, 80, 30);
@@ -89,17 +111,27 @@ var ui = {
 				ui.tooltips.push(tt);
 				ui.actionButtons.push(function() { 
 					if(units) {
-						var u = game.players[0].unit(units.tile.X, units.tile.Y, buildable);
+						var p = game.spiral(1, units.tile)[0];
+						var u = game.players[0].unit(p.X, p.Y, buildable);
 						if(u) {
 							var rallyPoint = game.spiral(1, units.rallyPoint || units.tile)[0];
-							u.go(rallyPoint, true);
+							u.go(rallyPoint, false);
 						}
 					} else {
 						game.buildMode = buildable;
 					}
 				});
 			}(buildables[i]));
-		}
+		}	
+		if(units) {
+			var b = units;
+			ui.tooltips.push(b.name + ",Sell for $" + (b.spec.cost / 2));
+			ui.actionButtons.push(function() {
+				game.deselectAll();
+				game.sell(b);
+			});
+			art.sell(100 + buildables.length * 40, 16, "green", "black", 0, 0, true);			
+		}	
 		game.context.restore();
 	},
 	stats: function() {
@@ -193,6 +225,15 @@ var ui = {
 				count++;
 			}
 		});
+		if(game.selectedUnits.length === 1 && !game.selectedUnits.get(0).mobile) {
+			var b = game.selectedUnits.get(0);
+			ui.tooltips.push(b.name + ",Sell for $" + (b.spec.cost / 2));
+			ui.actionButtons.push(function() {
+				game.deselectAll();
+				game.sell(b);
+			});
+			art.sell(100 + 40, 16, "green", "black", 0, 0, true);
+		}
 		c.release();
 		game.context.restore();
 	},

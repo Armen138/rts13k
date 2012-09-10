@@ -60,10 +60,12 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 			horizontal: {
 				value: function(d) {
 					context.drawImage(canvas, tileSize * d, 0);
-					tileSet.offset.X -= d;
+					tileSet.offset.X -= d;					
 					for(var y = 0 + tileSet.offset.Y; y < tileSet.offset.Y + screenSize.Y; y++) {
-						var x = (d < 0 ? screenSize.X: 0) + tileSet.offset.X - (d < 0 ? 1 : 0);
-						context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+						var x = (d < 0 ? screenSize.X: 0) + tileSet.offset.X - (d < 0 ? 1 : 0),
+							tile = tilearray[ts.pickTile(map, x, y)];
+						if(tile)
+							context.drawImage(tile, (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
 					}
 				}
 			},
@@ -72,8 +74,10 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					context.drawImage(canvas, 0, tileSize * d);
 					tileSet.offset.Y -= d;
 					for(var x = 0 + tileSet.offset.X; x < tileSet.offset.X + screenSize.X; x++) {
-						var y = (d < 0 ? screenSize.Y : 0) + tileSet.offset.Y - (d < 0 ? 1 : 0);
-						context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+						var y = (d < 0 ? screenSize.Y : 0) + tileSet.offset.Y - (d < 0 ? 1 : 0),
+							tile = tilearray[ts.pickTile(map, x, y)];
+						if(tile)
+							context.drawImage(tile, (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
 					}
 				}
 			},

@@ -39,11 +39,11 @@ var def = {
 		name: "turret",
 		mobile: false,
 		health: 120,
-		damage: 20,
+		damage: 40,
 		range: 7,
 		art: art.turret,
 		loadTime: 700,
-		upkeep: -10,
+		upkeep: -50,
 		cost: 100,
 		//collision.STRUCTURE
 		collision: 3		
@@ -93,7 +93,7 @@ var def = {
 		factory: true,
 		range: 5,
 		//collision.STRUCTURE
-		//collision: 3,
+		collision: 3,
 		cost: 150,
 		upkeep: -100,
 		big: true

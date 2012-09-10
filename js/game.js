@@ -1,7 +1,7 @@
 var tileSize = 32,
     game = {
         tileSize: 32,
-        difficulty: 2,
+        difficulty: 1,
         root: ns.Node(),
         count: 0,
         frames: 0,
@@ -16,7 +16,7 @@ var tileSize = 32,
         collisionMap: [],
         map: [],
         energy: 0,
-        enegyMax: 0,
+        energyWarning: 0,
         colors: [
             "#3A3",
             "#A3A",
@@ -31,6 +31,14 @@ var tileSize = 32,
         UNIT: 2,
         STRUCTURE: 3,
         RESERVED: 4
+    }, key = {
+        Q: 81,
+        W: 87,
+        E: 69,
+        R: 82,
+        T: 84,
+        ESC: 27,
+        F1: 112
     };
 
 game.deselectAll = function() {
@@ -39,16 +47,29 @@ game.deselectAll = function() {
     });
     game.selectedUnits.clear();
 };
+game.sell = function(building) {
+    if(!building.dead) {
+        building.owner.credits += building.spec.cost / 2;
+        building.die();
+    }
+};
 
-game.init = function() {
-    game.start = (new Date()).getTime();
+game.canvasInit = function() {
     game.canvas = document.getElementById("game");
     game.context = game.canvas.getContext("2d");
     game.canvas.width = window.innerWidth;
-    game.canvas.height = window.innerHeight;
+    game.canvas.height = window.innerHeight;    
+}
+
+game.init = function(difficulty) {
+    game.start = (new Date()).getTime();
+    game.difficulty = difficulty;
+    if(!game.canvas) {
+        game.canvasInit();
+    }
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
-        game.dragStart = bt.Vector(e.clientX, e.clientY);
+        game.dragStart = {X: e.clientX, Y: e.clientY};
         if( ui.has(e.clientX, e.clientY) ) {
             game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
         }            
@@ -57,7 +78,7 @@ game.init = function() {
         game.mousePosition.X = e.clientX;
         game.mousePosition.Y = e.clientY;
         if(game.mouseDown) {
-            var topLeft= game.dragStart.shallow(),
+            var topLeft= game.dragStart;//.shallow(),
                 w = e.clientX - game.dragStart.X,
                 h = e.clientY - game.dragStart.Y;
     
@@ -92,9 +113,40 @@ game.init = function() {
                 game.players[0].selectTeam(nr);
             }
         }
+        var action = -1;
+        switch(e.keyCode) {
+            case key.Q:
+                action = 0;
+            break;
+            case key.W:
+                action = 1;
+            break;
+            case key.E:
+                action = 2;
+            break;
+            case key.R:
+                action = 3;
+            break;
+            case key.T:
+                action = 4;
+            break;
+            case key.ESC:
+                 game.deselectAll();
+                 menu.hide('shortcuts');
+            break;
+            case key.F1:
+                e.preventDefault();
+                menu.show('shortcuts');
+            break;
+        }
+        if(action !== -1 && ui.actionButtons[action]) {
+            ui.actionButtons[action]();
+        }
+
     });
     game.canvas.addEventListener("mouseup", function(e) {
-        game.dragStart.release();
+        /* if(game.dragStart)
+            game.dragStart.release(); */
         game.mouseDown = false;
         if( ui.has(e.clientX, e.clientY) ) {
             ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
@@ -105,6 +157,8 @@ game.init = function() {
                         pos = {X: (e.clientX / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y) | 0};
                     if(game.legalPosition(pos, game.buildMode)) {
                         game.players[0].build(pos.X, pos.Y, buildable);
+                    } else {
+                        ui.alert("You can't build that there.");
                     }
                 }
                 if(!e.shiftKey) {
@@ -112,7 +166,7 @@ game.init = function() {
                 }
             } else {
                 if(!game.uiDrag) {
-                    if(game.dragStart.distanceTo({X: e.clientX, Y: e.clientY }) < 32) {
+                    if(bt.Vec.distance(game.dragStart, {X: e.clientX, Y: e.clientY }) < 32) {
                         var selected = false;
                         if(e.button === 0) {
                             game.units.each(function() {
@@ -124,6 +178,7 @@ game.init = function() {
                                 var p = game.map.at(e.clientX, e.clientY),
                                     destinations = game.spiral(game.selectedUnits.length, p);
                                 game.selectedUnits.each(function() {
+                                    this.targetUnit = null;
                                     this.go(destinations.shift());
                                 });
                             }
@@ -173,6 +228,11 @@ game.run = function() {
             color = "red";
         }
         game.buildMode.art(game.mousePosition.X - game.mousePosition.X % 32 , game.mousePosition.Y - game.mousePosition.Y % 32 , color, "black", 0, 0, true);
+    }
+    var now = (new Date()).getTime();
+    if(game.players[0].energy < 0 && now - game.energyWarning > 10000) {
+        ui.alert("Low energy, buildings offline.");
+        game.energyWarning = now;
     }
     ui.draw();
 

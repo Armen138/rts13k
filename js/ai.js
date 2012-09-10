@@ -9,8 +9,17 @@ var AI = function(player) {
 			tankCount = 0,
 			wave = {target: null, units: [] },
 			rolling = [],
-			buildorder =  [ def.powerplant, def.mine, def.powerplant, def.powerplant, def.factory, def.turret, def.turret, def.powerplant, def.mine, def.mine, def.mine, def.hydroplant, 
-							def.mine, def.mine, def.mine, def.powerplant, def.hydroplant ];		
+			buildorder =  [ def.powerplant, def.mine, def.powerplant, def.powerplant, def.factory, def.powerplant, def.turret, def.powerplant, 
+							def.turret, def.powerplant, def.mine, def.mine, def.powerplant, def.powerplant, def.powerplant, def.powerplant, def.mine,
+							def.mine, def.mine, def.mine, def.powerplant, def.mine, def.mine, def.mine ],
+			sendWave = function() {
+				wave.target = game.players[0].units.get(0);
+				for(var i = 0; i < wave.units.length; i++) {
+					wave.units[i].attack(wave.target);
+				}
+				rolling.push(wave);
+				wave = {target: null, units: [] };
+			};	
 		var base = {
 			complete: false,
 			lastUpdate: 0,
@@ -19,6 +28,9 @@ var AI = function(player) {
 				var now = (new Date()).getTime();
 				if(now - base.lastUpdate < updateTimer) return;
 				if(buildorder.length > 0 && player.credits > buildorder[0].cost) {
+					if(wave.length > 0) {
+						sendWave();
+					}
 					var structure = buildorder.shift(),
 						p = game.spiral(1, basePosition, structure);
 						s = player.build(p[0].X, p[0].Y, structure);
@@ -40,32 +52,26 @@ var AI = function(player) {
 						}
 				}
 				if(factory && buildorder.length === 0 && tankCount < maxTanks) {
-					var u = null;
+					var u = null,
+						p = game.spiral(1, factory.tile)[0];
 					if(player.credits > def.heavyTank.cost) {						
-						u = player.unit(factory.tile.X, factory.tile.Y, def.heavyTank);
+						u = player.unit(p.X, p.Y, def.heavyTank);
 					} else {
 						if(player.credits > def.tank.cost) {						
-							u = player.unit(factory.tile.X, factory.tile.Y, def.tank);
+							u = player.unit(p.X, p.Y, def.tank);
 						}	
 					}
 				
 					if(u) {
 						tankCount++;
 						var rallyPoint = game.spiral(1, factory.rallyPoint || factory.tile)[0];
-						u.go(rallyPoint, true);
+						u.go(rallyPoint);
 						u.ondeath = function() {
 							tankCount--;
 						}
 						wave.units.push(u);
 						if(wave.units.length >= base.attackSize) {
-							wave.target = game.players[0].units.get(0);
-							//var attackFormation = game.spiral(wave.units.length, wave.target.tile);
-							for(var i = 0; i < wave.units.length; i++) {
-								//wave.units[i].go(attackFormation[i]);
-								wave.units[i].attack(wave.target);
-							}
-							rolling.push(wave);
-							wave = {target: null, units: [] };
+							sendWave();
 						}
 					}
 	

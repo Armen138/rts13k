@@ -15,24 +15,38 @@ var Player = function(x, y, inputMode) {
 				return units;
 			},
 			unit: function(x, y, def) {
-				if(units.length > player.unitCap) return;
+				if(units.length > player.unitCap) {
+					if(game.players[0] === player) 
+						ui.alert("Unit cap reached (100)");
+					return;
+				}
 				if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def);
 					player.credits -= def.cost;
 					return u; 
+				} else {
+					if(game.players[0] === player)
+						ui.alert("You can't afford that.");
 				}
 				return null;
 			},
 			build: function(x, y, def) {
-				if(units.length > player.unitCap) return;
+				if(units.length > player.unitCap) {
+					if(game.players[0] === player) 
+						ui.alert("Unit cap reached (100)");					
+					return;
+				}
 				if(player.credits >= def.cost) {
-					var u = addStructure(x, y, def);
+					var u = addUnit(x, y, def);
 					if(def.upkeep != null) {
 						player.energy += def.upkeep;
 					}
 					if(def.cost != null) {
 						player.credits -= def.cost;
 					}
+				} else {
+					if(game.players[0] === player)
+						ui.alert("You can't afford that.");
 				}
 				return u;
 			},
@@ -65,22 +79,6 @@ var Player = function(x, y, inputMode) {
 		input = inputMode,
 		name = inputMode == Player.modes.AI ? "AI" : "Human",
 		color = game.colors[player.id],
-		addStructure = function(x, y, def) {
-			var unit = Unit(x, y, color, def);
-			if(input === 0 /* LOCAL */) {
-				unit.on("click", (function(unit) {
-					return function() {
-						game.deselectAll();
-						unit.select();
-						game.selectedUnits.add(unit);
-					};
-				}(unit)));
-			}
-			unit.owner = player;
-			game.units.add(unit);
-			units.add(unit);
-			return unit;
-		},
 		addUnit = function(x, y, unitdef) {
 			var unit = Unit(x, y, color, unitdef || def.tank);
 			if(input === 0 /* LOCAL */) {
@@ -90,6 +88,14 @@ var Player = function(x, y, inputMode) {
 						unit.select();
 						game.selectedUnits.add(unit);
 					};
+				}(unit)));
+			} else {
+				unit.on("click", (function(unit){
+					return function() {
+						game.selectedUnits.each(function() {
+							this.attack(unit);
+						});
+					}
 				}(unit)));
 			}
 			unit.owner = player;

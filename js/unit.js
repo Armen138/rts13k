@@ -37,10 +37,12 @@ var Unit = function(tx, ty, tc, unitObject) {
 			if(collide) {
 				if(game.collisionMap[tx][ty] === collider) {					
 					unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
+					return true;
 				} else {
 					game.collisionMap[tx][ty] = collider;
 				}
 			}
+			return false;
 		},
 		followPath = function(foundPath) {
 			path = foundPath;
@@ -54,6 +56,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 			target: null,
 			targetUnit: null,
 			art: unitObject.art,
+			name: unitObject.name,
 			badge: "",
 			team: 0,
 			dead: false,
@@ -117,17 +120,13 @@ var Unit = function(tx, ty, tc, unitObject) {
 				unit.targetUnit = target;				
 			},
 			go: function(dest, evading) {
-				/*if(path.length > 0) {
-					game.collisionMap[path[path.length - 1].X][path[path.length - 1].Y] = collision.PASSABLE;
-				}*/
 				if(unitObject.mobile) {
+					if(game.collisionMap[dest.X][dest.Y] !== collision.PASSABLE) {
+						dest = game.spiral(1, dest)[0];
+					}
 					if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
 						if(!evading) game.collisionMap[tx][ty] = collision.PASSABLE;
-						//game.collisionMap[dest.X][dest.Y] = collision.RESERVED;
-						//pathFinder.postMessage({ collisionMap: game.collisionMap, x1: tx, y1: ty, x2: dest.X, y2: dest.Y });
 						pathFinder.find({X: tx, Y: ty}, dest, followPath);
-					} else {
-						console.log("sir no sir, destination is: " + game.collisionMap[dest.X][dest.Y]);
 					}
 				} else {
 					unit.rallyPoint = dest;
@@ -166,6 +165,13 @@ var Unit = function(tx, ty, tc, unitObject) {
 							var to = path.shift();
 							setTile(to.X, to.Y, path.length === 0);
 							tileTime = (new Date()).getTime();
+							
+								if(path.length > 0) {
+									if(game.collisionMap[path[0].X][path[0].Y] === collision.STRUCTURE) {
+										unit.go(path[path.length -1]);
+									}
+								}
+							
 						}
 						else {
 							var xdest = path[0].X * tileSize,

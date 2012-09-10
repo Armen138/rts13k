@@ -5,30 +5,47 @@ function makeCanvas(w, h) {
 	return { canvas : canvas, context: canvas.getContext("2d") };
 }
 
-
-function testUnits() {
+function startGame(difficulty) {	
+	game.init(difficulty);
 	game.players.push(Player(10, 10, Player.modes.LOCAL));
 	game.players.push(Player(100, 100, Player.modes.AI));
+	game.run();
+
 }
 
-if(!navigator.isCocoonJS) {
-	setInterval(function() {
-		game.fps = game.frames;
-		document.getElementById("fps").innerHTML = game.fps;
-		game.frames = 0;
-	}, 1000);
-}
+var menu = {
+	click: function(id, func) {
+	document.getElementById(id).addEventListener('click', func);
+	},
+	hide: function(id) {
+		document.getElementById(id).style.display = 'none';
+	},
+	show: function(id) {
+		document.getElementById(id).style.display = 'block';	
+	}
+};
 
 window.addEventListener("load", function() {
-	document.getElementById('fps').style.display = "none";
-	document.addEventListener("keyup", function(e) {
-		if(e.keyCode == 13) {
-			document.getElementById('fps').style.display = "block";
-		}
+	menu.click('play', function() {
+		menu.show('difficulty');
 	});
-	
-	game.init();
-	testUnits();
-	game.run();
+	menu.click('help', function() {
+		menu.show('shortcuts');
+	});	
+	menu.click('easy', function() {
+		menu.hide('menu');
+		startGame(0);
+	});
+	menu.click('medium', function() {
+		menu.hide('menu');
+		startGame(1);
+	});	
+	menu.click('hard', function() {
+		menu.hide('menu');
+		startGame(2);
+	});	
+	menu.click('shortcuts', function() {
+		menu.hide('shortcuts');
+	});
 });
 
