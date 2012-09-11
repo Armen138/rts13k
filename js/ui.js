@@ -32,7 +32,7 @@ var ui = {
 		game.context.save();
 		game.context.strokeStyle = "yellow";
 		game.context.fillStyle = "black";
-		game.context.font = "24px Arial Unicode MS, Arial";
+		game.context.font = "24px Dejavu Sans, Arial";
 		game.context.textAlign = "center";
 		game.context.strokeText(ui.alertMessage.text ,  game.canvas.width / 2, 50);
 		game.context.fillText(ui.alertMessage.text ,  game.canvas.width / 2, 50);
@@ -44,7 +44,7 @@ var ui = {
 		game.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
 		game.context.strokeStyle = "yellow";
 		game.context.fillStyle = "black";
-		game.context.font = "24px Arial Unicode MS, Arial";
+		game.context.font = "24px Dejavu Sans, Arial";
 		game.context.textAlign = "center";
 		game.context.strokeText(ui.modalMessage ,  game.canvas.width / 2, game.canvas.height / 2);
 		game.context.fillText(ui.modalMessage ,  game.canvas.width / 2, game.canvas.height / 2);
@@ -57,8 +57,8 @@ var ui = {
 		game.context.strokeRect(x, y, w, h);		
 	},
 	label: function(text, x, y) {
+		game.context.font = "10px Dejavu Sans, Arial";
 		game.context.textAlign = "left";
-
 		game.context.fillStyle = "black";		
 		game.context.fillText(text ,  x, y);	
 	},
@@ -142,20 +142,20 @@ var ui = {
 		game.context.lineWidth = 4;
 		game.context.fillStyle = "yellow";
 		game.context.strokeStyle = "black";
-		game.context.font = "30px Arial Unicode MS, Arial";
-		game.context.strokeText("⚡", 20, ui.topline);
+		game.context.font = "30px Dejavu Sans, Arial"
+;		game.context.strokeText("⚡", 20, ui.topline);
 		game.context.fillText("⚡",  20, ui.topline);
 				
 		game.context.strokeText("$", 20, ui.topline + 40);
 		game.context.fillText("$",  20, ui.topline + 40);
 
-		game.context.font = "20px Arial Unicode MS, Arial";
+		game.context.font = "20px Dejavu Sans, Arial";
 		game.context.strokeText("⚔", 20, ui.topline + 80);
 		game.context.fillText("⚔",  20, ui.topline + 80);
 
 
 		game.context.fillStyle = "black";
-		game.context.font = "16px Arial Unicode MS, Arial";
+		game.context.font = "16px Dejavu Sans, Arial";
 		game.context.fillText(player.energy, 50, ui.topline);
 		game.context.fillText(player.credits, 50, ui.topline + 40);
 		game.context.fillText(player.kills + "/" + player.deaths, 50, ui.topline + 80);

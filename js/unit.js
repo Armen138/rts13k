@@ -81,7 +81,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 				unitObject.art(x, y, color.toString(), selected ? "yellow" : "black", angle, cannonAngle);
 				if(unit.badge !== "") {				
 					game.context.fillStyle = "black";
-					game.context.font = "10px Arial Unicode MS, Arial";
+					game.context.font = "10px Dejavu Sans, Arial";
 					game.context.textAlign = "left";					
 					game.context.fillText(unit.badge ,  x - game.map.offset.X * tileSize, y - game.map.offset.Y * tileSize);					
 				}
