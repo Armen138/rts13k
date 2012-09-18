@@ -1,0 +1,18 @@
+binary tt protocol
+
+bytes arrays
+
+requests 
+
+[0][n]	handshake messages
+[1][n]	information requests
+[2][n]	action requests
+
+responses
+
+[0][0][id] player connected, id given
+
+[1][0][mapsize][n...z] 	map data
+						map size: 	0 = 128x128
+									1 = 256x256
+
