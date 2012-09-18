@@ -1,5 +1,5 @@
 //merge into Map object
-function gameView(wx, hx) {
+function gameView(wx, hx, map) {
     var w = wx - wx % 32 + 32,
         h = hx - hx % 32 + 32;
     var c = makeCanvas(w, h),
@@ -23,7 +23,11 @@ function gameView(wx, hx) {
         procedural.terrain(tileSize, colors[4])
     ];
     tiles[3].getContext('2d').drawImage(procedural.noise(tileSize, 10, 12, colors[1], 6), 0, 0);
-    game.map = ts.TileSet(tiles, procedural.noiseMap(128, 128, 40, 4), gameView.canvas, w, h);
+    if(map) {
+        game.map = ts.TileSet(tiles, map, gameView.canvas, w, h);    
+    } else {
+        game.map = ts.TileSet(tiles, procedural.noiseMap(128, 128, 40, 4), gameView.canvas, w, h);
+    }
     game.mousePosition = bt.Vector(0, 0);
     game.root.add(gameView);
     game.map.draw();

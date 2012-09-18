@@ -17,7 +17,8 @@
 		<script src='js/ui.js'></script>
 		<script src='js/game.js'></script>
 		<script src='js/ai.js'></script>
-		<script src='js/player.js'></script>		
+		<script src='js/player.js'></script>
+		<script src='js/network.js'></script>				
 		<script src='js/main.js'></script>
 		<style type='text/css'>
 		body{
@@ -52,6 +53,19 @@
 			text-align: left;
 			font-size: 14px;
 		}
+		#logbook {
+			display: none; 
+			padding: 10px; 
+			color: white; 
+			z-index: 9; 
+			position: absolute; 
+			top: 0; 
+			left: 0; 
+			width: 100%; 
+			background-color: rgba(0, 0, 0, 0.6); 
+			text-align: left;
+			font-size: 14px;			
+		}
 		</style>
 	</head>
 	<body style="margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%" oncontextmenu="return false;">        
@@ -64,6 +78,7 @@
         		<a id='medium' href='#'>☣ medium</a><br/>
         		<a id='hard' href='#'>☠ hardcore</a><br/>
         	</div>
+        	<a id='connect' href='#'>connect to server</a><br/>
         	<a id='help' href='#'>help</a>
         	<div id='footer'>
         		[<a href='https://twitter.com/Armen138'>@Armen138</a>] [<a href='http://www.js13kgames.com'>js13kgames</a>] [<a href='https://github.com/Armen138/rts13k'>github</a>]
@@ -79,6 +94,8 @@
     			<li>ESC: deselect all</li>
     			<li>shift-click: when building, does not deselect current build setting</li>        			
     		</ul>
-    	</div>        
+    	</div> 
+    	<div id='logbook'>
+    	</div>       
 	</body>
 </html>

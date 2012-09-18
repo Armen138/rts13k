@@ -22,6 +22,9 @@ var menu = {
 	},
 	show: function(id) {
 		document.getElementById(id).style.display = 'block';	
+	},
+	log: function(msg) {
+		document.getElementById('logbook').innerHTML += msg + "<br/>";	
 	}
 };
 
@@ -43,7 +46,12 @@ window.addEventListener("load", function() {
 	menu.click('hard', function() {
 		menu.hide('menu');
 		startGame(2);
-	});	
+	});
+	menu.click('connect', function() {
+		menu.hide('menu');
+		menu.show('logbook');
+		game.connect("ws://localhost:8080");
+	});		
 	menu.click('shortcuts', function() {
 		menu.hide('shortcuts');
 	});

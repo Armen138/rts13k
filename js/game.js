@@ -61,6 +61,10 @@ game.canvasInit = function() {
     game.canvas.height = window.innerHeight;    
 }
 
+game.connect = function(server) {
+    network.connect(server);
+};
+
 game.init = function(difficulty) {
     game.start = (new Date()).getTime();
     game.difficulty = difficulty;
@@ -205,7 +209,7 @@ game.init = function(difficulty) {
         return false;
     });
     //gameView(800, 800);
-    gameView(window.innerWidth, window.innerHeight);
+    //gameView(window.innerWidth, window.innerHeight);
 };
 
 
