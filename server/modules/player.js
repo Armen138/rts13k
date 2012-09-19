@@ -1,4 +1,6 @@
-exports.Player = function(x, y, id) {
+var Node = require('./nodes.js').Node;
+	//def = require('./modules/definitions.js').units;
+exports.Player = function(id) {
 	var ai = null,
 		player = {			
 			id: id,
@@ -8,12 +10,13 @@ exports.Player = function(x, y, id) {
 			kills: 0,
 			deaths: 0,
 			credits: 500,
+			built: 0,
 			get units() {
 				return units;
 			},
 			unit: function(x, y, def) {
 				if(units.length > player.unitCap) {
-					if(game.players[0] === player) {}
+					//if(game.players[0] === player) {}
 						//ui.alert("Unit cap reached (100)");
 					return;
 				}
@@ -22,39 +25,39 @@ exports.Player = function(x, y, id) {
 					player.credits -= def.cost;
 					return u; 
 				} else {
-					if(game.players[0] === player) {}
+					//if(game.players[0] === player) {}
 						//ui.alert("You can't afford that.");
 				}
 				return null;
 			},
 			update: function() {
 				var now = (new Date()).getTime();								
-				if(!player.defeated && now - game.start > 1000) {
+				if(!player.defeated && now - player.built > 0) {
 					if(units.length === 0) {
 						player.defeated = true;
-						var seconds = (now - game.start) / 1000,
-							playTime = (seconds / 60 | 0) + " minutes and " + (seconds % 60 | 0) + " seconds";
+						//var seconds = (now - game.start) / 1000,
+						//	playTime = (seconds / 60 | 0) + " minutes and " + (seconds % 60 | 0) + " seconds";
 						//ui.modalMessage = "☠ " + name + " was defeated. Playtime: " + playTime;
 						console.log("player " + player.id + " was defeated.");
 					}
 				}
 			}
 		},
-		units = ns.Node(),
+		units = Node(),
 		name = "Network",
-		color = game.colors[player.id],
 		addUnit = function(x, y, unitdef) {
-			var unit = Unit(x, y, color, unitdef || def.tank);
-			unit.owner = player;
-			game.units.add(unit);
+			var unit = Unit(x, y, color, unitdef);
+			unit.owner = player;			
 			units.add(unit);
+			player.built++;
 			return unit;
 		};
 		console.log(player.id);	
+		/*
 	var p1 = game.spiral(13, {X: x, Y: y});
 	for( var i = 0; i < 13; i++) {
 		addUnit(p1[i].X, p1[i].Y);
-	}
+	}*/
 	
 	return player; 
 };

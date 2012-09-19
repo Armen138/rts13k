@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var procedural = {},
-    Player = require('./modules/player.js').Player;
+    Player = require('./modules/player.js').Player,
+    units = require('./modules/definitions.js');
 
 procedural.noiseMap = function(w, h, res, lvl) {
     var map = [],
@@ -20,7 +21,8 @@ var playRound = (function() {
         players = [],
         round = {
             addPlayer: function(id) {
-                var player = Player(10, 10, 0);
+                var player = Player(0);
+                player.unit(10, 10, units.tank);
                 return player;
             }
         };
