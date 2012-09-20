@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var procedural = {},
     Player = require('./modules/player.js').Player,
-    units = require('./modules/definitions.js');
+    units = require('./modules/definitions.js').units;
 
 procedural.noiseMap = function(w, h, res, lvl) {
     var map = [],
@@ -16,22 +16,22 @@ procedural.noiseMap = function(w, h, res, lvl) {
     return map;
 };
 
-var playRound = (function() {
+var game = (function() {
     var map = procedural.noiseMap(128, 128, 40, 4),
         players = [],
-        round = {
-            addPlayer: function(id) {
-                var player = Player(0);
+        gm = {
+            addPlayer: function(name) {
+                var player = Player(name);
                 player.unit(10, 10, units.tank);
                 return player;
             }
         };
-    Object.defineProperty(round, "map", {
+    Object.defineProperty(gm, "map", {
         get: function() {
             return map;
         }
     });    
-    return round;
+    return gm;
 }());
 
 var ttServer = (function() {
@@ -80,11 +80,16 @@ var ttServer = (function() {
             console.log(ttserver.timestamp() + ' Connection accepted.');
             connection.on('message', function(message) {
                 if (message.type === 'utf8') {
+                    var data = JSON.parse(message.utf8Data);
                     console.log('Received Message: ' + message.utf8Data);
-                    switch(message.utf8Data) {
+                    switch(data.request) {
                         case "map":
-                            var mapdata = { map: playRound.map };    
+                            var mapdata = { map: game.map };    
                             connection.sendUTF(JSON.stringify(mapdata));   
+                        break;
+                        case "user":                            
+                            var p = game.addPlayer(data.name);
+                            connection.sendUTF("{'id': " + p.id + "}");
                         break;
                         default:
                             connection.sendUTF(message.utf8Data.toUpperCase());   

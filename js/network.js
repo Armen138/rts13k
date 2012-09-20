@@ -3,7 +3,8 @@ network.connect = function(server) {
 socket = new WebSocket(server, "tt.0");
     socket.addEventListener("open", function(event) {      
       	menu.log("connected");
-      	socket.send("map");
+      	socket.send('{"request": "map"}');
+        socket.send('{"request": "user", "name": "Armen"}');
     });
 
     socket.addEventListener("message", function(event) {

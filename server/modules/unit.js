@@ -10,19 +10,20 @@
 		optional moveDuration: int (ms)
 	}
 */
-exports.Unit = function(tx, ty, tc, unitObject) {
+
+var tileSize = 32;
+exports.Unit = function(tx, ty, unitObject) {
 	var x = tx * tileSize,
 		y = ty * tileSize,
 		angle = 0,
 		cannonAngle = 0,
-		color = tc,
 		fireTime = 0,
 		kills = 0,
 		incomeTime = 0,
 		health = unitObject.health || 100,
 		loadTime = unitObject.loadTime || null,
-		mode = Unit.GUARD,
-		collider = unitObject.collision || collision.UNIT,
+		//mode = Unit.GUARD,
+		collider = unitObject.collision,// || collision.UNIT,
 		moveDuration = unitObject.moveDuration || 100,
 		path = [],
 		range = unitObject.range || 5,

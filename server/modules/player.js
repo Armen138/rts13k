@@ -1,9 +1,11 @@
-var Node = require('./nodes.js').Node;
+var Node = require('./nodes.js').Node,
+	Unit = require('./unit.js').Unit,
+	playerCount = 0;
 	//def = require('./modules/definitions.js').units;
-exports.Player = function(id) {
+exports.Player = function(name) {
 	var ai = null,
 		player = {			
-			id: id,
+			id: playerCount++,
 			energy: 0,
 			unitCap: 100,
 			unitQueue: 0,
@@ -44,9 +46,8 @@ exports.Player = function(id) {
 			}
 		},
 		units = Node(),
-		name = "Network",
 		addUnit = function(x, y, unitdef) {
-			var unit = Unit(x, y, color, unitdef);
+			var unit = Unit(x, y, unitdef);
 			unit.owner = player;			
 			units.add(unit);
 			player.built++;
