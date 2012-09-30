@@ -12,6 +12,7 @@
 */
 
 var tileSize = 32;
+var Events = require('./events.js');
 exports.Unit = function(tx, ty, unitObject) {
 	var x = tx * tileSize,
 		y = ty * tileSize,
@@ -35,14 +36,14 @@ exports.Unit = function(tx, ty, unitObject) {
 			ty = nty;
 			x = ntx * tileSize;
 			y = nty * tileSize;
-			if(collide) {
+			/*if(collide) {
 				if(game.collisionMap[tx][ty] === collider) {					
 					unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
 					return true;
 				} else {
 					game.collisionMap[tx][ty] = collider;
 				}
-			}
+			}*/
 			return false;
 		},
 		followPath = function(foundPath) {
@@ -228,12 +229,13 @@ exports.Unit = function(tx, ty, unitObject) {
 	Object.defineProperty( unit, "kills", {
 		get: function() { return kills;}
 	});
+	/*
 	game.collisionMap[tx][ty] = collider;
 	if(unitObject.big) {
 		game.collisionMap[tx][ty + 1] = collider;
 		game.collisionMap[tx + 1][ty] = collider;
 		game.collisionMap[tx + 1][ty + 1] = collider;
-	}
+	}*/
 	Events.attach(unit);
 	return unit;
 };

@@ -9,13 +9,19 @@ socket = new WebSocket(server, "tt.0");
 
     socket.addEventListener("message", function(event) {
     	var dataObject = JSON.parse(event.data);
-    	if(dataObject.map) {    		
-    		game.init(0);
-    		gameView(window.innerWidth, window.innerHeight, dataObject.map);
-    		game.run();
-    	} else {
-            menu.log("Server Says: " + event.data);
+        menu.log(dataObject.id);
+        if(dataObject.player) {
+            game.init(0);
+            gameView(window.innerWidth, window.innerHeight, game.mapData);
+            game.run();            
         }
+    	if(dataObject.map) {
+            game.mapData = dataObject.map;    		
+    	} else {
+            menu.log("Server Says: " + event.data);    
+        }
+        
+        
     });
 
         // Display any errors that occur

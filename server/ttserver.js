@@ -1,20 +1,9 @@
 #!/usr/bin/env node
-var procedural = {},
-    Player = require('./modules/player.js').Player,
-    units = require('./modules/definitions.js').units;
+var procedural = require('./modules/procedural'),
+    Player = require('./modules/player').Player,
+    units = require('./modules/definitions').units;
 
-procedural.noiseMap = function(w, h, res, lvl) {
-    var map = [],
-        noiseMaker = require('./modules/simplex'),
-        noise = new noiseMaker.SimplexNoise();
-    for(var x = 0; x < w; x++) {
-        map[x] = [];
-        for(var y = 0; y < h; y++) {
-            map[x][y] = parseInt((((noise.noise(x / res, y / res) + 1 )/ 2)  * lvl), 10);
-        }
-    }
-    return map;
-};
+
 
 var game = (function() {
     var map = procedural.noiseMap(128, 128, 40, 4),
@@ -89,7 +78,7 @@ var ttServer = (function() {
                         break;
                         case "user":                            
                             var p = game.addPlayer(data.name);
-                            connection.sendUTF("{'id': " + p.id + "}");
+                            connection.sendUTF("{'player': '" + data.name + "', 'id': " + p.id + "}");
                         break;
                         default:
                             connection.sendUTF(message.utf8Data.toUpperCase());   
