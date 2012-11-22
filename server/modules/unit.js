@@ -14,8 +14,8 @@
 var tileSize = 32;
 var Events = require('./events.js');
 exports.Unit = function(tx, ty, unitObject) {
-	var x = tx * tileSize,
-		y = ty * tileSize,
+	var x = tx,
+		y = ty,
 		angle = 0,
 		cannonAngle = 0,
 		fireTime = 0,
@@ -65,6 +65,13 @@ exports.Unit = function(tx, ty, unitObject) {
 			factory: unitObject.factory,
 			get spec() {
 				return unitObject;
+			},
+			get serialized() {
+				return {
+					name: unitObject.name,
+					health: health,
+					position: {X: x, Y: y}
+				};
 			},
 			get idle() {
 				return  path.length === 0 &&

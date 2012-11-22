@@ -7,12 +7,20 @@ var procedural = require('./modules/procedural'),
 
 var game = (function() {
     var map = procedural.noiseMap(128, 128, 40, 4),
-        players = [],
+        players = {},
         gm = {
-            addPlayer: function(name) {
-                var player = Player(name);
-                player.unit(10, 10, units.tank);
-                return player;
+            addPlayer: function(name, origin) {
+                players[origin] = Player(name);
+                players[origin].unit(10, 10, units.tank);
+                return players[origin];
+            },
+            unitReport: function(origin) {
+                var units = players[origin].units,
+                    serializedUnits = [];
+                units.each(function() {
+                    serializedUnits.push(this.serialized);
+                });
+                return { "type": "unitreport" , "units": serializedUnits };
             }
         };
     Object.defineProperty(gm, "map", {
@@ -23,6 +31,20 @@ var game = (function() {
     return gm;
 }());
 
+var Response = function(type) {
+    var response = {
+        get serialized() {
+            var sd = { type : type };
+            for (prop in response) {
+                if(prop !== "serialized" && response.hasOwnProperty(prop)) {
+                    sd[prop] = response[prop];
+                }
+            }
+            return JSON.stringify(sd);
+        }
+    }
+    return response;
+}
 var ttServer = (function() {
     var WebSocketServer = require('websocket').server,
         http = require('http'),
@@ -73,18 +95,24 @@ var ttServer = (function() {
                     console.log('Received Message: ' + message.utf8Data);
                     switch(data.request) {
                         case "map":
-                            var mapdata = { map: game.map };    
-                            connection.sendUTF(JSON.stringify(mapdata));   
+                            var mapdata = Response("map");
+                                mapdata.map = game.map;
+                            connection.sendUTF(mapdata.serialized);   
                         break;
                         case "user":                            
-                            var p = game.addPlayer(data.name);
-                            connection.sendUTF("{'player': '" + data.name + "', 'id': " + p.id + "}");
+                            var p = game.addPlayer(data.name, request.origin);
+                            var player = Response("player");
+                            player.id = p.id;
+                            player.name = data.name;
+                            connection.sendUTF(player.serialized);
+                        break;
+                        case "units":
+                            connection.sendUTF(JSON.stringify(game.unitReport(request.origin)));
                         break;
                         default:
                             connection.sendUTF(message.utf8Data.toUpperCase());   
                         break;
                     }
-                    //connection.sendUTF(message.utf8Data.toUpperCase());
                 }
                 else if (message.type === 'binary') {
                     console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
