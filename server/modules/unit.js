@@ -10,7 +10,7 @@
 		optional moveDuration: int (ms)
 	}
 */
-
+var unitId = 0;
 var tileSize = 32;
 var Events = require('./events.js');
 exports.Unit = function(tx, ty, unitObject) {
@@ -29,7 +29,7 @@ exports.Unit = function(tx, ty, unitObject) {
 		path = [],
 		range = unitObject.range || 5,
 		selected = false,
-		tileTime = 0,		
+		tileTime = 0,	
 		setTile = function(ntx, nty, collide) {
 			//if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
 			tx = ntx;
@@ -54,6 +54,7 @@ exports.Unit = function(tx, ty, unitObject) {
 			}
 		},
 		unit = {
+			id: unitId++,
 			mobile: unitObject.mobile,
 			target: null,
 			targetUnit: null,
@@ -70,7 +71,8 @@ exports.Unit = function(tx, ty, unitObject) {
 				return {
 					name: unitObject.name,
 					health: health,
-					position: {X: x, Y: y}
+					position: {X: x, Y: y},
+					id: unit.id
 				};
 			},
 			get idle() {

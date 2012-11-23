@@ -11,6 +11,17 @@ exports.Node = function() {
 			},
 			enumerable: true
 		},
+		find: {
+			value: function(key, value) {
+				for(var i = 0; i < children.length; i++) {
+					if(children[i][key] === value) {
+						return children[i];
+					}
+				}
+				return null;
+			},
+			enumerable: true
+		},		
 		get: {
 			value: function(idx) {
 				return children[idx];

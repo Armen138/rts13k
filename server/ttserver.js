@@ -21,6 +21,10 @@ var game = (function() {
                     serializedUnits.push(this.serialized);
                 });
                 return { "type": "unitreport" , "units": serializedUnits };
+            },
+            getUnit: function(origin, id) {
+                var unit = players[origin].units.find("id", id);
+                return unit;                
             }
         };
     Object.defineProperty(gm, "map", {
@@ -108,6 +112,13 @@ var ttServer = (function() {
                         break;
                         case "units":
                             connection.sendUTF(JSON.stringify(game.unitReport(request.origin)));
+                        break;
+                        case "unit-go":
+                            var unitPath = Response("path"); 
+                            var unit = game.getUnit(request.origin, data.id);
+                            unitPath.path = unit.go(data.X, data.Y);
+                            unitPath.id = data.id;
+                            connection.sendUTF(unitPath.serialized());
                         break;
                         default:
                             connection.sendUTF(message.utf8Data.toUpperCase());   
