@@ -41,6 +41,10 @@ var tileSize = 32,
         F1: 112
     };
 
+game.getUnit = function(id) {
+    return game.units.find("id", id);
+};
+
 game.deselectAll = function() {
     game.selectedUnits.each(function() {
         this.deselect();

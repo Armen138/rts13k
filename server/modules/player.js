@@ -1,8 +1,9 @@
 var Node = require('./nodes.js').Node,
+	Events = require('./events.js'),
 	Unit = require('./unit.js').Unit,
 	playerCount = 0;
 	//def = require('./modules/definitions.js').units;
-exports.Player = function(name) {
+exports.Player = function(name, game, connection) {
 	var ai = null,
 		player = {			
 			id: playerCount++,
@@ -25,12 +26,53 @@ exports.Player = function(name) {
 				if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def);
 					player.credits -= def.cost;
+					(function(unit) {
+						unit.on("position", function(position) {
+							var data = {
+								type: "position",
+								unit: unit,
+								data: {
+									position: position
+								}
+							};
+							player.fire("unit-update", data);
+						});
+						unit.on("path", function(path) {
+							var data = {
+								type: "path",
+								unit: unit,
+								data: {
+									path: path
+								}
+							};
+							player.fire("unit-update", data);
+						});
+
+					}(u));
 					return u; 
 				} else {
 					//if(game.players[0] === player) {}
 						//ui.alert("You can't afford that.");
 				}
 				return null;
+			},
+			canSee: function(unit) {
+				if(player.getUnit(unit.id)) {
+					return true;
+				}
+				return false;
+			},
+			getUnit: function(id) {
+				var ret = null;
+				units.each(function() {
+					console.log(this.id + " ? " + id);
+					if(this.id === id) {
+						ret = this;
+						console.log("i have this unit in my inventory");
+					}
+					return true;
+				});
+				return ret;
 			},
 			update: function() {
 				var now = (new Date()).getTime();								
@@ -43,11 +85,25 @@ exports.Player = function(name) {
 						console.log("player " + player.id + " was defeated.");
 					}
 				}
+				units.each(function(){
+					this.update();
+				});
+			},
+			send: function(data) {
+				console.log("player " + player.id + " send: " + data);
+				if(typeof(data) !== "string") {
+					if(data.serialized) {
+						data = data.serialized;
+					} else {
+						data = data.toString();
+					}
+				}
+				connection.sendUTF(data);	
 			}
 		},
 		units = Node(),
 		addUnit = function(x, y, unitdef) {
-			var unit = Unit(x, y, unitdef);
+			var unit = Unit(x, y, unitdef, game);
 			unit.owner = player;			
 			units.add(unit);
 			player.built++;
@@ -59,6 +115,6 @@ exports.Player = function(name) {
 	for( var i = 0; i < 13; i++) {
 		addUnit(p1[i].X, p1[i].Y);
 	}*/
-	
+	Events.attach(player);
 	return player; 
 };

@@ -10,7 +10,7 @@
 		optional moveDuration: int (ms)
 	}
 */
-var Unit = function(tx, ty, tc, unitObject) {
+var Unit = function(tx, ty, tc, unitObject, id) {
 	var x = tx * tileSize,
 		y = ty * tileSize,
 		angle = 0,
@@ -27,7 +27,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 		path = [],
 		range = unitObject.range || 5,
 		selected = false,
-		tileTime = 0,		
+		tileTime = 0, 
 		setTile = function(ntx, nty, collide) {
 			//if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
 			tx = ntx;
@@ -61,6 +61,7 @@ var Unit = function(tx, ty, tc, unitObject) {
 			team: 0,
 			dead: false,
 			factory: unitObject.factory,
+			id: id,
 			get spec() {
 				return unitObject;
 			},
@@ -70,6 +71,9 @@ var Unit = function(tx, ty, tc, unitObject) {
 			},
 			get health() {
 				return health;
+			},
+			setPath: function(newPath) {
+				followPath(newPath);
 			},
 			select: function() {
 				selected = true;
@@ -121,13 +125,14 @@ var Unit = function(tx, ty, tc, unitObject) {
 			},
 			go: function(dest, evading) {
 				if(unitObject.mobile) {
-					if(game.collisionMap[dest.X][dest.Y] !== collision.PASSABLE) {
+					network.request({"request" : "unit-go", "X" : dest.X, "Y": dest.Y, "id": unit.id});
+					/*if(game.collisionMap[dest.X][dest.Y] !== collision.PASSABLE) {
 						dest = game.spiral(1, dest)[0];
 					}
 					if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
 						if(!evading) game.collisionMap[tx][ty] = collision.PASSABLE;
 						pathFinder.find({X: tx, Y: ty}, dest, followPath);
-					}
+					}*/
 				} else {
 					unit.rallyPoint = dest;
 				}
@@ -144,6 +149,9 @@ var Unit = function(tx, ty, tc, unitObject) {
 					return true;
 				}
 				return false;
+			},
+			syncPosition: function(pos) {
+				setTile(pos.X, pos.Y);
 			},
 			update: function() {
 				if (unit.owner.energy < 0 && !unitObject.mobile) {

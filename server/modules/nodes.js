@@ -5,8 +5,12 @@ exports.Node = function() {
 		visible: { value: true, enumerable: true, configurable: true },
 		each: {
 			value: function(func) {
+				var stop = false;
 				for(var i = 0; i < children.length; i++) {
-					func.apply(children[i]);
+					stop = func.apply(children[i]);
+					if(stop) {
+						break;
+					}
 				}
 			},
 			enumerable: true

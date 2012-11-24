@@ -12,8 +12,12 @@
 */
 var unitId = 0;
 var tileSize = 32;
-var Events = require('./events.js');
-exports.Unit = function(tx, ty, unitObject) {
+var Events = require('./events.js'),
+	collision = require('./collision.js'),
+	astar = require('./astar.js'),
+	bt = require('./basictypes.js');
+console.log(collision.PASSABLE);
+exports.Unit = function(tx, ty, unitObject, game) {
 	var x = tx,
 		y = ty,
 		angle = 0,
@@ -74,6 +78,9 @@ exports.Unit = function(tx, ty, unitObject) {
 					position: {X: x, Y: y},
 					id: unit.id
 				};
+			},
+			toString: function() {
+				return unit.serialized;
 			},
 			get idle() {
 				return  path.length === 0 &&
@@ -138,7 +145,10 @@ exports.Unit = function(tx, ty, unitObject) {
 					}
 					if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
 						if(!evading) game.collisionMap[tx][ty] = collision.PASSABLE;
-						pathFinder.find({X: tx, Y: ty}, dest, followPath);
+						var path = astar.findPath(game.collisionMap, {X: tx, Y: ty}, dest);
+						followPath(path);
+						return path;
+						//pathFinder.find({X: tx, Y: ty}, dest, followPath);
 					}
 				} else {
 					unit.rallyPoint = dest;
@@ -158,6 +168,7 @@ exports.Unit = function(tx, ty, unitObject) {
 				return false;
 			},
 			update: function() {
+				var update = null;
 				if (unit.owner.energy < 0 && !unitObject.mobile) {
 					unit.badge = "⚡";
 				} else {
@@ -178,14 +189,17 @@ exports.Unit = function(tx, ty, unitObject) {
 							setTile(to.X, to.Y, path.length === 0);
 							tileTime = (new Date()).getTime();
 							
-								if(path.length > 0) {
-									if(game.collisionMap[path[0].X][path[0].Y] === collision.STRUCTURE) {
-										unit.go(path[path.length -1]);
-									}
+							if(path.length > 0) {
+								if(game.collisionMap[path[0].X][path[0].Y] === collision.STRUCTURE) {
+									unit.go(path[path.length -1]);
+									unit.fire("path", path);
 								}
+							} else {
+								unit.fire("position", to);
+							}
 							
-						}
-						else {
+						}  
+						 /*else {
 							var xdest = path[0].X * tileSize,
 								ydest = path[0].Y * tileSize,
 								xtarg = tx * tileSize,
@@ -196,36 +210,39 @@ exports.Unit = function(tx, ty, unitObject) {
 							x = xtarg + (fract * xdiff) | 0;
 							y = ytarg + (fract * ydiff) | 0;
 							angle = Math.atan2((path[0].X - tx), (ty - path[0].Y));
-						}
+						}*/
 					} else {
 						if(unit.targetUnit && !unit.targetUnit.dead && bt.Vec.distance(unit.targetUnit.tile, unit.tile) > range) {
 							var to = game.spiral(1, unit.targetUnit.tile)[0];
 							unit.go(to);
+							unit.fire("path", path);
 						}
 					}
 				}
 				if(unitObject.loadTime && !(!unitObject.mobile && unit.owner.energy < 0)) {
 					rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
 					unit.target = null;
-					game.units.each(function() {
+					//need to link units to their map coordinates for targeting to avoid looping every frame
+					/*game.units.each(function() {
 						if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
 							unit.target = this.position;
 						}
-					});
+					});*/
 					var now = (new Date()).getTime();
 					//aim cannon
 					if(unit.target) {
 						cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
 						if(now - fireTime > loadTime) {
-							var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
+						/*	var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
 							b.owner = unit;
-							game.root.add(b);
+							game.root.add(b);*/
 							fireTime = now;
 						}
 					} else {
 						cannonAngle = 0;
 					}
 				}
+				return update;
 			},
 			kill: function() {
 				kills++;
