@@ -18,7 +18,12 @@ var map = procedural.noiseMap(128, 128, 40, 4),
         addPlayer: function(name, origin, connection) {
             players[origin] = Player(name, game, connection);
             players[origin].on("unit-update", game.unitUpdate);
-            units.add(players[origin].unit(10, 10, definitions.tank));
+            var p1 = game.spiral(13, {X: 10, Y: 10});
+            for( var i = 0; i < 13; i++) {
+                //addUnit(p1[i].X, p1[i].Y);
+                units.add(players[origin].unit(p1[i].X, p1[i].Y, definitions.tank));
+            }            
+            //units.add(players[origin].unit(10, 10, definitions.tank));
             return players[origin];
         },
         unitUpdate: function(data) {

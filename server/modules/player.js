@@ -12,7 +12,7 @@ exports.Player = function(name, game, connection) {
 			unitQueue: 0,
 			kills: 0,
 			deaths: 0,
-			credits: 500,
+			credits: 50000,
 			built: 0,
 			get units() {
 				return units;

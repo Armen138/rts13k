@@ -68,6 +68,7 @@ var ttServer = (function() {
                             var player = Message("player");
                             player.id = p.id;
                             player.name = data.name;
+                            player.credits = p.credits;
                             connection.sendUTF(player.serialized);
                         break;
                         case "units":
