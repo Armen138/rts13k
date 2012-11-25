@@ -22,7 +22,7 @@ socket = new WebSocket(server, "tt.0");
             case "player":
                 game.init(0);
                 gameView(window.innerWidth, window.innerHeight, game.mapData);
-                game.players.push(Player(10, 10, Player.modes.LOCAL));
+                game.players.push(Player(10, 10, Player.modes.LOCAL, dataObject.credits));
                 game.run();            
                 socket.send('{"request": "units"}');
             break;

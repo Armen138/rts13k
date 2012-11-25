@@ -1,4 +1,4 @@
-var Player = function(x, y, inputMode) {
+var Player = function(x, y, inputMode, credits) {
 	var ai = null,
 		player = {
 			local: (inputMode === Player.modes.LOCAL),
@@ -10,7 +10,7 @@ var Player = function(x, y, inputMode) {
 
 			kills: 0,
 			deaths: 0,
-			credits: 500,
+			credits: credits,
 			get units() {
 				return units;
 			},
@@ -20,14 +20,14 @@ var Player = function(x, y, inputMode) {
 						ui.alert("Unit cap reached (100)");
 					return;
 				}
-				if(player.credits >= def.cost) {
+				//if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def, id);
 					player.credits -= def.cost;
 					return u; 
-				} else {
+				/*} else {
 					if(game.players[0] === player)
 						ui.alert("You can't afford that.");
-				}
+				}*/
 				return null;
 			},
 			build: function(x, y, def) {
