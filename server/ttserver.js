@@ -51,7 +51,9 @@ var ttServer = (function() {
                 console.log(ttserver.timestamp() + " protocol version mismatch.");
                 return;                
             }
-            var connection = request.accept(protocol, request.origin);
+            //console.log(request);
+            var connection = request.accept(protocol, request.origin),
+                player = null;
             console.log(ttserver.timestamp() + ' Connection accepted.');
             connection.on('message', function(message) {
                 if (message.type === 'utf8') {
@@ -63,23 +65,35 @@ var ttServer = (function() {
                                 mapdata.map = game.map;
                             connection.sendUTF(mapdata.serialized);   
                         break;
-                        case "user":                            
-                            var p = game.addPlayer(data.name, request.origin, connection);
-                            var player = Message("player");
-                            player.id = p.id;
-                            player.name = data.name;
-                            player.credits = p.credits;
-                            connection.sendUTF(player.serialized);
+                        case "user":       
+                            var otherPlayers = game.getPlayers();                     
+                            player = game.addPlayer(data.name, connection);
+                            var playerMsg = Message("player");
+                            playerMsg.id = player.id;
+                            playerMsg.name = data.name;
+                            playerMsg.credits = player.credits;
+                            playerMsg.otherPlayers = otherPlayers;
+                            connection.sendUTF(playerMsg.serialized);
+                            var connectMsg = Message("connect");
+                            connectMsg.name = data.name;
+                            connectMsg.id = player.id;
+                            game.broadcast(connectMsg);
                         break;
                         case "units":
-                            connection.sendUTF(JSON.stringify(game.unitReport(request.origin)));
+                            connection.sendUTF(JSON.stringify(game.unitReport(player)));
                         break;
                         case "unit-go":
                             var unitPath = Message("path"); 
-                            var unit = game.getUnit(request.origin, data.id);
+                            var unit = game.getUnit(player, data.id);
                             unitPath.path = unit.go(data);
                             unitPath.id = data.id;
-                            connection.sendUTF(unitPath.serialized);
+                            //connection.sendUTF(unitPath.serialized);
+                        break;
+                        case "unit":
+                            var unitMsg = Message("unit");
+                            var unit = game.getUnit(null, data.id);
+                            unitMsg.eat(unit.serialized);
+                            connection.sendUTF(unitMsg.serialized);
                         break;
                         default:
                             connection.sendUTF(message.utf8Data.toUpperCase());   

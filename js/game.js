@@ -41,6 +41,12 @@ var tileSize = 32,
         F1: 112
     };
 
+game.getPlayer = function(id) {
+    for(var i = 0; i < game.players.length; i++) {
+        if(game.players[i].id === id) return game.players[i];
+    }
+};
+
 game.getUnit = function(id) {
     return game.units.find("id", id);
 };

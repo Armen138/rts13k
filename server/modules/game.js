@@ -7,49 +7,79 @@ var procedural = require('./procedural'),
 
 
 var map = procedural.noiseMap(128, 128, 40, 4),
-    players = {},
+    players = [],
     units = Node(),
     game = {
         update: function() {
-            for(org in players) {
-                players[org].update();
+            for(var i = 0; i < players.length; i++) {
+                players[i].update();
             }
         },
-        addPlayer: function(name, origin, connection) {
-            players[origin] = Player(name, game, connection);
-            players[origin].on("unit-update", game.unitUpdate);
+        broadcast: function(msg) {
+            for(var i = 0; i < players.length; i++) {
+                players[i].send(msg);
+            }
+        },
+        getPlayers: function() {
+            var serializedPlayers = [];
+            for(var i = 0; i < players.length; i++) {
+                serializedPlayers.push({
+                    "name" : players[i].name,
+                    "id": players[i].id
+                });
+            }
+            return serializedPlayers;
+        },
+        addPlayer: function(name, connection) {
+            var player = Player(name, game, connection, players.length);
+            players.push(player);
+            player.on("unit-update", game.unitUpdate);
             var p1 = game.spiral(13, {X: 10, Y: 10});
+
             for( var i = 0; i < 13; i++) {
                 //addUnit(p1[i].X, p1[i].Y);
-                units.add(players[origin].unit(p1[i].X, p1[i].Y, definitions.tank));
+                units.add(player.unit(p1[i].X, p1[i].Y, definitions.tank));
             }            
             //units.add(players[origin].unit(10, 10, definitions.tank));
-            return players[origin];
+            return player;
         },
         unitUpdate: function(data) {
             //check who can see me
             var unitUpdate = Message(data.type);
             unitUpdate.eat(data.data);
             unitUpdate.id = data.unit.id;
+            unitUpdate.owner = data.unit.owner.id;
             console.log("unit update: " + unitUpdate.serialized);
             //unitUpdate.unit = JSON.parse(unit.serialized); //strips needless data/functions
-            for(org in players) {
-                if(players[org].canSee(data.unit)) {
-                    players[org].send(unitUpdate);
+            for(var i = 0; i < players.length; i++) {
+                if(players[i].canSee(data.unit)) {
+                    players[i].send(unitUpdate);
                 }
             }
         },
-        unitReport: function(origin) {
-            var units = players[origin].units,
+        unitReport: function(player) {
+            var units = player.units,
                 serializedUnits = [];
             units.each(function() {
                 serializedUnits.push(this.serialized);
             });
             return { "type": "unitreport" , "units": serializedUnits };
         },
-        getUnit: function(origin, id) {
-            var unit = players[origin].units.find("id", id);
-            return unit;                
+        getUnit: function(player, id) {
+            if(player) {
+                return player.units.find("id", id);   
+            } else {
+                var unit = null;
+                for(var i = 0; i < players.length; i++) {
+                    unit = players[i].units.find("id", id);
+                    if(unit) {
+                        return unit;
+                    }
+                }
+            }
+            //var unit = players[origin].units.find("id", id);
+            //return unit;
+            return null;                
         },
         collisionMap: (function(){
             var collisionMap = [];

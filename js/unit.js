@@ -234,6 +234,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 	Object.defineProperty( unit, "kills", {
 		get: function() { return kills;}
 	});
+	console.log(tx + ", " + ty);
 	game.collisionMap[tx][ty] = collider;
 	if(unitObject.big) {
 		game.collisionMap[tx][ty + 1] = collider;

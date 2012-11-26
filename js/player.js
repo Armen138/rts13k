@@ -1,8 +1,8 @@
-var Player = function(x, y, inputMode, credits) {
+var Player = function(x, y, inputMode, credits, id) {
 	var ai = null,
 		player = {
 			local: (inputMode === Player.modes.LOCAL),
-			id: game.playerCount++,
+			id: id,
 			energy: 0,
 			energyMax: 0,
 			unitCap: 100,

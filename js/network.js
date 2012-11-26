@@ -8,7 +8,8 @@ socket = new WebSocket(server, "tt.0");
     });
 
     socket.addEventListener("message", function(event) {
-    	var dataObject = JSON.parse(event.data);
+    	var dataObject = JSON.parse(event.data),
+            netID = 0;
         switch(dataObject.type) {
             case "unitreport":
                 for(var i = 0; i < dataObject.units.length; i++) {
@@ -19,16 +20,44 @@ socket = new WebSocket(server, "tt.0");
             case "map":
                 game.mapData = dataObject.map;
             break;
+            case "connect":
+                menu.log("Player " + dataObject.name + " has joined the game");
+                if(dataObject.id !== netId) {
+                    console.log("creating player object for id: " + dataObject.id);
+                    game.players.push(Player(10, 10, Player.modes.NETWORK, 0, dataObject.id))                    
+                }
+
+            break;
             case "player":
                 game.init(0);
                 gameView(window.innerWidth, window.innerHeight, game.mapData);
-                game.players.push(Player(10, 10, Player.modes.LOCAL, dataObject.credits));
+                game.players.push(Player(10, 10, Player.modes.LOCAL, dataObject.credits, dataObject.id));
+                if(dataObject.otherPlayers) {
+                    for(var i = 0; i < dataObject.otherPlayers.length; i++) {
+                        np = dataObject.otherPlayers[i];
+                        game.players.push(Player(0, 0, Player.modes.NETWORK, 0, np.id));        
+                    }
+                }
+                netId = dataObject.id;
                 game.run();            
                 socket.send('{"request": "units"}');
             break;
             case "position":
                 var unit = game.getUnit(dataObject.id);
-                unit.syncPosition(dataObject.position); 
+                if(unit) {
+                    unit.syncPosition(dataObject.position);    
+                } else {
+                    socket.send('{"request": "unit", "id": ' + dataObject.id + '}');
+                }
+            break;
+            case "unit":
+                var unit = game.getUnit(dataObject.id);
+                if(unit) {
+                    unit.syncPosition(dataObject.position);
+                } else {
+                    game.getPlayer(dataObject.owner).unit(dataObject.position.X, dataObject.position.Y, def[dataObject.name], dataObject.id);   
+                    //game.players[dataObject.owner].
+                }
             break;
             case "path":
                 var unit = game.getUnit(dataObject.id);

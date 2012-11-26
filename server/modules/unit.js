@@ -55,6 +55,8 @@ exports.Unit = function(tx, ty, unitObject, game) {
 			tileTime = (new Date()).getTime();
 			if(path.length === 0) {
 				console.log("no path!");
+			} else {
+				unit.fire("path", path);
 			}
 		},
 		unit = {
@@ -75,7 +77,8 @@ exports.Unit = function(tx, ty, unitObject, game) {
 				return {
 					name: unitObject.name,
 					health: health,
-					position: {X: x, Y: y},
+					position: {X: tx, Y: ty},
+					owner: unit.owner.id,
 					id: unit.id
 				};
 			},
@@ -249,7 +252,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 				unit.owner.kills++;
 			}
 		};
-	Object.defineProperty( unit, "position", { get: function() { return { X: x,  Y: y}; }});
+	Object.defineProperty( unit, "position", { get: function() { return { X: tx,  Y: ty}; }});
 	Object.defineProperty( unit, "tile", { get: function() { return { X: tx,  Y: ty}; }});
 	Object.defineProperty( unit, "percent", { get: function() { return health / unitObject.health; }});
 	Object.defineProperty( unit, "kills", {

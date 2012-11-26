@@ -1,12 +1,11 @@
 var Node = require('./nodes.js').Node,
 	Events = require('./events.js'),
-	Unit = require('./unit.js').Unit,
-	playerCount = 0;
+	Unit = require('./unit.js').Unit;
 	//def = require('./modules/definitions.js').units;
-exports.Player = function(name, game, connection) {
+exports.Player = function(name, game, connection, id) {
 	var ai = null,
 		player = {			
-			id: playerCount++,
+			id: id,
 			energy: 0,
 			unitCap: 100,
 			unitQueue: 0,
@@ -14,6 +13,7 @@ exports.Player = function(name, game, connection) {
 			deaths: 0,
 			credits: 50000,
 			built: 0,
+			name: name,
 			get units() {
 				return units;
 			},
@@ -57,10 +57,12 @@ exports.Player = function(name, game, connection) {
 				return null;
 			},
 			canSee: function(unit) {
+				return true;
+				/*
 				if(player.getUnit(unit.id)) {
 					return true;
 				}
-				return false;
+				return false;*/
 			},
 			getUnit: function(id) {
 				var ret = null;
