@@ -20,6 +20,14 @@ var map = procedural.noiseMap(128, 128, 40, 4),
                 players[i].send(msg);
             }
         },
+        getPlayer: function(id) {
+            for(var i = 0; i < players.length; i++) {
+                if(players[i].id === id || players[i].name === id) {
+                    return players[i];
+                }
+            }
+            return null;
+        },
         getPlayers: function() {
             var serializedPlayers = [];
             for(var i = 0; i < players.length; i++) {
@@ -49,7 +57,7 @@ var map = procedural.noiseMap(128, 128, 40, 4),
             unitUpdate.eat(data.data);
             unitUpdate.id = data.unit.id;
             unitUpdate.owner = data.unit.owner.id;
-            console.log("unit update: " + unitUpdate.serialized);
+            //console.log("unit update: " + unitUpdate.serialized);
             //unitUpdate.unit = JSON.parse(unit.serialized); //strips needless data/functions
             for(var i = 0; i < players.length; i++) {
                 if(players[i].canSee(data.unit)) {
@@ -57,7 +65,8 @@ var map = procedural.noiseMap(128, 128, 40, 4),
                 }
             }
         },
-        unitReport: function(player) {
+        unitReport: function(playerId) {
+            var player = game.getPlayer(playerId);                
             var units = player.units,
                 serializedUnits = [];
             units.each(function() {

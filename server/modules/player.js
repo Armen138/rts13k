@@ -92,7 +92,7 @@ exports.Player = function(name, game, connection, id) {
 				});
 			},
 			send: function(data) {
-				console.log("player " + player.id + " send: " + data);
+				//console.log("player " + player.id + " send: " + data);
 				if(typeof(data) !== "string") {
 					if(data.serialized) {
 						data = data.serialized;

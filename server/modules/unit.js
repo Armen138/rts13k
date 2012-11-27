@@ -79,7 +79,8 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					health: health,
 					position: {X: tx, Y: ty},
 					owner: unit.owner.id,
-					id: unit.id
+					id: unit.id,
+					path: path
 				};
 			},
 			toString: function() {
