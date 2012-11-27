@@ -125,7 +125,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 			},
 			go: function(dest, evading) {
 				if(unitObject.mobile) {
-					network.request({"request" : "unit-go", "X" : dest.X, "Y": dest.Y, "id": unit.id});
+					network.request({"type" : "unit-go", "X" : dest.X, "Y": dest.Y, "id": unit.id});
 					/*if(game.collisionMap[dest.X][dest.Y] !== collision.PASSABLE) {
 						dest = game.spiral(1, dest)[0];
 					}

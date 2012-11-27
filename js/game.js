@@ -20,7 +20,10 @@ var tileSize = 32,
         colors: [
             "#3A3",
             "#A3A",
-            "#AA3"
+            "#AA3",
+            "#33A",
+            "#A33",
+            "#3AA"
         ],
         EASY: 0,
         MEDIUM: 1,
@@ -170,7 +173,8 @@ game.init = function(difficulty) {
                     var buildable = game.buildMode,
                         pos = {X: (e.clientX / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y) | 0};
                     if(game.legalPosition(pos, game.buildMode)) {
-                        game.players[0].build(pos.X, pos.Y, buildable);
+                        //game.players[0].build(pos.X, pos.Y, buildable);
+                        network.build(pos, buildable);
                     } else {
                         ui.alert("You can't build that there.");
                     }

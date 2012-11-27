@@ -1,4 +1,4 @@
-var Player = function(x, y, inputMode, credits, id) {
+var Player = function(x, y, inputMode, credits, id, name) {
 	var ai = null,
 		player = {
 			local: (inputMode === Player.modes.LOCAL),
@@ -7,7 +7,7 @@ var Player = function(x, y, inputMode, credits, id) {
 			energyMax: 0,
 			unitCap: 100,
 			unitQueue: 0,
-
+			name: name,
 			kills: 0,
 			deaths: 0,
 			credits: credits,

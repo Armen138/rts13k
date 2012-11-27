@@ -25,7 +25,7 @@ var def = {
 		cost: 100
 	},
 	heavyTank: {
-		name: "heavy tank",
+		name: "heavyTank",
 		mobile: true,
 		health: 200,
 		damage: 15,
@@ -49,7 +49,7 @@ var def = {
 		collision: 3		
 	},
 	mine: {
-		name: "mining station",
+		name: "mine",
 		mobile: false,
 		health: 100,		
 		range: 7,
@@ -86,7 +86,7 @@ var def = {
 		collision: 3
 	},
 	factory: {
-		name: "tank factory",
+		name: "factory",
 		mobile: false,
 		health: 1000,		
 		art: art.factory,

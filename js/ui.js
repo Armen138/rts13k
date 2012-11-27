@@ -112,11 +112,12 @@ var ui = {
 				ui.actionButtons.push(function() { 
 					if(units) {
 						var p = game.spiral(1, units.tile)[0];
-						var u = game.players[0].unit(p.X, p.Y, buildable);
-						if(u) {
+						//var u = game.players[0].unit(p.X, p.Y, buildable);
+						//if(u) {
 							var rallyPoint = game.spiral(1, units.rallyPoint || units.tile)[0];
-							u.go(rallyPoint, false);
-						}
+						//	u.go(rallyPoint, false);
+						//}
+						network.build(p, buildable, rallyPoint);
 					} else {
 						game.buildMode = buildable;
 					}

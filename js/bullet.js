@@ -24,9 +24,10 @@ var Bullet = function(from, to, damage) {
 					game.root.remove(bullet);
 					var u = game.unitAt({ X: to.X / tileSize | 0, Y: to.Y / tileSize | 0 });
 					if(u) {
-						if(u.hit(damage)) {
+						//server needs to do the killing.
+						/*if(u.hit(damage)) {
 							bullet.owner.kill();
-						}
+						}*/
 					}
 				}
 			}
