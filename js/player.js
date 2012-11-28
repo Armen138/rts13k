@@ -22,7 +22,7 @@ var Player = function(x, y, inputMode, credits, id, name) {
 				}
 				//if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def, id);
-					player.credits -= def.cost;
+					//player.credits -= def.cost;
 					return u; 
 				/*} else {
 					if(game.players[0] === player)
@@ -41,12 +41,12 @@ var Player = function(x, y, inputMode, credits, id, name) {
 					if(def.upkeep != null) {
 						player.energy += def.upkeep;
 					}
-					if(def.cost != null) {
+					/*if(def.cost != null) {
 						player.credits -= def.cost;
-					}
+					}*/
 				} else {
-					if(game.players[0] === player)
-						ui.alert("You can't afford that.");
+					//if(game.players[0] === player)
+					//	ui.alert("You can't afford that.");
 				}
 				return u;
 			},

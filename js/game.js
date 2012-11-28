@@ -95,10 +95,15 @@ game.init = function(difficulty) {
         game.mousePosition.X = e.clientX;
         game.mousePosition.Y = e.clientY;
         if(game.mouseDown) {
-            var topLeft= game.dragStart;//.shallow(),
-                w = e.clientX - game.dragStart.X,
-                h = e.clientY - game.dragStart.Y;
-    
+            var topLeft = {X: game.dragStart.X, Y: game.dragStart.Y };//.shallow(),
+                w = Math.abs(e.clientX - game.dragStart.X),
+                h = Math.abs(e.clientY - game.dragStart.Y);
+            if(e.clientX < topLeft.X) {
+                topLeft.X = e.clientX;
+            }
+            if(e.clientY < topLeft.Y) {
+                topLeft.Y = e.clientY;
+            }
 
             if(!game.uiDrag) {
                 if(w < 0) { topLeft.X += w; w *= -1; }
@@ -277,9 +282,6 @@ game.spiral = function(n, p, spec) {
     dy = -1,
     t,
     positions = [];
-    /*if(game.collisionMap[p.X][p.Y] === collision.PASSABLE && !spec) {
-        positions.push({X: p.X, Y: p.Y});
-    }*/
 
     while(positions.length < n) {
         if( (x == y) || ((x < 0) && (x == -y)) || ((x > 0) && (x == 1-y))) {

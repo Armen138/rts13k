@@ -10,6 +10,9 @@ var map = procedural.noiseMap(128, 128, 40, 4),
     players = [],
     units = Node(),
     game = {
+        get players(){
+            return players;
+        },
         update: function() {
             for(var i = 0; i < players.length; i++) {
                 players[i].update();
@@ -46,7 +49,7 @@ var map = procedural.noiseMap(128, 128, 40, 4),
 
             for( var i = 0; i < 13; i++) {
                 //addUnit(p1[i].X, p1[i].Y);
-                units.add(player.unit(p1[i].X, p1[i].Y, definitions.tank));
+                units.add(player.unit(p1[i].X, p1[i].Y, definitions.tank, true));
             }            
             //units.add(players[origin].unit(10, 10, definitions.tank));
             return player;
@@ -56,9 +59,7 @@ var map = procedural.noiseMap(128, 128, 40, 4),
             var unitUpdate = Message(data.type);
             unitUpdate.eat(data.data);
             unitUpdate.id = data.unit.id;
-            unitUpdate.owner = data.unit.owner.id;
-            //console.log("unit update: " + unitUpdate.serialized);
-            //unitUpdate.unit = JSON.parse(unit.serialized); //strips needless data/functions
+            unitUpdate.owner = data.unit.owner.id;            
             for(var i = 0; i < players.length; i++) {
                 if(players[i].canSee(data.unit)) {
                     players[i].send(unitUpdate);
@@ -90,6 +91,35 @@ var map = procedural.noiseMap(128, 128, 40, 4),
             //return unit;
             return null;                
         },
+        getClosestUnit: function(position, excludeOwner, range) {
+            var level = range;
+            //for(var level = 1; level < range; level++) {
+                rangeBox = {top: -1 * level, left: -1 * level, right: level , bottom: level };
+                for(var x = rangeBox.left; x < rangeBox.right; x++) {
+                    for(var y = rangeBox.top; y < rangeBox.bottom; y++) {
+                        var unit;
+                        try {
+                            unit = game.unitMap[position.X + x][position.Y + y];
+                        } catch(e) {
+                            unit = null;
+                        }
+                        
+                        if(unit && unit.owner.id !== excludeOwner) {
+                            console.log("unit found");
+                            return unit;
+                        }
+                    }
+                }
+            //}
+            return null;
+        },
+        unitMap: (function(){
+            var unitMap = [];
+            for(var x = 0; x < map.length; x++) {
+                unitMap[x] = [];
+            }
+            return unitMap;                
+        }()),
         collisionMap: (function(){
             var collisionMap = [];
             for(var x = 0; x < map.length; x++) {

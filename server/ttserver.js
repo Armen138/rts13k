@@ -7,7 +7,7 @@ var procedural = require('./modules/procedural'),
     Message = require('./modules/message').Message,
     game = require('./modules/game').Game;
 
-console.log(game.addPlayer);
+//console.log(game.addPlayer);
 
 var ttServer = (function() {
     var WebSocketServer = require('websocket').server,
@@ -116,7 +116,7 @@ var ttServer = (function() {
                         case "build":
                             var definition = units[data.name];
                             var unit = player.unit(data.position.X, data.position.Y, definition);
-                            if(unit.mobile && data.destination) {
+                            if(unit && unit.mobile && data.destination) {
                                 unit.go(data.position);
                             }
                             if(unit) {
@@ -126,7 +126,7 @@ var ttServer = (function() {
                             }
                             var creditsMsg = Message("credits");
                             creditsMsg.credits = player.credits;
-                            connection.sendUTF(creditsMsg);
+                            connection.sendUTF(creditsMsg.serialized);
                         break;
                         default:
                             connection.sendUTF(message.utf8Data.toUpperCase());   

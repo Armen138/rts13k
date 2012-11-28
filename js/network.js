@@ -8,7 +8,12 @@ socket = new WebSocket(server, "tt.0");
     });
     var netId, netName, player;
     socket.addEventListener("message", function(event) {
-    	var dataObject = JSON.parse(event.data);
+        try {
+            var dataObject = JSON.parse(event.data);    
+        } catch(e) {
+            console.log(e.message + " :: " + event.data);
+        }
+    	
         switch(dataObject.type) {
             case "unitreport":
                 for(var i = 0; i < dataObject.units.length; i++) {
@@ -21,6 +26,7 @@ socket = new WebSocket(server, "tt.0");
             break;
             case "credits":
                 player.credits = dataObject.credits;
+                console.log("credits: " + dataObject.credits);
             break;
             case "energy":
                 player.energy = dataObject.energy;
@@ -63,6 +69,13 @@ socket = new WebSocket(server, "tt.0");
                     unit.syncPosition(dataObject.position);    
                 } else {
                     socket.send('{"type": "unit", "id": ' + dataObject.id + '}');
+                }
+            break;
+            case "target":
+                console.log(dataObject);
+                var unit = game.getUnit(dataObject.id);
+                if(unit) {
+                    unit.target = { X: dataObject.target.X * tileSize, Y: dataObject.target.Y * tileSize };
                 }
             break;
             case "unit":

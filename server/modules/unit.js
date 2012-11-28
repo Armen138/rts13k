@@ -13,10 +13,11 @@
 var unitId = 0;
 var tileSize = 32;
 var Events = require('./events.js'),
+	Message = require('./message.js').Message,
 	collision = require('./collision.js'),
 	astar = require('./astar.js'),
 	bt = require('./basictypes.js');
-console.log(collision.PASSABLE);
+//console.log(collision.PASSABLE);
 exports.Unit = function(tx, ty, unitObject, game) {
 	var x = tx,
 		y = ty,
@@ -116,10 +117,15 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					unit.owner.deaths++;
 					if(unitObject.upkeep) { unit.owner.energy -= unitObject.upkeep };
 					game.collisionMap[tx][ty] = collision.PASSABLE;
+					game.unitMap[tx][ty] = null;
 					if(unitObject.big) {
 						game.collisionMap[tx][ty + 1] = collision.PASSABLE;
 						game.collisionMap[tx + 1][ty] = collision.PASSABLE;
 						game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
+
+						game.unitMap[tx][ty + 1] = null;
+						game.unitMap[tx + 1][ty] = null;
+						game.unitMap[tx + 1][ty + 1] = null;
 					}
 					if(unit.ondeath) { unit.ondeath(unitObject); }
 				}
@@ -148,7 +154,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 						dest = game.spiral(1, dest)[0];
 					}
 					if(game.collisionMap[dest.X][dest.Y] === collision.PASSABLE) {
-						if(!evading) game.collisionMap[tx][ty] = collision.PASSABLE;
+						if(!evading) {
+							game.collisionMap[tx][ty] = collision.PASSABLE;
+							game.unitMap[tx][ty] = null;
+						}
 						var path = astar.findPath(game.collisionMap, {X: tx, Y: ty}, dest);
 						followPath(path);
 						return path;
@@ -224,9 +233,20 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					}
 				}
 				if(unitObject.loadTime && !(!unitObject.mobile && unit.owner.energy < 0)) {
-					rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
-					unit.target = null;
+					//rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
+					//unit.target = null;
 					//need to link units to their map coordinates for targeting to avoid looping every frame
+					var target = game.getClosestUnit(unit.position, unit.owner.id, range);
+
+					if(target && (!unit.target || target.position.X !== unit.target.X && target.position.Y !== unit.target.Y)) {
+						unit.target = target.position;
+						var targetMsg = Message("target");
+						targetMsg.id = unit.id;
+						targetMsg.target = unit.target;
+						console.log(targetMsg.serialized);
+						//unit.owner.send(targetMsg);
+						game.broadcast(targetMsg);
+					}
 					/*game.units.each(function() {
 						if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
 							unit.target = this.position;
@@ -259,13 +279,18 @@ exports.Unit = function(tx, ty, unitObject, game) {
 	Object.defineProperty( unit, "kills", {
 		get: function() { return kills;}
 	});
-	/*
+	
 	game.collisionMap[tx][ty] = collider;
+	game.unitMap[tx][ty] = unit;
 	if(unitObject.big) {
 		game.collisionMap[tx][ty + 1] = collider;
 		game.collisionMap[tx + 1][ty] = collider;
 		game.collisionMap[tx + 1][ty + 1] = collider;
-	}*/
+
+		game.unitMap[tx][ty + 1] = unit;
+		game.unitMap[tx + 1][ty] = unit;
+		game.unitMap[tx + 1][ty + 1] = unit;
+	}
 	Events.attach(unit);
 	return unit;
 };

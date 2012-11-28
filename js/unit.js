@@ -174,11 +174,11 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 							setTile(to.X, to.Y, path.length === 0);
 							tileTime = (new Date()).getTime();
 							
-								if(path.length > 0) {
+								/*if(path.length > 0) {
 									if(game.collisionMap[path[0].X][path[0].Y] === collision.STRUCTURE) {
 										unit.go(path[path.length -1]);
 									}
-								}
+								}*/
 							
 						}
 						else {
@@ -201,13 +201,13 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 					}
 				}
 				if(unitObject.loadTime && !(!unitObject.mobile && unit.owner.energy < 0)) {
-					rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
-					unit.target = null;
-					game.units.each(function() {
+					//rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
+					//unit.target = null;
+					/*game.units.each(function() {
 						if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
 							unit.target = this.position;
 						}
-					});
+					});*/
 					var now = (new Date()).getTime();
 					//aim cannon
 					if(unit.target) {

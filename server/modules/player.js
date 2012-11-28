@@ -1,31 +1,47 @@
 var Node = require('./nodes.js').Node,
+	Message = require('./message.js').Message,
 	Events = require('./events.js'),
-	Unit = require('./unit.js').Unit;
+	Unit = require('./unit.js').Unit,
+	energy = 0;
 	//def = require('./modules/definitions.js').units;
 exports.Player = function(name, game, connection, id) {
 	var ai = null,
 		player = {			
 			id: id,
-			energy: 0,
+			//energy: 0,
 			unitCap: 100,
 			unitQueue: 0,
 			kills: 0,
 			deaths: 0,
-			credits: 50000,
+			credits: 500,
 			built: 0,
 			name: name,
 			get units() {
 				return units;
 			},
-			unit: function(x, y, def) {
+			get energy() {
+				return energy;
+			},
+			set energy(num) {
+				energy = num;
+				var energyMsg = Message("energy");
+				energyMsg.energy = energy;
+				player.send(energyMsg);
+			},
+			unit: function(x, y, def, freebie) {
 				if(units.length > player.unitCap) {
 					//if(game.players[0] === player) {}
 						//ui.alert("Unit cap reached (100)");
 					return;
 				}
-				if(player.credits >= def.cost) {
+				if(freebie || player.credits >= def.cost) {
 					var u = addUnit(x, y, def);
-					player.credits -= def.cost;
+					if(!freebie) {
+						player.credits -= def.cost;						
+					}
+					if(def.upkeep != null) {
+						player.energy += def.upkeep;
+					}
 					(function(unit) {
 						unit.on("position", function(position) {
 							var data = {
@@ -67,10 +83,10 @@ exports.Player = function(name, game, connection, id) {
 			getUnit: function(id) {
 				var ret = null;
 				units.each(function() {
-					console.log(this.id + " ? " + id);
+					//console.log(this.id + " ? " + id);
 					if(this.id === id) {
 						ret = this;
-						console.log("i have this unit in my inventory");
+						//console.log("i have this unit in my inventory");
 					}
 					return true;
 				});
@@ -111,7 +127,7 @@ exports.Player = function(name, game, connection, id) {
 			player.built++;
 			return unit;
 		};
-		console.log(player.id);	
+		//console.log(player.id);	
 		/*
 	var p1 = game.spiral(13, {X: x, Y: y});
 	for( var i = 0; i < 13; i++) {
