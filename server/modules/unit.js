@@ -10,7 +10,7 @@
 		optional moveDuration: int (ms)
 	}
 */
-var unitId = 0;
+var unitId = 1;
 var tileSize = 32;
 var Events = require('./events.js'),
 	Message = require('./message.js').Message,
@@ -21,6 +21,7 @@ var Events = require('./events.js'),
 exports.Unit = function(tx, ty, unitObject, game) {
 	var x = tx,
 		y = ty,
+		lastTarget = null,
 		angle = 0,
 		cannonAngle = 0,
 		fireTime = 0,
@@ -41,14 +42,14 @@ exports.Unit = function(tx, ty, unitObject, game) {
 			ty = nty;
 			x = ntx * tileSize;
 			y = nty * tileSize;
-			/*if(collide) {
-				if(game.collisionMap[tx][ty] === collider) {					
+			if(collide) {
+				if(game.collisionMap[tx][ty] > 0) {					
 					unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
 					return true;
 				} else {
-					game.collisionMap[tx][ty] = collider;
+					game.collisionMap[tx][ty] = unit.id;
 				}
-			}*/
+			}
 			return false;
 		},
 		followPath = function(foundPath) {
@@ -127,11 +128,13 @@ exports.Unit = function(tx, ty, unitObject, game) {
 						game.unitMap[tx + 1][ty] = null;
 						game.unitMap[tx + 1][ty + 1] = null;
 					}
+					unit.fire("death");
 					if(unit.ondeath) { unit.ondeath(unitObject); }
 				}
 			},
 			hit: function(damage) {
 				health -= damage;
+				unit.fire("health", health);
 				if(!unit.dead && health < 0) {
 					unit.die();
 					return true;
@@ -167,20 +170,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					unit.rallyPoint = dest;
 				}
 			},
-			click: function(clickx, clicky) {
-				var sx = x - game.map.offset.X * tileSize,
-					sy = y - game.map.offset.Y * tileSize,
-					unitSize = unitObject.big ? 64 : 32;
-				if( clickx > sx &&
-					clickx < sx + unitSize &&
-					clicky > sy &&
-					clicky < sy + unitSize) {
-					unit.fire("click");
-					return true;
-				}
-				return false;
-			},
 			update: function() {
+				if(unit.dead) {
+					console.log("ghost unit");
+				}
 				var update = null;
 				if (unit.owner.energy < 0 && !unitObject.mobile) {
 					unit.badge = "⚡";
@@ -238,14 +231,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					//need to link units to their map coordinates for targeting to avoid looping every frame
 					var target = game.getClosestUnit(unit.position, unit.owner.id, range);
 
-					if(target && (!unit.target || target.position.X !== unit.target.X && target.position.Y !== unit.target.Y)) {
-						unit.target = target.position;
-						var targetMsg = Message("target");
-						targetMsg.id = unit.id;
-						targetMsg.target = unit.target;
-						console.log(targetMsg.serialized);
-						//unit.owner.send(targetMsg);
-						game.broadcast(targetMsg);
+					if(target !== lastTarget) {
+						unit.target = target;
+						unit.fire("target", target);
+						lastTarget = target;
 					}
 					/*game.units.each(function() {
 						if(this.owner.id !== unit.owner.id && this.isInside(rangeBox, true)) {
@@ -254,16 +243,22 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					});*/
 					var now = (new Date()).getTime();
 					//aim cannon
-					if(unit.target) {
-						cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
+					if(unit.target) {						
 						if(now - fireTime > loadTime) {
 						/*	var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
 							b.owner = unit;
 							game.root.add(b);*/
+							(function(start, end, damage) {
+								var delay = bt.Vec.distance(start, end) * 100;
+								setTimeout(function() {
+									var u = game.collisionMap[end.X][end.Y];
+									if(u > 0) {
+										game.getUnit(null, u).hit(damage);
+									}
+								}, delay);
+							}({X: tx, Y: ty}, unit.target.position, unitObject.damage || 10));
 							fireTime = now;
 						}
-					} else {
-						cannonAngle = 0;
 					}
 				}
 				return update;
@@ -280,12 +275,12 @@ exports.Unit = function(tx, ty, unitObject, game) {
 		get: function() { return kills;}
 	});
 	
-	game.collisionMap[tx][ty] = collider;
+	game.collisionMap[tx][ty] = unit.id;
 	game.unitMap[tx][ty] = unit;
 	if(unitObject.big) {
-		game.collisionMap[tx][ty + 1] = collider;
-		game.collisionMap[tx + 1][ty] = collider;
-		game.collisionMap[tx + 1][ty + 1] = collider;
+		game.collisionMap[tx][ty + 1] = unit.id;
+		game.collisionMap[tx + 1][ty] = unit.id;
+		game.collisionMap[tx + 1][ty + 1] = unit.id;
 
 		game.unitMap[tx][ty + 1] = unit;
 		game.unitMap[tx + 1][ty] = unit;

@@ -19,7 +19,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 		fireTime = 0,
 		kills = 0,
 		incomeTime = 0,
-		health = unitObject.health || 100,
+		//health = unitObject.health || 100,
 		loadTime = unitObject.loadTime || null,
 		mode = Unit.GUARD,
 		collider = unitObject.collision || collision.UNIT,
@@ -52,6 +52,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 			}
 		},
 		unit = {
+			health: unitObject.health || 100,
 			mobile: unitObject.mobile,
 			target: null,
 			targetUnit: null,
@@ -68,9 +69,6 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 			get idle() {
 				return  path.length === 0 &&
 						!unit.target
-			},
-			get health() {
-				return health;
 			},
 			setPath: function(newPath) {
 				followPath(newPath);
@@ -106,12 +104,12 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 				}
 			},
 			hit: function(damage) {
-				health -= damage;
+				/*unit.health -= damage;
 				if(!unit.dead && health < 0) {
 					unit.die();
 					return true;
 				}
-				return false;
+				return false;*/
 			},
 			isInside: function(rect, noffset) {
 				var ox = game.map.offset.X * tileSize, oy = game.map.offset.Y * tileSize;
@@ -154,6 +152,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 				setTile(pos.X, pos.Y);
 			},
 			update: function() {
+
 				if (unit.owner.energy < 0 && !unitObject.mobile) {
 					unit.badge = "⚡";
 				} else {
@@ -230,7 +229,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 		};
 	Object.defineProperty( unit, "position", { get: function() { return { X: x,  Y: y}; }});
 	Object.defineProperty( unit, "tile", { get: function() { return { X: tx,  Y: ty}; }});
-	Object.defineProperty( unit, "percent", { get: function() { return health / unitObject.health; }});
+	Object.defineProperty( unit, "percent", { get: function() { return unit.health / unitObject.health; }});
 	Object.defineProperty( unit, "kills", {
 		get: function() { return kills;}
 	});

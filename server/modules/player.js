@@ -42,16 +42,19 @@ exports.Player = function(name, game, connection, id) {
 					if(def.upkeep != null) {
 						player.energy += def.upkeep;
 					}
+					function unitPosition(unit) {
+						var data = {
+							type: "position",
+							unit: unit,
+							data: {
+								position: unit.position
+							}
+						};
+						player.fire("unit-update", data);
+					}
 					(function(unit) {
 						unit.on("position", function(position) {
-							var data = {
-								type: "position",
-								unit: unit,
-								data: {
-									position: position
-								}
-							};
-							player.fire("unit-update", data);
+							unitPosition(unit);
 						});
 						unit.on("path", function(path) {
 							var data = {
@@ -63,8 +66,44 @@ exports.Player = function(name, game, connection, id) {
 							};
 							player.fire("unit-update", data);
 						});
-
+						unit.on("target", function(target) {
+							var data = {
+								type: "target",
+								unit: unit,
+								data: {
+									target: target ? target.id : -1,
+									position: target? target.position : -1
+								}
+							};
+							player.fire("unit-update", data);
+						});
+						unit.on("health", function(health) {
+							var data = {
+								type: "health",
+								unit: unit,
+								data: { 
+									health: health
+								}
+							};
+							player.fire("unit-update", data);
+						});
+						unit.on("death", function() {
+							/*for(var i = units.length -1; i >= 0; --i) {
+								if(units[i] === unit) {
+									console.log("removed unit from player");
+									units.splice(i, 1);
+									break;
+								}
+							}*/
+							units.remove(unit);
+							var data = {
+								type: "death",
+								unit: unit								
+							};							
+							player.fire("unit-update", data);
+						})
 					}(u));
+					unitPosition(u);
 					return u; 
 				} else {
 					//if(game.players[0] === player) {}
@@ -101,6 +140,10 @@ exports.Player = function(name, game, connection, id) {
 						//	playTime = (seconds / 60 | 0) + " minutes and " + (seconds % 60 | 0) + " seconds";
 						//ui.modalMessage = "☠ " + name + " was defeated. Playtime: " + playTime;
 						console.log("player " + player.id + " was defeated.");
+						var defeatMsg = Message("defeat");
+						defeatMsg.id = player.id;
+						defeatMsg.name = player.name;						
+						game.broadcast(defeatMsg);
 					}
 				}
 				units.each(function(){

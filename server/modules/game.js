@@ -57,7 +57,9 @@ var map = procedural.noiseMap(128, 128, 40, 4),
         unitUpdate: function(data) {
             //check who can see me
             var unitUpdate = Message(data.type);
-            unitUpdate.eat(data.data);
+            if(data.data) {
+                unitUpdate.eat(data.data);
+            }
             unitUpdate.id = data.unit.id;
             unitUpdate.owner = data.unit.owner.id;            
             for(var i = 0; i < players.length; i++) {
@@ -99,14 +101,17 @@ var map = procedural.noiseMap(128, 128, 40, 4),
                     for(var y = rangeBox.top; y < rangeBox.bottom; y++) {
                         var unit;
                         try {
-                            unit = game.unitMap[position.X + x][position.Y + y];
+                            unit = game.collisionMap[position.X + x][position.Y + y];
                         } catch(e) {
                             unit = null;
                         }
                         
-                        if(unit && unit.owner.id !== excludeOwner) {
-                            console.log("unit found");
-                            return unit;
+                        if(unit > 0) {
+                            var u = game.getUnit(null, unit);
+                            if(u && u.owner.id !== excludeOwner) {
+                                //console.log(u.position);
+                                return u;                                
+                            }
                         }
                     }
                 }

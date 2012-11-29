@@ -61,7 +61,7 @@ socket = new WebSocket(server, "tt.0");
                 netId = dataObject.id;
                 netName = dataObject.name;
                 game.run();            
-                socket.send('{"type": "units", "id": ' + netId + '}');
+                //socket.send('{"type": "units", "id": ' + netId + '}');
             break;
             case "position":
                 var unit = game.getUnit(dataObject.id);
@@ -71,11 +71,22 @@ socket = new WebSocket(server, "tt.0");
                     socket.send('{"type": "unit", "id": ' + dataObject.id + '}');
                 }
             break;
-            case "target":
-                console.log(dataObject);
+            case "health":
                 var unit = game.getUnit(dataObject.id);
                 if(unit) {
-                    unit.target = { X: dataObject.target.X * tileSize, Y: dataObject.target.Y * tileSize };
+                    unit.health = dataObject.health;
+                }
+            break;
+            case "death":
+                var unit = game.getUnit(dataObject.id);
+                if(unit) {
+                    unit.die();
+                }
+            break;
+            case "target":                
+                var unit = game.getUnit(dataObject.id);
+                if(unit) {
+                    unit.target = { X: dataObject.position.X * tileSize, Y: dataObject.position .Y * tileSize };
                 }
             break;
             case "unit":
@@ -83,7 +94,12 @@ socket = new WebSocket(server, "tt.0");
                 if(unit) {
                     unit.syncPosition(dataObject.position);
                 } else {
-                    unit = game.getPlayer(dataObject.owner).unit(dataObject.position.X, dataObject.position.Y, def[dataObject.name], dataObject.id);   
+                    var p = game.getPlayer(dataObject.owner);
+                    if(p) {
+                        unit = p.unit(dataObject.position.X, dataObject.position.Y, def[dataObject.name], dataObject.id);       
+                    } else {
+                        console.log("got unit info, but can't find player it belongs to.");
+                    }                
                     //game.players[dataObject.owner].
                 }
                 if(dataObject.path && dataObject.path.length > 0) {
