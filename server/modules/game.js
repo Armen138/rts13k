@@ -9,13 +9,22 @@ var procedural = require('./procedural'),
 var map = procedural.noiseMap(128, 128, 40, 4),
     players = [],
     units = Node(),
+    positions = [
+        {X: 10, Y: 10},
+        {X: 10, Y: 118},
+        {X: 118, Y: 118},
+        {X: 118, Y: 10}
+    ],
     game = {
         get players(){
             return players;
         },
         update: function() {
             for(var i = 0; i < players.length; i++) {
-                players[i].update();
+                if(!players[i].defeated) {
+                    players[i].update();    
+                }
+                
             }
         },
         broadcast: function(msg) {
@@ -43,16 +52,24 @@ var map = procedural.noiseMap(128, 128, 40, 4),
         },
         addPlayer: function(name, connection) {
             var player = Player(name, game, connection, players.length);
+            var p1 = game.spiral(13, positions[players.length]);
             players.push(player);
             player.on("unit-update", game.unitUpdate);
-            var p1 = game.spiral(13, {X: 10, Y: 10});
-
+            
             for( var i = 0; i < 13; i++) {
                 //addUnit(p1[i].X, p1[i].Y);
                 units.add(player.unit(p1[i].X, p1[i].Y, definitions.tank, true));
             }            
             //units.add(players[origin].unit(10, 10, definitions.tank));
             return player;
+        },
+        removePlayer: function(player) {
+            for(var i = 0; i < players.length; i++) {
+                if(players[i] === player) {
+                    players.splice(i, 1);
+                    break;
+                }
+            }
         },
         unitUpdate: function(data) {
             //check who can see me

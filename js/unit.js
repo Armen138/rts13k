@@ -93,7 +93,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 				if(!unit.dead) {
 					unit.dead = true;
 					unit.owner.deaths++;
-					if(unitObject.upkeep) { unit.owner.energy -= unitObject.upkeep };
+					//if(unitObject.upkeep) { unit.owner.energy -= unitObject.upkeep };
 					game.collisionMap[tx][ty] = collision.PASSABLE;
 					if(unitObject.big) {
 						game.collisionMap[tx][ty + 1] = collision.PASSABLE;
@@ -209,7 +209,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 					});*/
 					var now = (new Date()).getTime();
 					//aim cannon
-					if(unit.target) {
+					if(unit.target && !isNaN(unit.target.X) && !isNaN(unit.target.Y)) {						
 						cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
 						if(now - fireTime > loadTime) {
 							var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);

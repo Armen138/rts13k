@@ -115,18 +115,24 @@ var ttServer = (function() {
                         break;
                         case "build":
                             var definition = units[data.name];
-                            var unit = player.unit(data.position.X, data.position.Y, definition);
-                            if(unit && unit.mobile && data.destination) {
-                                unit.go(data.position);
+                            if(game.legalPosition(data.position, definition)) {
+                                var unit = player.unit(data.position.X, data.position.Y, definition);
+                                if(unit && unit.mobile && data.destination) {
+                                    unit.go(data.position);
+                                }
+                                if(unit) {
+                                    var unitMsg = Message("unit");
+                                    unitMsg.eat(unit.serialized);
+                                    connection.sendUTF(unitMsg.serialized);
+                                }
+                                var creditsMsg = Message("credits");
+                                creditsMsg.credits = player.credits;
+                                player.send(creditsMsg.serialized);                                
+                            } else {
+                                var errorMsg = Message("error");
+                                errorMsg.message = "You can't build that there.";
+                                player.send(errorMsg);
                             }
-                            if(unit) {
-                                var unitMsg = Message("unit");
-                                unitMsg.eat(unit.serialized);
-                                connection.sendUTF(unitMsg.serialized);
-                            }
-                            var creditsMsg = Message("credits");
-                            creditsMsg.credits = player.credits;
-                            connection.sendUTF(creditsMsg.serialized);
                         break;
                         default:
                             connection.sendUTF(message.utf8Data.toUpperCase());   
@@ -139,6 +145,12 @@ var ttServer = (function() {
                 }
             });
             connection.on('close', function(reasonCode, description) {
+                var disconnectMsg = Message("disconnect");
+                disconnectMsg.name = player.name;
+                disconnectMsg.id = player.id;
+                game.broadcast(disconnectMsg.serialized);
+                player.die();
+                //game.removePlayer(player);
                 console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
             });            
         },

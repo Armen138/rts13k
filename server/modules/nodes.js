@@ -15,6 +15,18 @@ exports.Node = function() {
 			},
 			enumerable: true
 		},
+		reverse: {
+			value: function(func) {
+				var stop = false;
+				for(var i = children.length -1; i >= 0; --i) {
+					stop = func.apply(children[i]);
+					if(stop) {
+						break;
+					}
+				}
+			},
+			enumerable: true
+		},		
 		find: {
 			value: function(key, value) {
 				for(var i = 0; i < children.length; i++) {

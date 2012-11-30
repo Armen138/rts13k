@@ -50,8 +50,8 @@ window.addEventListener("load", function() {
 	menu.click('connect', function() {
 		menu.hide('menu');
 		menu.show('logbook');
-		game.connect("ws://armen138.server.jit.su");
-		//game.connect("ws://localhost:8080");
+		//game.connect("ws://armen138.server.jit.su");
+		game.connect("ws://localhost:8080");
 	});		
 	menu.click('shortcuts', function() {
 		menu.hide('shortcuts');

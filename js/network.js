@@ -18,8 +18,13 @@ socket = new WebSocket(server, "tt.0");
             case "unitreport":
                 for(var i = 0; i < dataObject.units.length; i++) {
                     console.log("unit id: " + dataObject.units[i].id);
-                    var unit = game.getPlayer(dataObject.units[i].owner).unit(dataObject.units[i].position.X, dataObject.units[i].position.Y, def[dataObject.units[i].name], dataObject.units[i].id);
-                    if(dataObject.units[i].path) {
+                    var unit = game.getUnit(dataObject.id);
+                    if(!unit) {
+                        unit = game.getPlayer(dataObject.units[i].owner).unit(dataObject.units[i].position.X, dataObject.units[i].position.Y, def[dataObject.units[i].name], dataObject.units[i].id);
+                    } else {
+                        unit.syncPosition(dataObject.units[i].position);
+                    }
+                    if(dataObject.units[i].path && dataObject.units[i].path.length > 0) {
                         unit.setPath(dataObject.units[i].path);
                     }
                 }
@@ -39,7 +44,7 @@ socket = new WebSocket(server, "tt.0");
                 if(dataObject.id !== netId) {
                     console.log("creating player object for id: " + dataObject.id);
                     game.players.push(Player(10, 10, Player.modes.NETWORK, 0, dataObject.id, dataObject.name));
-                    socket.send('{"type": "units", "id": ' + dataObject.id + '}'); 
+                    //socket.send('{"type": "units", "id": ' + dataObject.id + '}'); 
                 }
             break;
             case "chat":
@@ -80,7 +85,10 @@ socket = new WebSocket(server, "tt.0");
             case "death":
                 var unit = game.getUnit(dataObject.id);
                 if(unit) {
+                    console.log("killed unit " + dataObject.id);
                     unit.die();
+                } else {
+                    console.log("tried to kill unit, but couldn't find it: " + dataObject.id);
                 }
             break;
             case "target":                
@@ -96,11 +104,11 @@ socket = new WebSocket(server, "tt.0");
                 } else {
                     var p = game.getPlayer(dataObject.owner);
                     if(p) {
+                        console.log("foreign unit: " + dataObject.id);
                         unit = p.unit(dataObject.position.X, dataObject.position.Y, def[dataObject.name], dataObject.id);       
                     } else {
                         console.log("got unit info, but can't find player it belongs to.");
-                    }                
-                    //game.players[dataObject.owner].
+                    }                                    
                 }
                 if(dataObject.path && dataObject.path.length > 0) {
                     unit.setPath(dataObject.path);

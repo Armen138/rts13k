@@ -1,11 +1,11 @@
 var Node = require('./nodes.js').Node,
 	Message = require('./message.js').Message,
 	Events = require('./events.js'),
-	Unit = require('./unit.js').Unit,
-	energy = 0;
+	Unit = require('./unit.js').Unit;
 	//def = require('./modules/definitions.js').units;
 exports.Player = function(name, game, connection, id) {
 	var ai = null,
+		energy = 0,
 		player = {			
 			id: id,
 			//energy: 0,
@@ -32,6 +32,9 @@ exports.Player = function(name, game, connection, id) {
 				if(units.length > player.unitCap) {
 					//if(game.players[0] === player) {}
 						//ui.alert("Unit cap reached (100)");
+						var errorMsg = Message("error");
+						errorMsg.message = "Unit cap reached";
+						player.send(errorMsg);						
 					return;
 				}
 				if(freebie || player.credits >= def.cost) {
@@ -106,6 +109,9 @@ exports.Player = function(name, game, connection, id) {
 					unitPosition(u);
 					return u; 
 				} else {
+					var errorMsg = Message("error");
+					errorMsg.message = "You can't afford that";
+					player.send(errorMsg);
 					//if(game.players[0] === player) {}
 						//ui.alert("You can't afford that.");
 				}
@@ -130,6 +136,13 @@ exports.Player = function(name, game, connection, id) {
 					return true;
 				});
 				return ret;
+			},
+			die: function() {
+				units.reverse(function() {
+					console.log("killed unit " + this.id);
+					this.die();
+				});
+				player.defeated = true;
 			},
 			update: function() {
 				var now = (new Date()).getTime();								

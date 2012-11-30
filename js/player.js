@@ -15,11 +15,11 @@ var Player = function(x, y, inputMode, credits, id, name) {
 				return units;
 			},
 			unit: function(x, y, def, id) {
-				if(units.length > player.unitCap) {
+				/*if(units.length > player.unitCap) {
 					if(game.players[0] === player) 
 						ui.alert("Unit cap reached (100)");
 					return;
-				}
+				}*/
 				//if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def, id);
 					//player.credits -= def.cost;
@@ -38,9 +38,9 @@ var Player = function(x, y, inputMode, credits, id, name) {
 				}
 				if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def);
-					if(def.upkeep != null) {
+					/*if(def.upkeep != null) {
 						player.energy += def.upkeep;
-					}
+					}*/
 					/*if(def.cost != null) {
 						player.credits -= def.cost;
 					}*/
@@ -113,9 +113,13 @@ var Player = function(x, y, inputMode, credits, id, name) {
             	deadunits.push(this);
 			}
 		});
-        for(var i = deadunits.length - 1; i >= 0; --i) {
+        /*for(var i = deadunits.length - 1; i >= 0; --i) {
 			units.remove(deadunits[i]);
 			game.units.remove(deadunits[i]);
+        }*/
+        for(var i = 0; i < deadunits.length; i++) {
+			units.remove(deadunits[i]);
+			game.units.remove(deadunits[i]);        	
         }
 	};
 
