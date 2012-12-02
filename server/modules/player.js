@@ -28,6 +28,9 @@ exports.Player = function(name, game, connection, id) {
 				energyMsg.energy = energy;
 				player.send(energyMsg);
 			},
+			kick: function() {
+				connection.close();
+			},
 			unit: function(x, y, def, freebie) {
 				if(units.length > player.unitCap) {
 					//if(game.players[0] === player) {}
@@ -45,19 +48,20 @@ exports.Player = function(name, game, connection, id) {
 					if(def.upkeep != null) {
 						player.energy += def.upkeep;
 					}
-					function unitPosition(unit) {
+					function unitPosition(unit, position) {
 						var data = {
 							type: "position",
 							unit: unit,
 							data: {
-								position: unit.position
+								position: unit.position,
+								path: unit.position.path
 							}
 						};
 						player.fire("unit-update", data);
 					}
 					(function(unit) {
 						unit.on("position", function(position) {
-							unitPosition(unit);
+							unitPosition(unit, position);
 						});
 						unit.on("path", function(path) {
 							var data = {

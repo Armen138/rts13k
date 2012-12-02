@@ -2,7 +2,7 @@ var network = {};
 network.connect = function(server) {
 socket = new WebSocket(server, "tt.0");
     socket.addEventListener("open", function(event) {      
-      	menu.log("connected");
+      	//game.log.info("connected");
       	socket.send('{"type": "map"}');
         socket.send('{"type": "user", "name": "Guest"}');
     });
@@ -15,7 +15,7 @@ socket = new WebSocket(server, "tt.0");
         }
     	
         switch(dataObject.type) {
-            case "unitreport":
+            case "unitreport":                
                 for(var i = 0; i < dataObject.units.length; i++) {
                     console.log("unit id: " + dataObject.units[i].id);
                     var unit = game.getUnit(dataObject.id);
@@ -39,16 +39,28 @@ socket = new WebSocket(server, "tt.0");
             case "map":
                 game.mapData = dataObject.map;
             break;
+            case "disconnect":
+                game.log.info("Player " + dataObject.name + " has left the game");
+            break;
+            case "defeat":
+                game.log.info("Player " + dataObject.name + " was defeated");
+            break;
             case "connect":
-                menu.log("Player " + dataObject.name + " has joined the game");
+                game.log.info("Player " + dataObject.name + " has joined the game");
                 if(dataObject.id !== netId) {
                     console.log("creating player object for id: " + dataObject.id);
-                    game.players.push(Player(10, 10, Player.modes.NETWORK, 0, dataObject.id, dataObject.name));
-                    //socket.send('{"type": "units", "id": ' + dataObject.id + '}'); 
+                    game.players.push(Player(10, 10, Player.modes.NETWORK, 0, dataObject.id, dataObject.name));                    
                 }
             break;
             case "chat":
-                menu.log("[" + dataObject.name + "] " + dataObject.msg);
+                game.log.message("<" + dataObject.name + "> " + dataObject.msg);
+                break;
+            case "error":
+                if(game.log) {
+                    game.log.error(dataObject.message);    
+                } else {
+                    alert(dataObject.message);
+                }                
                 break;
             case "player":
                 game.init(0);
@@ -94,7 +106,7 @@ socket = new WebSocket(server, "tt.0");
             case "target":                
                 var unit = game.getUnit(dataObject.id);
                 if(unit) {
-                    unit.target = { X: dataObject.position.X * tileSize, Y: dataObject.position .Y * tileSize };
+                    unit.target = game.getUnit(dataObject.target);//{ X: dataObject.position.X * tileSize, Y: dataObject.position .Y * tileSize };
                 }
             break;
             case "unit":
@@ -123,18 +135,23 @@ socket = new WebSocket(server, "tt.0");
                 }                
             break;
             default:
-                menu.log("Server Says: " + event.data);
+                game.log.info("Server Says: " + event.data);
             break;    
         }        
     });
 
         // Display any errors that occur
     socket.addEventListener("error", function(event) {
-	    menu.log("Error: " + event);
+	    game.log.error("Error: " + event);
     });
 
     socket.addEventListener("close", function(event) {
-      	menu.log("Not Connected/Disconnected");
+        if(game.log) {
+            game.log.error("Disconnected");    
+        } else {
+            alert("disconnected!");
+        }
+      	
     });
 
     network.chat = function(msg) {

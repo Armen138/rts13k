@@ -3,7 +3,8 @@ var procedural = require('./procedural'),
     definitions = require('./definitions').units,
     Node = require('./nodes.js').Node,
     Message = require('./message.js').Message,
-    collision = require('./collision');
+    collision = require('./collision'),
+    bt = require('./basictypes.js');
 
 
 var map = procedural.noiseMap(128, 128, 40, 4),
@@ -23,6 +24,8 @@ var map = procedural.noiseMap(128, 128, 40, 4),
             for(var i = 0; i < players.length; i++) {
                 if(!players[i].defeated) {
                     players[i].update();    
+                } else {
+                    players[i].kick();
                 }
                 
             }
@@ -43,17 +46,39 @@ var map = procedural.noiseMap(128, 128, 40, 4),
         getPlayers: function() {
             var serializedPlayers = [];
             for(var i = 0; i < players.length; i++) {
-                serializedPlayers.push({
-                    "name" : players[i].name,
-                    "id": players[i].id
-                });
+                if(!players[i].defeated) {
+                    serializedPlayers.push({
+                        "name" : players[i].name,
+                        "id": players[i].id
+                    });                    
+                }
             }
             return serializedPlayers;
         },
         addPlayer: function(name, connection) {
-            var player = Player(name, game, connection, players.length);
-            var p1 = game.spiral(13, positions[players.length]);
-            players.push(player);
+            playerId = 0;
+            for(var i = 0; i < players.length; i++) {
+                if(players[i].defeated) {
+                    playerId = i;
+                }
+            }
+            if(playerId === 0) {
+                playerId = players.length;
+            }
+            var player = Player(name, game, connection, playerId);
+            var p1 = game.spiral(13, positions[playerId]);
+            players[playerId] = player;
+            /*var playerAdded = false;
+            for(var i = 0; i < players.length; i++) {
+                if(players[i].defeated) {
+                    players[i] = player;
+                    playerAdded = true;
+                }
+            }
+            if(!playerAdded) {
+                players.push(player);    
+            }*/
+            
             player.on("unit-update", game.unitUpdate);
             
             for( var i = 0; i < 13; i++) {
@@ -66,7 +91,8 @@ var map = procedural.noiseMap(128, 128, 40, 4),
         removePlayer: function(player) {
             for(var i = 0; i < players.length; i++) {
                 if(players[i] === player) {
-                    players.splice(i, 1);
+                    //players.splice(i, 1);
+
                     break;
                 }
             }
@@ -110,30 +136,39 @@ var map = procedural.noiseMap(128, 128, 40, 4),
             //return unit;
             return null;                
         },
-        getClosestUnit: function(position, excludeOwner, range) {
-            var level = range;
-            //for(var level = 1; level < range; level++) {
-                rangeBox = {top: -1 * level, left: -1 * level, right: level , bottom: level };
-                for(var x = rangeBox.left; x < rangeBox.right; x++) {
-                    for(var y = rangeBox.top; y < rangeBox.bottom; y++) {
-                        var unit;
-                        try {
-                            unit = game.collisionMap[position.X + x][position.Y + y];
-                        } catch(e) {
-                            unit = null;
-                        }
-                        
-                        if(unit > 0) {
-                            var u = game.getUnit(null, unit);
-                            if(u && u.owner.id !== excludeOwner) {
-                                //console.log(u.position);
-                                return u;                                
-                            }
+        getClosestUnit: function(position, excludeOwner, range, spec) {    
+            var closest = null;
+            var shortest = null;
+            var rangeBox = {top: -1 * range, left: -1 * range, width: range * 2 , height: range * 2 };
+            for(var x = rangeBox.left; x < rangeBox.left + rangeBox.width; x++) {
+                for(var y = rangeBox.top; y < rangeBox.top + rangeBox.height; y++) {
+                    var unit;
+                    try {
+                        unit = game.collisionMap[position.X + x][position.Y + y];
+                    } catch(e) {
+                        unit = -1;
+                    }
+                    if(x > range || y > range) {
+                        console.log("seeking targets beyond range! " + x + ", " + y + " out of " + range);
+                    }
+                    if(unit > 0) {
+                        var u = game.getUnit(null, unit);
+                        if(u && u.owner.id !== excludeOwner &&
+                            !(spec && spec !== u.spec)) {                            
+                            var dist = bt.Vec.distance(u.position, position);
+                            if(!shortest || dist < shortest) {
+                                closest = u;
+                                shortest = dist;
+                                if(u.position.X !== position.X + x) {
+                                    console.log("targetting position mismatch: " + u.position.X + ", " + u.position.Y + " vs. " + (position.X + x) + ", " + (position.Y + y));
+                                }
+                            }                               
                         }
                     }
                 }
-            //}
-            return null;
+            }
+
+            return closest;
         },
         unitMap: (function(){
             var unitMap = [];
@@ -189,15 +224,16 @@ var map = procedural.noiseMap(128, 128, 40, 4),
         },       
         legalPosition: function(position, spec) {
             if(typeof(spec.terrain) === 'number') {
-                var proximity = false;
-                units.each(function() {
-                    if(this.spec == spec && Vec.distance(this.tile, position) < 6) {
+                var proximity = (game.getClosestUnit(position, null, 6, spec) !== null);
+                
+                /*units.each(function() {
+                    if(this.spec == spec && bt.Vec.distance(this.tile, position) < 6) {
                         proximity = true;
                     }
-                });
+                });*/
                 if(proximity) return false;
                 return  (map[position.X] && map[position.X][position.Y] === spec.terrain &&
-                        (game.collisionMap[position.X][position.Y] !== collision.UNIT || collision.STRUCTURE));
+                        (game.collisionMap[position.X][position.Y] === 0));
             }    
             if(spec.big) {
                 return (map[position.X] &&

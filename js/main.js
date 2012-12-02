@@ -23,15 +23,12 @@ var menu = {
 	show: function(id) {
 		document.getElementById(id).style.display = 'block';	
 	},
-	log: function(msg) {
-		document.getElementById('logbook').innerHTML += msg + "<br/>";	
-	}
 };
 
 window.addEventListener("load", function() {
-	menu.click('play', function() {
+	/*menu.click('play', function() {
 		menu.show('difficulty');
-	});
+	});*/
 	menu.click('help', function() {
 		menu.show('shortcuts');
 	});	
@@ -49,7 +46,7 @@ window.addEventListener("load", function() {
 	});
 	menu.click('connect', function() {
 		menu.hide('menu');
-		menu.show('logbook');
+		//menu.show('logbook');
 		//game.connect("ws://armen138.server.jit.su");
 		game.connect("ws://localhost:8080");
 	});		

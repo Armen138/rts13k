@@ -37,26 +37,31 @@ exports.Unit = function(tx, ty, unitObject, game) {
 		selected = false,
 		tileTime = 0,	
 		setTile = function(ntx, nty, collide) {
-			if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
+			//if(collide)
+			game.collisionMap[tx][ty] = collision.PASSABLE;
 			tx = ntx;
 			ty = nty;
 			x = ntx * tileSize;
 			y = nty * tileSize;
-			if(collide) {
-				if(game.collisionMap[tx][ty] > 0 && (game.getUnit(unit.owner, game.collisionMap[tx][ty]).owner !== unit.owner || !game.getUnit(unit.owner, game.collisionMap[tx][ty]).mobile)) {					
-					unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);													
-					return true;
+			//if(collide) {
+				if(game.collisionMap[tx][ty] > 0) {
+					var u = game.getUnit(unit.owner, game.collisionMap[tx][ty]);
+					if(u && (u.owner !== unit.owner || !u.mobile)) {
+						unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);													
+						return true;
+					}
+				//} > 0 && (game.getUnit(unit.owner, game.collisionMap[tx][ty]).owner !== unit.owner || !game.getUnit(unit.owner, game.collisionMap[tx][ty]).mobile)) {					
 				} else {
 					game.collisionMap[tx][ty] = unit.id;
 				}
-			}
+			//}
 			return false;
 		},
 		followPath = function(foundPath) {
 			path = foundPath;
 			tileTime = (new Date()).getTime();
 			if(path.length === 0) {
-				console.log("no path!");
+				//console.log("no path!");
 			} else {
 				unit.fire("path", path);
 			}
@@ -71,6 +76,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 			badge: "",
 			team: 0,
 			dead: false,
+			cost: unitObject.cost,
 			factory: unitObject.factory,
 			get spec() {
 				return unitObject;
@@ -86,7 +92,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 				};
 			},
 			toString: function() {
-				return unit.serialized;
+				return JSON.stringify(unit.serialized);
 			},
 			get idle() {
 				return  path.length === 0 &&
@@ -101,32 +107,16 @@ exports.Unit = function(tx, ty, unitObject, game) {
 			deselect: function() {
 				selected = false;
 			},
-			/*
-			draw: function() {
-				unitObject.art(x, y, color.toString(), selected ? "yellow" : "black", angle, cannonAngle);
-				if(unit.badge !== "") {				
-					game.context.fillStyle = "black";
-					game.context.font = "10px Dejavu Sans, Arial";
-					game.context.textAlign = "left";					
-					game.context.fillText(unit.badge ,  x - game.map.offset.X * tileSize, y - game.map.offset.Y * tileSize);					
-				}
-				this.update();
-			},*/
 			die: function() {
 				if(!unit.dead) {
 					unit.dead = true;
 					unit.owner.deaths++;
 					if(unitObject.upkeep) { unit.owner.energy -= unitObject.upkeep };
 					game.collisionMap[tx][ty] = collision.PASSABLE;
-					//game.unitMap[tx][ty] = null;
 					if(unitObject.big) {
 						game.collisionMap[tx][ty + 1] = collision.PASSABLE;
 						game.collisionMap[tx + 1][ty] = collision.PASSABLE;
 						game.collisionMap[tx + 1][ty + 1] = collision.PASSABLE;
-/*
-						game.unitMap[tx][ty + 1] = null;
-						game.unitMap[tx + 1][ty] = null;
-						game.unitMap[tx + 1][ty + 1] = null;*/
 					}
 					unit.fire("death");
 					if(unit.ondeath) { unit.ondeath(unitObject); }
@@ -176,6 +166,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 				}
 			},
 			update: function() {
+				game.collisionMap[tx][ty] = unit.id;
 				if(unit.dead) {
 					console.log("ghost unit");
 				}
@@ -207,7 +198,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 									unit.fire("path", path);
 								}
 							} else {
-								unit.fire("position", to);
+								unit.fire("position", { position: to, path: path });
 							}
 							
 						}  
@@ -235,8 +226,21 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					//rangeBox = [x - range * tileSize, y - range * tileSize, range * 2 * tileSize, range * 2 * tileSize];
 					//unit.target = null;
 					//need to link units to their map coordinates for targeting to avoid looping every frame
-					var target = game.getClosestUnit(unit.position, unit.owner.id, range);
-
+					var target;
+					if(lastTarget && !lastTarget.dead && bt.Vec.distance(unit.position, lastTarget.position) < range) {
+						target = lastTarget;
+					} else {
+						target = game.getClosestUnit(unit.position, unit.owner.id, range);
+						//debug
+						/*
+						if(target !== null) {
+							var dist = bt.Vec.distance(target.position, unit.position);
+							if(dist > range) {
+								console.log("targetting bugged: claims to be within range " + range + ", but is at distance " + dist);
+							}							
+						}*/
+					}
+					
 					if(target !== lastTarget) {
 						unit.target = target;
 						unit.fire("target", target);
@@ -259,7 +263,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 								setTimeout(function() {
 									var u = game.collisionMap[end.X][end.Y];
 									if(u > 0) {
-										game.getUnit(null, u).hit(damage);
+										u = game.getUnit(null, u);
+										if(u) {
+											u.hit(damage);	
+										}										
 									}
 								}, delay);
 							}({X: tx, Y: ty}, unit.target.position, unitObject.damage || 10));

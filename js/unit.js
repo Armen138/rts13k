@@ -209,10 +209,10 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 					});*/
 					var now = (new Date()).getTime();
 					//aim cannon
-					if(unit.target && !isNaN(unit.target.X) && !isNaN(unit.target.Y)) {						
-						cannonAngle = Math.atan2((unit.target.X - x), (y - unit.target.Y) );
+					if(unit.target) { //&& !isNaN(unit.target.X) && !isNaN(unit.target.Y)) {						
+						cannonAngle = Math.atan2((unit.target.position.X - x), (y - unit.target.position.Y) );
 						if(now - fireTime > loadTime) {
-							var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
+							var b = Bullet({X: x, Y: y}, unit.target.position, unitObject.damage || 10);
 							b.owner = unit;
 							game.root.add(b);
 							fireTime = now;

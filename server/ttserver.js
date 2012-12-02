@@ -5,7 +5,8 @@ var procedural = require('./modules/procedural'),
     Node = require('./modules/nodes.js').Node,
     collision = require('./modules/collision'),
     Message = require('./modules/message').Message,
-    game = require('./modules/game').Game;
+    game = require('./modules/game').Game,
+    MAX_PLAYERS = 4;
 
 //console.log(game.addPlayer);
 
@@ -57,7 +58,14 @@ var ttServer = (function() {
             console.log(ttserver.timestamp() + ' Connection accepted.');
             connection.on('message', function(message) {
                 if (message.type === 'utf8') {
-                    var data = JSON.parse(message.utf8Data);
+                    var data;
+                    try {
+                        data = JSON.parse(message.utf8Data);
+                    } catch(e) {
+                        console.log("invalid data: " + message.utf8Data);
+                        return;
+                    }
+                    
                     //console.log('Received Message: ' + message.utf8Data);
                     switch(data.type) {
                         case "map":
@@ -72,7 +80,21 @@ var ttServer = (function() {
                             game.broadcast(chat);
                         break;
                         case "user":       
-                            var otherPlayers = game.getPlayers();    
+                            var freeSpot = false;
+                            for(var i = 0; i < game.players.length; i++) {
+                                if(game.players[i].defeated) {
+                                    freeSpot = true;
+                                }
+                            }
+                            if(game.players.length < MAX_PLAYERS) {
+                                freeSpot = true;
+                            }
+                            if(!freeSpot) {
+                                connection.sendUTF('{"type":"error", "message": "server full"}');
+                                connection.close();
+                                return;
+                            }                            
+                            var otherPlayers = game.getPlayers();
                             var name = data.name;
                             if(game.getPlayer(name) !== null) {
                                 var seq = 0;
@@ -80,7 +102,7 @@ var ttServer = (function() {
                                     seq++;
                                 }
                                 name = name + seq;                                        
-                            }
+                            }                            
                             player = game.addPlayer(name, connection);
                             var playerMsg = Message("player");
                             playerMsg.id = player.id;
@@ -107,11 +129,25 @@ var ttServer = (function() {
                             }
                             //connection.sendUTF(unitPath.serialized);
                         break;
+                        case "sell": 
+                            var unit = game.getUnit(player, data.id);
+                            if(unit) {
+                                player.credits += unit.cost / 2;
+                                unit.die();
+                            } else {
+                                console.log("trying to sell unit, but can't find it in inventory");
+                            }
+                            var creditsMsg = Message("credits");
+                            creditsMsg.credits = player.credits;
+                            player.send(creditsMsg.serialized); 
+                        break;
                         case "unit":
-                            var unitMsg = Message("unit");
                             var unit = game.getUnit(null, data.id);
-                            unitMsg.eat(unit.serialized);
-                            connection.sendUTF(unitMsg.serialized);
+                            if(unit) {
+                                var unitMsg = Message("unit");
+                                unitMsg.eat(unit.serialized);
+                                connection.sendUTF(unitMsg.serialized);
+                            }
                         break;
                         case "build":
                             var definition = units[data.name];
@@ -145,12 +181,14 @@ var ttServer = (function() {
                 }
             });
             connection.on('close', function(reasonCode, description) {
-                var disconnectMsg = Message("disconnect");
-                disconnectMsg.name = player.name;
-                disconnectMsg.id = player.id;
-                game.broadcast(disconnectMsg.serialized);
-                player.die();
-                //game.removePlayer(player);
+                
+                if(player) {
+                    var disconnectMsg = Message("disconnect");    
+                    disconnectMsg.name = player.name;
+                    disconnectMsg.id = player.id;
+                    game.broadcast(disconnectMsg.serialized);
+                    player.die();                    
+                }
                 console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
             });            
         },

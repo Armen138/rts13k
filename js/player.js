@@ -36,7 +36,7 @@ var Player = function(x, y, inputMode, credits, id, name) {
 						ui.alert("Unit cap reached (100)");					
 					return;
 				}
-				if(player.credits >= def.cost) {
+				//if(player.credits >= def.cost) {
 					var u = addUnit(x, y, def);
 					/*if(def.upkeep != null) {
 						player.energy += def.upkeep;
@@ -44,18 +44,15 @@ var Player = function(x, y, inputMode, credits, id, name) {
 					/*if(def.cost != null) {
 						player.credits -= def.cost;
 					}*/
-				} else {
+				//else {
 					//if(game.players[0] === player)
 					//	ui.alert("You can't afford that.");
-				}
+				//}
 				return u;
 			},
 			update: function() {
 				var now = (new Date()).getTime();					
-				if(ai) {
-					ai.update();
-				}				
-				if(!player.defeated && now - game.start > 1000) {
+				//if(!player.defeated && now - game.start > 1000) {
 					/*if(units.length === 0) {
 						player.defeated = true;
 						var seconds = (now - game.start) / 1000,
@@ -63,7 +60,7 @@ var Player = function(x, y, inputMode, credits, id, name) {
 						ui.modalMessage = "☠ " + name + " was defeated. Playtime: " + playTime;
 						console.log("player " + player.id + " was defeated.");
 					}*/
-				}
+				//}
 			},
 			selectTeam: function(nr) {
 				game.deselectAll();
@@ -80,8 +77,11 @@ var Player = function(x, y, inputMode, credits, id, name) {
 		name = inputMode == Player.modes.AI ? "AI" : "Human",
 		color = game.colors[player.id],
 		addUnit = function(x, y, unitdef, id) {
-			var unit = Unit(x, y, color, unitdef || def.tank, id);
+			var unit = Unit(x, y, color, unitdef || def.tank, id);			
 			if(input === 0 /* LOCAL */) {
+				if(player.units.length === 0) {
+                    game.centerOn({X: x, Y: y});
+				}
 				unit.on("click", (function(unit) {
 					return function() {
 						game.deselectAll();

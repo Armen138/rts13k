@@ -41,6 +41,9 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 		context = canvas.getContext("2d"),
 		color = ["#152568", "#CCE010", "#E6DFC8", "#7A6212"],
 		tileSet = Object.create(ns.Node(), {
+			screenSize: {
+				value: screenSize
+			},
 			at: {
 				value: function(x, y) {
 					return bt.Vector((x / tileSize + tileSet.offset.X) | 0, (y / tileSize + tileSet.offset.Y) | 0);

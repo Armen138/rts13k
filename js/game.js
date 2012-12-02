@@ -6,7 +6,7 @@ var tileSize = 32,
         count: 0,
         frames: 0,
         selectedUnits: ns.Node(),
-        mousePosition: {X: 0, Y: 0},
+        mousePosition: {X: window.innerWidth / 2, Y: window.innerHeight / 2},
         units: ns.Node(),
         enemy: ns.Node(),
         fps: 0,
@@ -50,6 +50,27 @@ var tileSize = 32,
         F1: 112
     };
 
+game.centerOn = function(position) {
+    console.log("center on " + position.X + ", " + position.Y);
+    console.log("screen size " + game.map.screenSize.X + ", " + game.map.screenSize.Y);
+    game.map.offset.X = position.X - game.map.screenSize.X / 2;
+    game.map.offset.Y = position.Y - game.map.screenSize.Y / 2;
+    if(game.map.offset.X + game.map.screenSize.X > game.map.width) {
+        game.map.offset.X = game.map.width - game.map.screenSize.X - 1;
+    }
+    if(game.map.offset.Y + game.map.screenSize.Y > game.map.width) {
+        game.map.offset.Y = game.map.height - game.map.screenSize.Y - 1;
+    }
+    if(game.map.offset.X - game.map.screenSize.X / 2 < 0) {
+        game.map.offset.X = 0;
+    }
+    if(game.map.offset.Y - game.map.screenSize.Y / 2 < 0) {
+        game.map.offset.Y = 0;
+    }    
+    console.log("actual offset " + game.map.offset.X + ", " + game.map.offset.Y);
+    game.map.draw();
+};
+
 game.getPlayer = function(id) {
     for(var i = 0; i < game.players.length; i++) {
         if(game.players[i].id === id) return game.players[i];
@@ -66,18 +87,34 @@ game.deselectAll = function() {
     });
     game.selectedUnits.clear();
 };
+
 game.sell = function(building) {
-    if(!building.dead) {
-        building.owner.credits += building.spec.cost / 2;
-        building.die();
-    }
+    network.request({
+        type: "sell",
+        id: building.id
+    });
 };
 
 game.canvasInit = function() {
     game.canvas = document.getElementById("game");
     game.context = game.canvas.getContext("2d");
     game.canvas.width = window.innerWidth;
-    game.canvas.height = window.innerHeight;    
+    game.canvas.height = window.innerHeight;   
+    game.log = NetLog(game.context, 
+        {
+            top: 0,
+            left: game.canvas.width - 400,
+            width: 400,
+            height: game.canvas.height
+        }, {
+            messageColor: "white",
+            outline: false,
+            shadow: true
+        }
+    );    
+    game.log.onMessage(function(msg) {
+        network.chat(msg);
+    });    
 }
 
 game.connect = function(server) {
@@ -122,6 +159,9 @@ game.init = function(difficulty) {
         }
     });
     document.addEventListener("keydown", function(e) {
+        if(game.log && game.log.inputMode) {
+            return;
+        }
         var nr = e.keyCode - 48;
         if(e.ctrlKey) {            
             e.preventDefault();
@@ -260,8 +300,13 @@ game.run = function() {
     }
     var now = (new Date()).getTime();
     if(game.players[0].energy < 0 && now - game.energyWarning > 10000) {
-        ui.alert("Low energy, buildings offline.");
+        if(game.log) {
+            game.log.info("Low energy, buildings offline.");    
+        }        
         game.energyWarning = now;
+    }
+    if(game.log) {
+        game.log.draw();
     }
     ui.draw();
 
