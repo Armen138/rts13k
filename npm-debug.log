@@ -1,0 +1,437 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'nodejs', '/usr/bin/npm', 'install', 'threads_a_gogo', '-g' ]
+2 info using npm@1.1.66
+3 info using node@v0.8.15
+4 verbose read json /usr/lib/package.json
+5 verbose read json /usr/lib/package.json
+6 verbose cache add [ 'threads_a_gogo', null ]
+7 silly cache add name=undefined spec="threads_a_gogo" args=["threads_a_gogo",null]
+8 verbose parsed url { pathname: 'threads_a_gogo',
+8 verbose parsed url   path: 'threads_a_gogo',
+8 verbose parsed url   href: 'threads_a_gogo' }
+9 silly lockFile f5b841d0-threads-a-gogo threads_a_gogo
+10 verbose lock threads_a_gogo /home/armen/.npm/f5b841d0-threads-a-gogo.lock
+11 silly lockFile f5b841d0-threads-a-gogo threads_a_gogo
+12 verbose addNamed [ 'threads_a_gogo', '' ]
+13 verbose addNamed [ null, '' ]
+14 silly lockFile f10f0a27-threads-a-gogo threads_a_gogo@
+15 verbose lock threads_a_gogo@ /home/armen/.npm/f10f0a27-threads-a-gogo.lock
+16 silly addNameRange { name: 'threads_a_gogo', range: '', hasData: false }
+17 verbose url raw threads_a_gogo
+18 verbose url resolving [ 'https://registry.npmjs.org/', './threads_a_gogo' ]
+19 verbose url resolved https://registry.npmjs.org/threads_a_gogo
+20 info trying registry request attempt 1 at 23:05:33
+21 verbose etag "AUW6NPC33OSOI9EOFR5EZFLSH"
+22 http GET https://registry.npmjs.org/threads_a_gogo
+23 http 304 https://registry.npmjs.org/threads_a_gogo
+24 silly registry.get cb [ 304,
+24 silly registry.get   { server: 'CouchDB/1.2.0 (Erlang OTP/R15B)',
+24 silly registry.get     etag: '"AUW6NPC33OSOI9EOFR5EZFLSH"',
+24 silly registry.get     date: 'Sun, 02 Dec 2012 04:04:56 GMT',
+24 silly registry.get     'content-length': '0' } ]
+25 verbose etag threads_a_gogo from cache
+26 silly addNameRange number 2 { name: 'threads_a_gogo', range: '', hasData: true }
+27 silly addNameRange versions [ 'threads_a_gogo',
+27 silly addNameRange   [ '0.1.0', '0.1.1', '0.1.2', '0.1.3', '0.1.4' ] ]
+28 verbose addNamed [ 'threads_a_gogo', '0.1.4' ]
+29 verbose addNamed [ '0.1.4', '0.1.4' ]
+30 silly lockFile eb1b2beb-threads-a-gogo-0-1-4 threads_a_gogo@0.1.4
+31 verbose lock threads_a_gogo@0.1.4 /home/armen/.npm/eb1b2beb-threads-a-gogo-0-1-4.lock
+32 silly lockFile e16ae838--a-gogo-threads-a-gogo-0-1-4-tgz https://registry.npmjs.org/threads_a_gogo/-/threads_a_gogo-0.1.4.tgz
+33 verbose lock https://registry.npmjs.org/threads_a_gogo/-/threads_a_gogo-0.1.4.tgz /home/armen/.npm/e16ae838--a-gogo-threads-a-gogo-0-1-4-tgz.lock
+34 verbose addRemoteTarball [ 'https://registry.npmjs.org/threads_a_gogo/-/threads_a_gogo-0.1.4.tgz',
+34 verbose addRemoteTarball   'e6cedf13e94e1c1563a2702601d4ca0effbb1f75' ]
+35 info retry fetch attempt 1 at 23:05:34
+36 verbose fetch to= /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/tmp.tgz
+37 http GET https://registry.npmjs.org/threads_a_gogo/-/threads_a_gogo-0.1.4.tgz
+38 http 200 https://registry.npmjs.org/threads_a_gogo/-/threads_a_gogo-0.1.4.tgz
+39 silly shasum updated bytes 40960
+40 silly shasum updated bytes 1054
+41 info shasum e6cedf13e94e1c1563a2702601d4ca0effbb1f75
+41 info shasum /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/tmp.tgz
+42 verbose tar unpack /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/tmp.tgz
+43 silly lockFile 664abe71-34413-0-3706062708515674-package /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/package
+44 verbose lock /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/package /home/armen/.npm/664abe71-34413-0-3706062708515674-package.lock
+45 silly gunzTarPerm modes [ '755', '644' ]
+46 silly gunzTarPerm extractEntry .npmignore
+47 silly gunzTarPerm extractEntry AUTHORS
+48 silly gunzTarPerm extractEntry benchmark/
+49 silly gunzTarPerm extractEntry benchmark/b00_fibonacci_server_no_threads.js
+50 silly gunzTarPerm extractEntry benchmark/b01_fibonacci_server_threads.js
+51 silly gunzTarPerm extractEntry benchmark/b02_fibonacci_server_threads_pool.js
+52 silly gunzTarPerm extractEntry benchmark/b03_fibonacci_server_clustered.js
+53 silly gunzTarPerm extractEntry benchmark/b04_only_quick.js
+54 silly gunzTarPerm extractEntry benchmark/doubles.c
+55 silly gunzTarPerm extractEntry benchmark/pi.c
+56 silly gunzTarPerm extractEntry benchmark/pi.js
+57 silly gunzTarPerm extractEntry benchmark/pi.rb
+58 silly gunzTarPerm extractEntry benchmark/pi_precompiled.js
+59 silly gunzTarPerm extractEntry deps/
+60 silly gunzTarPerm extractEntry deps/minifier/
+61 silly gunzTarPerm extractEntry deps/minifier/bin/
+62 silly gunzTarPerm extractEntry deps/minifier/bin/minify
+63 silly gunzTarPerm extractEntry deps/minifier/src/
+64 silly gunzTarPerm extractEntry deps/minifier/src/minify.c
+65 silly gunzTarPerm extractEntry deps/minifier/src/test
+66 silly gunzTarPerm extractEntry deps/minifier/src/test.include.c
+67 silly gunzTarPerm extractEntry deps/minifier/src/test_minifier.c
+68 silly gunzTarPerm extractEntry examples/
+69 silly gunzTarPerm extractEntry examples/demo.js
+70 silly gunzTarPerm extractEntry examples/ex01_basic.js
+71 silly gunzTarPerm extractEntry examples/ex01_basic.md
+72 silly gunzTarPerm extractEntry examples/ex02_events.js
+73 silly gunzTarPerm extractEntry examples/ex02_events.md
+74 silly gunzTarPerm extractEntry examples/ex03_ping_pong.js
+75 silly gunzTarPerm extractEntry examples/ex03_ping_pong.md
+76 silly gunzTarPerm extractEntry examples/ex04_main.js
+77 silly gunzTarPerm extractEntry examples/ex04_main.md
+78 silly gunzTarPerm extractEntry examples/ex04_worker.js
+79 silly gunzTarPerm extractEntry examples/ex04_worker.md
+80 silly gunzTarPerm extractEntry examples/ex05_pool.js
+81 silly gunzTarPerm extractEntry examples/ex05_pool.md
+82 silly gunzTarPerm extractEntry examples/ex06_complex.js
+83 silly gunzTarPerm extractEntry examples/ex06_jason.js
+84 silly gunzTarPerm extractEntry examples/ex06_jason.md
+85 silly gunzTarPerm extractEntry examples/quickIntro_blocking.js
+86 silly gunzTarPerm extractEntry examples/quickIntro_evented_childThreadCode.js
+87 silly gunzTarPerm extractEntry examples/quickIntro_fiveThreads.js
+88 silly gunzTarPerm extractEntry examples/quickIntro_loop.js
+89 silly gunzTarPerm extractEntry examples/quickIntro_multiThread.js
+90 silly gunzTarPerm extractEntry examples/quickIntro_multiThreadEvented.js
+91 silly gunzTarPerm extractEntry examples/quickIntro_oneThread.js
+92 silly gunzTarPerm extractEntry examples/quickIntro_oneThreadEvented.js
+93 silly gunzTarPerm extractEntry LICENSE
+94 silly gunzTarPerm extractEntry node_modules/
+95 silly gunzTarPerm extractEntry node_modules/JASON/
+96 silly gunzTarPerm extractEntry node_modules/JASON/AUTHORS
+97 silly gunzTarPerm extractEntry node_modules/JASON/index.js
+98 silly gunzTarPerm extractEntry node_modules/JASON/package.json
+99 silly gunzTarPerm extractEntry node_modules/JASON/readme.md
+100 silly gunzTarPerm extractEntry node_modules/JASON/test/
+101 silly gunzTarPerm extractEntry node_modules/JASON/test/test01.js
+102 silly gunzTarPerm extractEntry package.json
+103 silly gunzTarPerm extractEntry README.md
+104 silly gunzTarPerm extractEntry src/
+105 silly gunzTarPerm extractEntry src/createPool.js
+106 silly gunzTarPerm extractEntry src/createPool.js.c
+107 silly gunzTarPerm extractEntry src/events.js
+108 silly gunzTarPerm extractEntry src/events.js.c
+109 silly gunzTarPerm extractEntry src/load.js
+110 silly gunzTarPerm extractEntry src/load.js.c
+111 silly gunzTarPerm extractEntry src/queues_a_gogo.cc
+112 silly gunzTarPerm extractEntry src/thread_nextTick.js
+113 silly gunzTarPerm extractEntry src/thread_nextTick.js.c
+114 silly gunzTarPerm extractEntry src/threads_a_gogo.cc
+115 silly gunzTarPerm extractEntry test/
+116 silly gunzTarPerm extractEntry test/ab.js
+117 silly gunzTarPerm extractEntry test/test00_run_once_and_destroy.js
+118 silly gunzTarPerm extractEntry test/test01_loop_as_fast_as_possible.js
+119 silly gunzTarPerm extractEntry test/test02_loop_as_fast_as_possible.js
+120 silly gunzTarPerm extractEntry test/test03_infiniteLoopFunction.js
+121 silly gunzTarPerm extractEntry test/test04_gc_versus_not_gc.js
+122 silly gunzTarPerm extractEntry test/test05_debugLeaksNoCallbacks.js
+123 silly gunzTarPerm extractEntry test/test06_throw_from_the_thread.js
+124 silly gunzTarPerm extractEntry test/test07_sigkill.js
+125 silly gunzTarPerm extractEntry test/test08_sigkill_leaks.js
+126 silly gunzTarPerm extractEntry test/test09_throw_from_the_callback.js
+127 silly gunzTarPerm extractEntry test/test10_node_nextTick_speed.js
+128 silly gunzTarPerm extractEntry test/test11_multi_callbacks.js
+129 silly gunzTarPerm extractEntry test/test12_precompiled_vs_normal.js
+130 silly gunzTarPerm extractEntry test/test13_thread_nextTick_speed.js
+131 silly gunzTarPerm extractEntry test/test14_emit_once.js
+132 silly gunzTarPerm extractEntry test/test15_emit_ping_pong.js
+133 silly gunzTarPerm extractEntry test/test16_syntax_error_in_the_thread.js
+134 silly gunzTarPerm extractEntry test/test17_pool_pi.js
+135 silly gunzTarPerm extractEntry test/test18_pool_any_as_fast_as_possible.js
+136 silly gunzTarPerm extractEntry test/test19_pool_emit_any_all.js
+137 silly gunzTarPerm extractEntry test/test20_removeAllListeners.js
+138 silly gunzTarPerm extractEntry test/test21_emit_ping_pong_big_string.js
+139 silly gunzTarPerm extractEntry test/test22_create_destroy_loop.js
+140 silly gunzTarPerm extractEntry test/test23_create_destroy_loop.js
+141 silly gunzTarPerm extractEntry test/test24_puts.js
+142 silly gunzTarPerm extractEntry test/test25_delete_puts.js
+143 silly gunzTarPerm extractEntry test/test26_puts_with_many_args.js
+144 silly gunzTarPerm extractEntry test/test27_puts_event_loop.js
+145 silly gunzTarPerm extractEntry test/test28_puts_nextTick_loop.js
+146 silly gunzTarPerm extractEntry test/test29_puts_callback_loop.js
+147 silly gunzTarPerm extractEntry wscript
+148 verbose read json /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/package/package.json
+149 silly lockFile 664abe71-34413-0-3706062708515674-package /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/package
+150 verbose from cache /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/package/package.json
+151 verbose tar pack [ '/home/armen/.npm/threads_a_gogo/0.1.4/package.tgz',
+151 verbose tar pack   '/home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/package' ]
+152 verbose tarball /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz
+153 verbose folder /home/armen/tmp/npm-2044/1354421134413-0.3706062708515674/package
+154 silly lockFile 008349ae-threads-a-gogo-0-1-4-package-tgz /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz
+155 verbose lock /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz /home/armen/.npm/008349ae-threads-a-gogo-0-1-4-package-tgz.lock
+156 silly lockFile 008349ae-threads-a-gogo-0-1-4-package-tgz /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz
+157 silly lockFile 46795622-npm-threads-a-gogo-0-1-4-package /home/armen/.npm/threads_a_gogo/0.1.4/package
+158 verbose lock /home/armen/.npm/threads_a_gogo/0.1.4/package /home/armen/.npm/46795622-npm-threads-a-gogo-0-1-4-package.lock
+159 silly lockFile 46795622-npm-threads-a-gogo-0-1-4-package /home/armen/.npm/threads_a_gogo/0.1.4/package
+160 verbose tar unpack /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz
+161 silly lockFile 46795622-npm-threads-a-gogo-0-1-4-package /home/armen/.npm/threads_a_gogo/0.1.4/package
+162 verbose lock /home/armen/.npm/threads_a_gogo/0.1.4/package /home/armen/.npm/46795622-npm-threads-a-gogo-0-1-4-package.lock
+163 silly gunzTarPerm modes [ '755', '644' ]
+164 silly gunzTarPerm extractEntry package.json
+165 silly gunzTarPerm extractEntry .npmignore
+166 silly gunzTarPerm extractEntry README.md
+167 silly gunzTarPerm extractEntry LICENSE
+168 silly gunzTarPerm extractEntry src/events.js
+169 silly gunzTarPerm extractEntry src/load.js
+170 silly gunzTarPerm extractEntry src/createPool.js
+171 silly gunzTarPerm extractEntry src/thread_nextTick.js
+172 silly gunzTarPerm extractEntry src/events.js.c
+173 silly gunzTarPerm extractEntry src/threads_a_gogo.cc
+174 silly gunzTarPerm extractEntry src/load.js.c
+175 silly gunzTarPerm extractEntry src/queues_a_gogo.cc
+176 silly gunzTarPerm extractEntry src/createPool.js.c
+177 silly gunzTarPerm extractEntry src/thread_nextTick.js.c
+178 silly gunzTarPerm extractEntry deps/minifier/src/test.include.c
+179 silly gunzTarPerm extractEntry deps/minifier/src/test
+180 silly gunzTarPerm extractEntry deps/minifier/src/minify.c
+181 silly gunzTarPerm extractEntry deps/minifier/src/test_minifier.c
+182 silly gunzTarPerm extractEntry deps/minifier/bin/minify
+183 silly gunzTarPerm extractEntry wscript
+184 silly gunzTarPerm extractEntry AUTHORS
+185 silly gunzTarPerm extractEntry examples/demo.js
+186 silly gunzTarPerm extractEntry examples/quickIntro_oneThread.js
+187 silly gunzTarPerm extractEntry examples/ex05_pool.js
+188 silly gunzTarPerm extractEntry examples/quickIntro_multiThreadEvented.js
+189 silly gunzTarPerm extractEntry examples/quickIntro_loop.js
+190 silly gunzTarPerm extractEntry examples/quickIntro_oneThreadEvented.js
+191 silly gunzTarPerm extractEntry examples/ex03_ping_pong.js
+192 silly gunzTarPerm extractEntry examples/quickIntro_fiveThreads.js
+193 silly gunzTarPerm extractEntry examples/quickIntro_evented_childThreadCode.js
+194 silly gunzTarPerm extractEntry examples/quickIntro_blocking.js
+195 silly gunzTarPerm extractEntry examples/ex01_basic.js
+196 silly gunzTarPerm extractEntry examples/ex04_main.js
+197 silly gunzTarPerm extractEntry examples/ex06_jason.js
+198 silly gunzTarPerm extractEntry examples/ex02_events.js
+199 silly gunzTarPerm extractEntry examples/quickIntro_multiThread.js
+200 silly gunzTarPerm extractEntry examples/ex06_complex.js
+201 silly gunzTarPerm extractEntry examples/ex04_worker.js
+202 silly gunzTarPerm extractEntry examples/ex06_jason.md
+203 silly gunzTarPerm extractEntry examples/ex01_basic.md
+204 silly gunzTarPerm extractEntry examples/ex02_events.md
+205 silly gunzTarPerm extractEntry examples/ex04_main.md
+206 silly gunzTarPerm extractEntry examples/ex05_pool.md
+207 silly gunzTarPerm extractEntry examples/ex04_worker.md
+208 silly gunzTarPerm extractEntry examples/ex03_ping_pong.md
+209 silly gunzTarPerm extractEntry test/test05_debugLeaksNoCallbacks.js
+210 silly gunzTarPerm extractEntry test/ab.js
+211 silly gunzTarPerm extractEntry test/test14_emit_once.js
+212 silly gunzTarPerm extractEntry test/test15_emit_ping_pong.js
+213 silly gunzTarPerm extractEntry test/test21_emit_ping_pong_big_string.js
+214 silly gunzTarPerm extractEntry test/test22_create_destroy_loop.js
+215 silly gunzTarPerm extractEntry test/test02_loop_as_fast_as_possible.js
+216 silly gunzTarPerm extractEntry test/test25_delete_puts.js
+217 silly gunzTarPerm extractEntry test/test04_gc_versus_not_gc.js
+218 silly gunzTarPerm extractEntry test/test26_puts_with_many_args.js
+219 silly gunzTarPerm extractEntry test/test24_puts.js
+220 silly gunzTarPerm extractEntry test/test13_thread_nextTick_speed.js
+221 silly gunzTarPerm extractEntry test/test10_node_nextTick_speed.js
+222 silly gunzTarPerm extractEntry test/test00_run_once_and_destroy.js
+223 silly gunzTarPerm extractEntry test/test28_puts_nextTick_loop.js
+224 silly gunzTarPerm extractEntry test/test29_puts_callback_loop.js
+225 silly gunzTarPerm extractEntry test/test27_puts_event_loop.js
+226 silly gunzTarPerm extractEntry test/test23_create_destroy_loop.js
+227 silly gunzTarPerm extractEntry test/test20_removeAllListeners.js
+228 silly gunzTarPerm extractEntry test/test19_pool_emit_any_all.js
+229 silly gunzTarPerm extractEntry test/test07_sigkill.js
+230 silly gunzTarPerm extractEntry test/test17_pool_pi.js
+231 silly gunzTarPerm extractEntry test/test11_multi_callbacks.js
+232 silly gunzTarPerm extractEntry test/test16_syntax_error_in_the_thread.js
+233 silly gunzTarPerm extractEntry test/test12_precompiled_vs_normal.js
+234 silly gunzTarPerm extractEntry test/test08_sigkill_leaks.js
+235 silly gunzTarPerm extractEntry test/test09_throw_from_the_callback.js
+236 silly gunzTarPerm extractEntry test/test01_loop_as_fast_as_possible.js
+237 silly gunzTarPerm extractEntry test/test18_pool_any_as_fast_as_possible.js
+238 silly gunzTarPerm extractEntry test/test03_infiniteLoopFunction.js
+239 silly gunzTarPerm extractEntry test/test06_throw_from_the_thread.js
+240 silly gunzTarPerm extractEntry benchmark/pi.js
+241 silly gunzTarPerm extractEntry benchmark/b00_fibonacci_server_no_threads.js
+242 silly gunzTarPerm extractEntry benchmark/b01_fibonacci_server_threads.js
+243 silly gunzTarPerm extractEntry benchmark/pi_precompiled.js
+244 silly gunzTarPerm extractEntry benchmark/b04_only_quick.js
+245 silly gunzTarPerm extractEntry benchmark/b02_fibonacci_server_threads_pool.js
+246 silly gunzTarPerm extractEntry benchmark/b03_fibonacci_server_clustered.js
+247 silly gunzTarPerm extractEntry benchmark/pi.rb
+248 silly gunzTarPerm extractEntry benchmark/pi.c
+249 silly gunzTarPerm extractEntry benchmark/doubles.c
+250 verbose read json /home/armen/.npm/threads_a_gogo/0.1.4/package/package.json
+251 silly lockFile 46795622-npm-threads-a-gogo-0-1-4-package /home/armen/.npm/threads_a_gogo/0.1.4/package
+252 silly shasum updated bytes 38893
+253 info shasum 0b60f380f47128fc684cae0e1fdfd02214d6c91f
+253 info shasum /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz
+254 verbose from cache /home/armen/.npm/threads_a_gogo/0.1.4/package/package.json
+255 verbose chmod /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz 644
+256 verbose chown /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz [ 1000, 1000 ]
+257 silly lockFile e16ae838--a-gogo-threads-a-gogo-0-1-4-tgz https://registry.npmjs.org/threads_a_gogo/-/threads_a_gogo-0.1.4.tgz
+258 silly lockFile eb1b2beb-threads-a-gogo-0-1-4 threads_a_gogo@0.1.4
+259 silly lockFile f10f0a27-threads-a-gogo threads_a_gogo@
+260 silly resolved [ { name: 'threads_a_gogo',
+260 silly resolved     version: '0.1.4',
+260 silly resolved     main: 'build/release/threads_a_gogo.node',
+260 silly resolved     description: '██████ Simple and fast JavaScript threads for Node.js ██████',
+260 silly resolved     keywords: [ 'The', 'most', 'awesome', 'project', 'ever', 'a gogo' ],
+260 silly resolved     author:
+260 silly resolved      { name: 'Jorge Chamorro Bieling',
+260 silly resolved        email: 'jorge@jorgechamorro.com' },
+260 silly resolved     homepage: 'https://github.com/xk/node-threads-a-gogo',
+260 silly resolved     bugs:
+260 silly resolved      { url: 'http://github.com/xk/node-threads-a-gogo/issues',
+260 silly resolved        email: 'jorge@jorgechamorro.com' },
+260 silly resolved     license: 'MIT',
+260 silly resolved     repository:
+260 silly resolved      { type: 'git',
+260 silly resolved        url: 'http://github.com/xk/node-threads-a-gogo.git' },
+260 silly resolved     scripts: { install: 'node-waf configure install' },
+260 silly resolved     os: [ 'macos', 'linux', 'darwin' ],
+260 silly resolved     engines: { node: '>=0.5.1' },
+260 silly resolved     contributors: [ [Object], [Object], [Object], [Object] ],
+260 silly resolved     readme: '# Threads A GoGo for Node.js\n\nA native module for Node.js that provides an asynchronous, evented and/or continuation passing style API for moving blocking/longish CPU-bound tasks out of Node\'s event loop to JavaScript threads that run in parallel in the background and that use all the available CPU cores automatically; all from within a single Node process.\n\n## Installing the module\n\nWith [npm](http://npmjs.org/):\n\n    npm install threads_a_gogo\n\nFrom source:\n\n    git clone http://github.com/xk/node-threads-a-gogo.git\n    cd node-threads-a-gogo\n    node-waf configure install\n\nTo include the module in your project:\n\n    var threads_a_gogo= require(\'threads_a_gogo\');\n\n**You need a node with a v8 >= 3.2.4 to run this module. Any node >= 0.5.1 comes with a v8 >= 3.2.4.**\n\nThe module **runs fine, though, in any node >= 0.2.0** as long as you build it with a v8 >= 3.2.4. To do that you simply have to replace /node/deps/v8 with a newer version of v8 and recompile it (node). To get any version of node goto http://nodejs.org/dist/, and for v8 goto http://github.com/v8/v8, click on "branch", select the proper tag (>= 3.2.4), and download the .zip.\n\n## (not so) Quick Intro\n\nAfter the initialization phase of a Node program, whose purpose is to setup listeners and callbacks to be executed in response to events, the next phase, the proper execution of the program, is orchestrated by the event loop whose duty is to [juggle events, listeners and callbacks quickly and without any hiccups nor interruptions that would ruin its performance](http://youtube.com/v/D0uA_NOb0PE?autoplay=1)\n\nBoth the event loop and said listeners and callbacks run sequentially in a single thread of execution, Node\'s main thread. If any of them ever blocks, nothing else will happen for the duration of the block: no more events will be handled, no more callbacks nor listeners nor timeouts nor nextTick()ed functions will have the chance to run and do their job, because they won\'t be called by the blocked event loop, and the program will turn sluggish at best, or appear to be frozen and dead at worst.\n\n**A.-** Here\'s a program that makes Node\'s event loop spin freely and as fast as possible: it simply prints a dot to the console in each turn:\n\n    cat examples/quickIntro_loop.js\n    \n``` javascript\n(function spinForever () {\n  process.stdout.write(".");\n  process.nextTick(spinForever);\n})();\n```\n\n**B.-** Here\'s another program that adds to the one above a fibonacci(35) call in each turn, a CPU-bound task that takes quite a while to complete and that blocks the event loop making it spin slowly and clumsily. The point is simply to show that you can\'t put a job like that in the event loop because Node will stop performing properly when its event loop can\'t spin fast and freely due to a callback/listener/nextTick()ed function that\'s blocking.\n\n    cat examples/quickIntro_blocking.js\n\n``` javascript\nfunction fibo (n) {\n  return n > 1 ? fibo(n - 1) + fibo(n - 2) : 1;\n}\n\n(function fiboLoop () {\n  process.stdout.write(fibo(35).toString());\n  process.nextTick(fiboLoop);\n})();\n\n(function spinForever () {\n  process.stdout.write(".");\n  process.nextTick(spinForever);\n})();\n```\n\n**C.-** The program below uses `threads_a_gogo` to run the fibonacci(35) calls in a background thread, so Node\'s event loop isn\'t blocked at all and can spin freely again at full speed:\n\n    cat examples/quickIntro_oneThread.js\n  \n``` javascript\nfunction fibo (n) {\n  return n > 1 ? fibo(n - 1) + fibo(n - 2) : 1;\n}\n\nfunction cb (err, data) {\n  process.stdout.write(data);\n  this.eval(\'fibo(35)\', cb);\n}\n\nvar thread= require(\'threads_a_gogo\').create();\n\nthread.eval(fibo).eval(\'fibo(35)\', cb);\n\n(function spinForever () {\n  process.stdout.write(".");\n  process.nextTick(spinForever);\n})();\n```\n\n**D.-** This example is almost identical to the one above, only that it creates 5 threads instead of one, each running a fibonacci(35) in parallel and in parallel too with Node\'s event loop that keeps spinning happily at full speed in its own thread:\n\n    cat examples/quickIntro_fiveThreads.js\n  \n``` javascript\nfunction fibo (n) {\n  return n > 1 ? fibo(n - 1) + fibo(n - 2) : 1;\n}\n\nfunction cb (err, data) {\n  process.stdout.write(" ["+ this.id+ "]"+ data);\n  this.eval(\'fibo(35)\', cb);\n}\n\nvar threads_a_gogo= require(\'threads_a_gogo\');\n\nthreads_a_gogo.create().eval(fibo).eval(\'fibo(35)\', cb);\nthreads_a_gogo.create().eval(fibo).eval(\'fibo(35)\', cb);\nthreads_a_gogo.create().eval(fibo).eval(\'fibo(35)\', cb);\nthreads_a_gogo.create().eval(fibo).eval(\'fibo(35)\', cb);\nthreads_a_gogo.create().eval(fibo).eval(\'fibo(35)\', cb);\n\n(function spinForever () {\n  process.stdout.write(".");\n  process.nextTick(spinForever);\n})();\n```\n\n**E.-** The next one asks `threads_a_gogo` to create a pool of 10 background threads, instead of creating them manually one by one:\n\n    cat examples/multiThread.js\n\n``` javascript\nfunction fibo (n) {\n  return n > 1 ? fibo(n - 1) + fibo(n - 2) : 1;\n}\n\nvar numThreads= 10;\nvar threadPool= require(\'threads_a_gogo\').createPool(numThreads).all.eval(fibo);\n\nthreadPool.all.eval(\'fibo(35)\', function cb (err, data) {\n  process.stdout.write(" ["+ this.id+ "]"+ data);\n  this.eval(\'fibo(35)\', cb);\n});\n\n(function spinForever () {\n  process.stdout.write(".");\n  process.nextTick(spinForever);\n})();\n```\n\n**F.-** This is a demo of the `threads_a_gogo` eventEmitter API, using one thread:\n\n    cat examples/quickIntro_oneThreadEvented.js\n\n``` javascript\nvar thread= require(\'threads_a_gogo\').create();\nthread.load(__dirname + \'/quickIntro_evented_childThreadCode.js\');\n\n/*\n  This is the code that\'s .load()ed into the child/background thread:\n  \n  function fibo (n) {\n    return n > 1 ? fibo(n - 1) + fibo(n - 2) : 1;\n  }\n\n  thread.on(\'giveMeTheFibo\', function onGiveMeTheFibo (data) {\n    this.emit(\'theFiboIs\', fibo(+data)); //Emits \'theFiboIs\' in the parent/main thread.\n  });\n  \n*/\n\n//Emit \'giveMeTheFibo\' in the child/background thread.\nthread.emit(\'giveMeTheFibo\', 35);\n\n//Listener for the \'theFiboIs\' events emitted by the child/background thread.\nthread.on(\'theFiboIs\', function cb (data) {\n  process.stdout.write(data);\n  this.emit(\'giveMeTheFibo\', 35);\n});\n\n(function spinForever () {\n  process.stdout.write(".");\n  process.nextTick(spinForever);\n})();\n```\n\n**G.-** This is a demo of the `threads_a_gogo` eventEmitter API, using a pool of threads:\n\n    cat examples/quickIntro_multiThreadEvented.js\n\n``` javascript\nvar numThreads= 10;\nvar threadPool= require(\'threads_a_gogo\').createPool(numThreads);\nthreadPool.load(__dirname + \'/quickIntro_evented_childThreadCode.js\');\n\n/*\n  This is the code that\'s .load()ed into the child/background threads:\n  \n  function fibo (n) {\n    return n > 1 ? fibo(n - 1) + fibo(n - 2) : 1;\n  }\n\n  thread.on(\'giveMeTheFibo\', function onGiveMeTheFibo (data) {\n    this.emit(\'theFiboIs\', fibo(+data)); //Emits \'theFiboIs\' in the parent/main thread.\n  });\n  \n*/\n\n//Emit \'giveMeTheFibo\' in all the child/background threads.\nthreadPool.all.emit(\'giveMeTheFibo\', 35);\n\n//Listener for the \'theFiboIs\' events emitted by the child/background threads.\nthreadPool.on(\'theFiboIs\', function cb (data) {\n  process.stdout.write(" ["+ this.id+ "]"+ data);\n  this.emit(\'giveMeTheFibo\', 35);\n});\n\n(function spinForever () {\n  process.stdout.write(".");\n  process.nextTick(spinForever);\n})();\n```\n\n## More examples\n\nThe `examples` directory contains a few more examples:\n\n* [ex01_basic](https://github.com/xk/node-threads-a-gogo/blob/master/examples/ex01_basic.md): Running a simple function in a thread.\n* [ex02_events](https://github.com/xk/node-threads-a-gogo/blob/master/examples/ex02_events.md): Sending events from a worker thread.\n* [ex03_ping_pong](https://github.com/xk/node-threads-a-gogo/blob/master/examples/ex03_ping_pong.md): Sending events both ways between the main thread and a worker thread.\n* [ex04_main](https://github.com/xk/node-threads-a-gogo/blob/master/examples/ex04_main.md): Loading the worker code from a file.\n* [ex05_pool](https://github.com/xk/node-threads-a-gogo/blob/master/examples/ex05_pool.md): Using the thread pool.\n* [ex06_jason](https://github.com/xk/node-threads-a-gogo/blob/master/examples/ex06_jason.md): Passing complex objects to threads.\n\n## API\n\n### Module API\n``` javascript\nvar threads_a_gogo= require(\'threads_a_gogo\');\n```\n##### .create()\n`threads_a_gogo.create( /* no arguments */ )` -> thread object\n##### .createPool( numThreads )\n`threads_a_gogo.createPool( numberOfThreads )` -> threadPool object\n\n***\n### Thread API\n``` javascript\nvar thread= threads_a_gogo.create();\n```\n##### .id\n`thread.id` -> a sequential thread serial number\n##### .load( absolutePath [, cb] )\n`thread.load( absolutePath [, cb] )` -> reads the file at `absolutePath` and `thread.eval(fileContents, cb)`.\n##### .eval( program [, cb])\n`thread.eval( program [, cb])` -> converts `program.toString()` and eval()s it in the thread\'s global context, and (if provided) returns the completion value to `cb(err, completionValue)`.\n##### .on( eventType, listener )\n`thread.on( eventType, listener )` -> registers the listener `listener(data)` for any events of `eventType` that the thread `thread` may emit.\n##### .once( eventType, listener )\n`thread.once( eventType, listener )` -> like `thread.on()`, but the listener will only be called once.\n##### .removeAllListeners( [eventType] )\n`thread.removeAllListeners( [eventType] )` -> deletes all listeners for all eventTypes. If `eventType` is provided, deletes all listeners only for the event type `eventType`.\n##### .emit( eventType, eventData [, eventData ... ] )\n`thread.emit( eventType, eventData [, eventData ... ] )` -> emit an event of `eventType` with `eventData` inside the thread `thread`. All its arguments are .toString()ed.\n##### .destroy( /* no arguments */ )\n`thread.destroy( /* no arguments */ )` -> destroys the thread.\n\n***\n### Thread pool API\n``` javascript\nthreadPool= threads_a_gogo.createPool( numberOfThreads );\n```\n##### .load( absolutePath [, cb] )\n`threadPool.load( absolutePath [, cb] )` -> `thread.load( absolutePath [, cb] )` in all the pool\'s threads.\n##### .any.eval( program, cb )\n`threadPool.any.eval( program, cb )` -> like `thread.eval()`, but in any of the pool\'s threads.\n##### .any.emit( eventType, eventData [, eventData ... ] )\n`threadPool.any.emit( eventType, eventData [, eventData ... ] )` -> like `thread.emit()` but in any of the pool\'s threads.\n##### .all.eval( program, cb )\n`threadPool.all.eval( program, cb )` -> like `thread.eval()`, but in all the pool\'s threads.\n##### .all.emit( eventType, eventData [, eventData ... ] )\n`threadPool.all.emit( eventType, eventData [, eventData ... ] )` -> like `thread.emit()` but in all the pool\'s threads.\n##### .on( eventType, listener )\n`threadPool.on( eventType, listener )` -> like `thread.on()`, registers listeners for events from any of the threads in the pool.\n##### .totalThreads()\n`threadPool.totalThreads()` -> returns the number of threads in this pool: as supplied in `.createPool( number )`\n##### .idleThreads()\n`threadPool.idleThreads()` -> returns the number of threads in this pool that are currently idle (sleeping)\n##### .pendingJobs()\n`threadPool.pendingJobs()` -> returns the number of jobs pending.\n##### .destroy( [ rudely ] )\n`threadPool.destroy( [ rudely ] )` -> waits until `pendingJobs()` is zero and then destroys the pool. If `rudely` is truthy, then it doesn\'t wait for `pendingJobs === 0`.\n\n***\n### Global thread API\n\nInside every thread .create()d by threads_a_gogo, there\'s a global `thread` object with these properties:\n##### .id\n`thread.id` -> the serial number of this thread\n##### .on( eventType, listener )\n`thread.on( eventType, listener )` -> just like `thread.on()` above.\n##### .once( eventType, listener )\n`thread.once( eventType, listener )` -> just like `thread.once()` above.\n##### .emit( eventType, eventData [, eventData ... ] )\n`thread.emit( eventType, eventData [, eventData ... ] )` -> just like `thread.emit()` above.\n##### .removeAllListeners( [eventType] )\n`thread.removeAllListeners( [eventType] )` -> just like `thread.removeAllListeners()` above.\n##### .nextTick( function )\n`thread.nextTick( function )` -> like `process.nextTick()`, but twice as fast.\n\n***\n### Global puts\n\nInside every thread .create()d by threads_a_gogo, there\'s a global `puts`:\n##### puts(arg1 [, arg2 ...])\n`puts(arg1 [, arg2 ...])` -> .toString()s and prints its arguments to stdout.\n\n## Rationale\n\n[Node.js](http://nodejs.org) is the most [awesome, cute and super-sexy](http://javascriptology.com/threads_a_gogo/sexy.jpg) piece of free, open source software.\n\nIts event loop can spin as fast and smooth as a turbo, and roughly speaking, **the faster it spins, the more power it delivers**. That\'s why [@ryah](http://twitter.com/ryah) took great care to ensure that no -possibly slow- I/O operations could ever block it: a pool of background threads (thanks to [Marc Lehmann\'s libeio library](http://software.schmorp.de/pkg/libeio.html)) handle any blocking I/O calls in the background, in parallel.\n\nIn Node it\'s verboten to write a server like this:\n\n``` javascript\nhttp.createServer(function (req,res) {\n  res.end( fs.readFileSync(path) );\n}).listen(port);\n```\nBecause synchronous I/O calls **block the turbo**, and without proper boost, Node.js begins to stutter and behaves clumsily. To avoid it there\'s the asynchronous version of `.readFile()`, in continuation passing style, that takes a callback:\n\n``` javascript\nfs.readfile(path, function cb (err, data) { /* ... */ });\n```\n\nIt\'s cool, we love it (*), and there\'s hundreds of ad hoc built-in functions like this in Node to help us deal with almost any variety of possibly slow, blocking I/O.\n\n### But what\'s with longish, CPU-bound tasks?\n\nHow do you avoid blocking the event loop, when the task at hand isn\'t I/O bound, and lasts more than a few fractions of a millisecond?\n\n``` javascript\nhttp.createServer(function cb (req,res) {\n  res.end( fibonacci(40) );\n}).listen(port);\n```\n\nYou simply can\'t, because there\'s no way... well, there wasn\'t before `threads_a_gogo`.\n\n### What is Threads A GoGo for Node.js\n\n`threads_a_gogo` provides the asynchronous API for CPU-bound tasks that\'s missing in Node.js. Both in continuation passing style (callbacks), and in event emitter style (event listeners).\n\nThe same API Node uses to delegate a longish I/O task to a background (libeio) thread:\n\n`asyncIOTask(what, cb);`\n\n`threads_a_gogo` uses to delegate a longish CPU task to a background (JavaScript) thread:\n\n`thread.eval(program, cb);`\n\nSo with `threads_a_gogo` you can write:\n\n``` javascript\nhttp.createServer(function (req,res) {\n  thread.eval(\'fibonacci(40)\', function cb (err, data) {\n    res.end(data);\n  });\n}).listen(port);\n```\n\nAnd it won\'t block the event loop because the `fibonacci(40)` will run in parallel in a separate background thread.\n\n\n### Why Threads\n\nThreads (kernel threads) are very interesting creatures. They provide:\n\n1.- Parallelism: All the threads run in parallel. On a single core processor, the CPU is switched rapidly back and forth among the threads providing the illusion that the threads are running in parallel, albeit on a slower CPU than the real one. With 10 compute-bound threads in a process, the threads would appear to be running in parallel, each one on a CPU with 1/10th the speed of the real CPU. On a multi-core processor, threads are truly running in parallel, and get time-sliced when the number of threads exceed the number of cores. So with 12 compute bound threads on a quad-core processor each thread will appear to run at 1/3rd of the nominal core speed.\n\n2.- Fairness: No thread is more important than another, cores and CPU slices are fairly distributed among threads by the OS scheduler.\n\n3.- Threads fully exploit all the available CPU resources in your system. On a loaded system running many tasks in many threads, the more cores there are, the faster the threads will complete. Automatically.\n\n4.- The threads of a process share exactly the same address space, that of the process they belong to. Every thread can access every memory address within the process\' address space. This is a very appropriate setup when the threads are actually part of the same job and are actively and closely cooperating with each other. Passing a reference to a chunk of data via a pointer is many orders of magnitude faster than transferring a copy of the data via IPC.\n\n\n### Why not multiple processes.\n\nThe "can\'t block the event loop" problem is inherent to Node\'s evented model. No matter how many Node processes you have running as a [Node-cluster](http://blog.nodejs.org/2011/10/04/an-easy-way-to-build-scalable-network-programs/), it won\'t solve its issues with CPU-bound tasks.\n\nLaunch a cluster of N Nodes running the example B (`quickIntro_blocking.js`) above, and all you\'ll get is N -instead of one- Nodes with their event loops blocked and showing a sluggish performance.\n',
+260 silly resolved     readmeFilename: 'README.md',
+260 silly resolved     _id: 'threads_a_gogo@0.1.4',
+260 silly resolved     dist: { shasum: '0b60f380f47128fc684cae0e1fdfd02214d6c91f' },
+260 silly resolved     _from: 'threads_a_gogo' } ]
+261 info install threads_a_gogo@0.1.4 into /usr/lib
+262 info installOne threads_a_gogo@0.1.4
+263 verbose from cache /home/armen/.npm/threads_a_gogo/0.1.4/package/package.json
+264 info /usr/lib/node_modules/threads_a_gogo unbuild
+265 verbose read json /usr/lib/node_modules/threads_a_gogo/package.json
+266 verbose tar unpack /home/armen/.npm/threads_a_gogo/0.1.4/package.tgz
+267 silly lockFile 9dc291a7--lib-node-modules-threads-a-gogo /usr/lib/node_modules/threads_a_gogo
+268 verbose lock /usr/lib/node_modules/threads_a_gogo /home/armen/.npm/9dc291a7--lib-node-modules-threads-a-gogo.lock
+269 silly gunzTarPerm modes [ '755', '644' ]
+270 silly gunzTarPerm extractEntry package.json
+271 silly gunzTarPerm extractEntry .npmignore
+272 silly gunzTarPerm extractEntry README.md
+273 silly gunzTarPerm extractEntry LICENSE
+274 silly gunzTarPerm extractEntry src/events.js
+275 silly gunzTarPerm extractEntry src/load.js
+276 silly gunzTarPerm extractEntry src/createPool.js
+277 silly gunzTarPerm extractEntry src/thread_nextTick.js
+278 silly gunzTarPerm extractEntry src/events.js.c
+279 silly gunzTarPerm extractEntry src/threads_a_gogo.cc
+280 silly gunzTarPerm extractEntry src/load.js.c
+281 silly gunzTarPerm extractEntry src/queues_a_gogo.cc
+282 silly gunzTarPerm extractEntry src/createPool.js.c
+283 silly gunzTarPerm extractEntry src/thread_nextTick.js.c
+284 silly gunzTarPerm extractEntry deps/minifier/src/test.include.c
+285 silly gunzTarPerm extractEntry deps/minifier/src/test
+286 silly gunzTarPerm extractEntry deps/minifier/src/minify.c
+287 silly gunzTarPerm extractEntry deps/minifier/src/test_minifier.c
+288 silly gunzTarPerm extractEntry deps/minifier/bin/minify
+289 silly gunzTarPerm extractEntry wscript
+290 silly gunzTarPerm extractEntry AUTHORS
+291 silly gunzTarPerm extractEntry examples/demo.js
+292 silly gunzTarPerm extractEntry examples/quickIntro_oneThread.js
+293 silly gunzTarPerm extractEntry examples/ex05_pool.js
+294 silly gunzTarPerm extractEntry examples/quickIntro_multiThreadEvented.js
+295 silly gunzTarPerm extractEntry examples/quickIntro_loop.js
+296 silly gunzTarPerm extractEntry examples/quickIntro_oneThreadEvented.js
+297 silly gunzTarPerm extractEntry examples/ex03_ping_pong.js
+298 silly gunzTarPerm extractEntry examples/quickIntro_fiveThreads.js
+299 silly gunzTarPerm extractEntry examples/quickIntro_evented_childThreadCode.js
+300 silly gunzTarPerm extractEntry examples/quickIntro_blocking.js
+301 silly gunzTarPerm extractEntry examples/ex01_basic.js
+302 silly gunzTarPerm extractEntry examples/ex04_main.js
+303 silly gunzTarPerm extractEntry examples/ex06_jason.js
+304 silly gunzTarPerm extractEntry examples/ex02_events.js
+305 silly gunzTarPerm extractEntry examples/quickIntro_multiThread.js
+306 silly gunzTarPerm extractEntry examples/ex06_complex.js
+307 silly gunzTarPerm extractEntry examples/ex04_worker.js
+308 silly gunzTarPerm extractEntry examples/ex06_jason.md
+309 silly gunzTarPerm extractEntry examples/ex01_basic.md
+310 silly gunzTarPerm extractEntry examples/ex02_events.md
+311 silly gunzTarPerm extractEntry examples/ex04_main.md
+312 silly gunzTarPerm extractEntry examples/ex05_pool.md
+313 silly gunzTarPerm extractEntry examples/ex04_worker.md
+314 silly gunzTarPerm extractEntry examples/ex03_ping_pong.md
+315 silly gunzTarPerm extractEntry test/test05_debugLeaksNoCallbacks.js
+316 silly gunzTarPerm extractEntry test/ab.js
+317 silly gunzTarPerm extractEntry test/test14_emit_once.js
+318 silly gunzTarPerm extractEntry test/test15_emit_ping_pong.js
+319 silly gunzTarPerm extractEntry test/test21_emit_ping_pong_big_string.js
+320 silly gunzTarPerm extractEntry test/test22_create_destroy_loop.js
+321 silly gunzTarPerm extractEntry test/test02_loop_as_fast_as_possible.js
+322 silly gunzTarPerm extractEntry test/test25_delete_puts.js
+323 silly gunzTarPerm extractEntry test/test04_gc_versus_not_gc.js
+324 silly gunzTarPerm extractEntry test/test26_puts_with_many_args.js
+325 silly gunzTarPerm extractEntry test/test24_puts.js
+326 silly gunzTarPerm extractEntry test/test13_thread_nextTick_speed.js
+327 silly gunzTarPerm extractEntry test/test10_node_nextTick_speed.js
+328 silly gunzTarPerm extractEntry test/test00_run_once_and_destroy.js
+329 silly gunzTarPerm extractEntry test/test28_puts_nextTick_loop.js
+330 silly gunzTarPerm extractEntry test/test29_puts_callback_loop.js
+331 silly gunzTarPerm extractEntry test/test27_puts_event_loop.js
+332 silly gunzTarPerm extractEntry test/test23_create_destroy_loop.js
+333 silly gunzTarPerm extractEntry test/test20_removeAllListeners.js
+334 silly gunzTarPerm extractEntry test/test19_pool_emit_any_all.js
+335 silly gunzTarPerm extractEntry test/test07_sigkill.js
+336 silly gunzTarPerm extractEntry test/test17_pool_pi.js
+337 silly gunzTarPerm extractEntry test/test11_multi_callbacks.js
+338 silly gunzTarPerm extractEntry test/test16_syntax_error_in_the_thread.js
+339 silly gunzTarPerm extractEntry test/test12_precompiled_vs_normal.js
+340 silly gunzTarPerm extractEntry test/test08_sigkill_leaks.js
+341 silly gunzTarPerm extractEntry test/test09_throw_from_the_callback.js
+342 silly gunzTarPerm extractEntry test/test01_loop_as_fast_as_possible.js
+343 silly gunzTarPerm extractEntry test/test18_pool_any_as_fast_as_possible.js
+344 silly gunzTarPerm extractEntry test/test03_infiniteLoopFunction.js
+345 silly gunzTarPerm extractEntry test/test06_throw_from_the_thread.js
+346 silly gunzTarPerm extractEntry benchmark/pi.js
+347 silly gunzTarPerm extractEntry benchmark/b00_fibonacci_server_no_threads.js
+348 silly gunzTarPerm extractEntry benchmark/b01_fibonacci_server_threads.js
+349 silly gunzTarPerm extractEntry benchmark/pi_precompiled.js
+350 silly gunzTarPerm extractEntry benchmark/b04_only_quick.js
+351 silly gunzTarPerm extractEntry benchmark/b02_fibonacci_server_threads_pool.js
+352 silly gunzTarPerm extractEntry benchmark/b03_fibonacci_server_clustered.js
+353 silly gunzTarPerm extractEntry benchmark/pi.rb
+354 silly gunzTarPerm extractEntry benchmark/pi.c
+355 silly gunzTarPerm extractEntry benchmark/doubles.c
+356 verbose read json /usr/lib/node_modules/threads_a_gogo/package.json
+357 silly lockFile 9dc291a7--lib-node-modules-threads-a-gogo /usr/lib/node_modules/threads_a_gogo
+358 info preinstall threads_a_gogo@0.1.4
+359 verbose from cache /usr/lib/node_modules/threads_a_gogo/package.json
+360 verbose readDependencies using package.json deps
+361 verbose from cache /usr/lib/node_modules/threads_a_gogo/package.json
+362 verbose readDependencies using package.json deps
+363 silly resolved []
+364 verbose about to build /usr/lib/node_modules/threads_a_gogo
+365 info build /usr/lib/node_modules/threads_a_gogo
+366 verbose from cache /usr/lib/node_modules/threads_a_gogo/package.json
+367 verbose linkStuff [ true, '/usr/lib/node_modules', true, '/usr/lib/node_modules' ]
+368 info linkStuff threads_a_gogo@0.1.4
+369 verbose linkBins threads_a_gogo@0.1.4
+370 verbose linkMans threads_a_gogo@0.1.4
+371 verbose rebuildBundles threads_a_gogo@0.1.4
+372 info install threads_a_gogo@0.1.4
+373 verbose unsafe-perm in lifecycle false
+374 verbose set uid from=0 to=nobody
+375 verbose set uid from=0 to=65534
+376 silly exec sh "-c" "node-waf configure install"
+377 silly sh,-c,node-waf configure install,/usr/lib/node_modules/threads_a_gogo spawning
+378 info threads_a_gogo@0.1.4 Failed to exec install script
+379 info /usr/lib/node_modules/threads_a_gogo unbuild
+380 verbose from cache /usr/lib/node_modules/threads_a_gogo/package.json
+381 info preuninstall threads_a_gogo@0.1.4
+382 info uninstall threads_a_gogo@0.1.4
+383 verbose true,/usr/lib/node_modules,/usr/lib/node_modules unbuild threads_a_gogo@0.1.4
+384 info postuninstall threads_a_gogo@0.1.4
+385 error threads_a_gogo@0.1.4 install: `node-waf configure install`
+385 error `sh "-c" "node-waf configure install"` failed with 1
+386 error Failed at the threads_a_gogo@0.1.4 install script.
+386 error This is most likely a problem with the threads_a_gogo package,
+386 error not with npm itself.
+386 error Tell the author that this fails on your system:
+386 error     node-waf configure install
+386 error You can get their info via:
+386 error     npm owner ls threads_a_gogo
+386 error There is likely additional logging output above.
+387 error System Linux 3.2.0-32-generic
+388 error command "nodejs" "/usr/bin/npm" "install" "threads_a_gogo" "-g"
+389 error cwd /home/armen/Projects/rts13k
+390 error node -v v0.8.15
+391 error npm -v 1.1.66
+392 error code ELIFECYCLE
+393 verbose exit [ 1, true ]

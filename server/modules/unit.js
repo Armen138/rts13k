@@ -151,7 +151,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 							game.collisionMap[tx][ty] = collision.PASSABLE;
 							game.unitMap[tx][ty] = null;
 						}
+						var time = (new Date()).getTime();
 						var path = astar.findPath(game.collisionMap, {X: tx, Y: ty}, dest);
+						var pathTime = (new Date()).getTime() - time;
+						console.log("finding path took " + pathTime + "ms");
 						if(path.length === 0) {
 							setTimeout(function() {
 								unit.go(dest, evading);
