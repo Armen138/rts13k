@@ -14,7 +14,8 @@ var Renderer = function(canvas, map) {
 		"green",
 		"yellow",
 		"gray",
-		"red"
+		"red",
+		"cyan"
 	];
 	var renderer = {
 		draw: function() {
@@ -173,7 +174,9 @@ BinaryHeap.prototype = {
   size: function() {
     return this.content.length;
   },
-
+    rescoreElement: function(node) {
+        this.sinkDown(this.content.indexOf(node));
+    },
   bubbleUp: function(n) {
     // Fetch the element that has to be moved.
     var element = this.content[n];
@@ -239,110 +242,294 @@ BinaryHeap.prototype = {
   }
 };
 
+var SortedNodes3 = function() {
+	var nodes = {};
+	var count = 0;
+	var lowest = -1,
+		secondLowest = lowest;
+	n = {
+		add: function(node) {
+			count++;
+			nodes[node.F] = node;
+			if(lowest < 0 || node.F < lowest) {
+				secondLowest = lowest;
+				lowest = node.F;
+			}
+		},
+		remove: function(node) {
+			if(node.F == lowest) {
+				lowest = secondLowest;
+			}
+			if(nodes[node.F]) {
+				count--;
+				delete nodes[node.F];
+			}
+		},
+		get: function(node) {			
+			return nodes[node.F];			
+		},
+		pop: function() {
+			var nd = nodes[lowest];
+			delete nodes[lowest];
+			lowest = secondLowest;
+			return nd;
+		},
+		length: function() {
+			return count;
+		},
+		first: function() {
+			return nodes[lowest];
+		}
+	};
+	return n;
+}
+
+var SortedNodes4 = function() {
+	var nodes = [],
+		n = {
+		push: function(node) {
+			if(nodes.length === 0 || nodes[nodes.length -1].F <= node.F) {
+				nodes.push(node);					
+			} else {
+				var i = 0;
+				while(nodes.F > nodes[i].F) {
+					i++;
+				}
+				nodes.splice(i - 1, 0, node);
+			}			
+		},
+		remove: function(node) {
+			for(var i = 0; i < nodes.length; i++) {
+				if(nodes[i] == node) {
+					nodes.splice(i, 1);
+					return;
+				}
+			}
+		},
+		get: function(node) {
+			for(var i = 0; i < nodes.length; nodes++) {
+				if(nodes[i] == node) {
+					return node;
+				}
+				return null;
+			}
+		},
+		pop: function() {
+			//var lowest = n.first();
+			//n.remove(lowest);
+			return nodes.shift();//lowest;
+		},
+		size: function() {
+			return nodes.length;
+		},
+		first: function(node) {	
+			/*		
+			var lowest = nodes[0];
+			for(var i = 1; i < nodes.length; i++) {
+				if(nodes[i].F < lowest.F) lowest = nodes[i];
+			}
+			return lowest;*/
+			return nodes[0];
+		}
+	};
+	return n;
+};
+
+
+var SortedNodes2 = function() {
+	var nodes = [],
+		n = {
+		add: function(node) {		
+			nodes.push(node);				
+		},
+		remove: function(node) {
+			for(var i = 0; i < nodes.length; i++) {
+				if(nodes[i] == node) {
+					nodes.splice(i, 1);
+				}
+			}
+		},
+		get: function(node) {
+			for(var i = 0; i < nodes.length; nodes++) {
+				if(nodes[i] == node) {
+					return node;
+				}
+				return null;
+			}
+		},
+		pop: function() {
+			var lowest = n.first();
+			n.remove(lowest);
+			return lowest;
+		},
+		length: function() {
+			return nodes.length;
+		},
+		first: function(node) {			
+			var lowest = nodes[0];
+			for(var i = 1; i < nodes.length; i++) {
+				if(nodes[i].F < lowest.F) lowest = nodes[i];
+			}
+			return lowest;
+		}
+	};
+	return n;
+};
+
+var SortedNodes = function() {
+	var nodes = {},
+		first = null,
+		list = {
+			add: function(node) {
+				nodes[node] = {
+					prev: null,
+					next: null,
+					node: node
+				};
+				if(first === null || first.node.F > node.F) {
+					nodes[node].next = first;
+					first = nodes[node];
+				} else {
+					var next = first;
+					while(next.node.F < node.F) {
+						next = next.next;
+					}
+					nodes[node].next = next.next;
+					nodes[node].prev = next;
+					next.prev.next = nodes[node];
+					next.next.prev = nodes[node];
+				}
+			},
+			get: function(node) {
+				return nodes[node];
+			},
+			remove: function(node) {
+				if(nodes[node]) {
+					if(nodes[node].prev === null) {
+						first = nodes[node].next;
+					}
+					delete nodes[node];					
+				}
+			},
+			pop: function() {
+				var node = first;
+				first = first.next;
+				return node;
+			},
+			first: function() {
+				return first;
+			}
+	}
+	return list;
+};
 
 var AStar2 = function() {
-	function Vector(x, y) {
-		var v =  {
-			X: x,
-			Y: y,
-			is: function(o) { return v.X === o.X && v.Y === o.Y },			
-			distanceTo: function(o) {
-				return Math.abs(o.X - v.X) + Math.abs(o.Y - v.Y);
-			}
-		}
-		return v;
+	function PathNode(position) {
+		return {
+			G: 0,
+			H: 0,
+			F: 0,
+			position: position
+		};
 	}
 
-	function isInList(item, list){
-		for(var i = 0; i < list.length; i++){
-			if(item.P.is(list[i].P)){
-				return i;
-			}
+	function populateGrid(w, h) {
+		var grid = [];
+		for(var x = 0; x < w; x++) {			
+			grid[x] = [];
 		}
-		return -1;
+		grid.get = function(position) {
+			if(!grid[position.X][position.Y]) {
+				grid[position.X][position.Y] = PathNode({X: position.X, Y: position.Y });
+			}
+			return grid[position.X][position.Y];
+		}
+		return grid;
 	}
 
 	return {
 		findPath: function(collisionMap, s, e) {
-			var openHeap = BinaryHeap(function(node) {
-				return node.F;
-			});
-			var openList = [],
-				closedList = [],
-				start = Vector(s.X, s.Y),
-				end = Vector(e.X, e.Y),
-				currentNode = start,
-				parent = { G: 0, H: start.distanceTo(end), F: start.distanceTo(end), P: start },
-		    	n, node, path, i, lowest;
-			openList.push(parent);
-			//openHeap.push(parent);
-			while(openList.length > 0){
-				currentNode = parent.P;
-				var neighbors = [ { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X, currentNode.Y - 1) },
-								  { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X - 1, currentNode.Y - 1)},
-								  { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X - 1, currentNode.Y)},
-								  { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X, currentNode.Y + 1)},
-								  { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X + 1, currentNode.Y + 1)},
-								  { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X + 1, currentNode.Y)},
-								  { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X + 1, currentNode.Y - 1)},
-								  { G: parent.G + 1, H: 0, F: 0, P: Vector(currentNode.X - 1, currentNode.Y + 1)} ];
+			function getNeighbors(node) {				
+				function valid(x, y) {
+					if (x >= 0 && 
+						x < collisionMap.length &&
+						y >= 0 &&
+						y < collisionMap[0].length) {
+						return pathGrid.get({X: x, Y: y});
+					}
+					return null;
+				}
+				var neighbors = [],
+					neighbor = null;
+				if(neighbor = valid(node.position.X, node.position.Y - 1)) neighbors.push(neighbor);
+				if(neighbor = valid(node.position.X - 1, node.position.Y - 1)) neighbors.push(neighbor);
+				if(neighbor = valid(node.position.X - 1, node.position.Y)) neighbors.push(neighbor);
+				if(neighbor = valid(node.position.X, node.position.Y + 1)) neighbors.push(neighbor);
+				if(neighbor = valid(node.position.X + 1, node.position.Y + 1)) neighbors.push(neighbor);
+				if(neighbor = valid(node.position.X + 1, node.position.Y)) neighbors.push(neighbor);
+				if(neighbor = valid(node.position.X + 1, node.position.Y - 1)) neighbors.push(neighbor);
+				if(neighbor = valid(node.position.X - 1, node.position.Y + 1)) neighbors.push(neighbor);
+				return neighbors;
+			}
 
-				closedList.push(parent);
-				openList.splice(isInList(parent, openList), 1);
-				parent.visited = true;
-				for(n = 0; n < neighbors.length; n++){
-					if(	neighbors[n].P.X >= 0 &&
-						neighbors[n].P.Y >= 0 &&
-						neighbors[n].P.X < collisionMap.length &&
-						neighbors[n].P.Y < collisionMap[0].length) {
-						node = neighbors[n];
-						if(node.P.is(end)){
 
-							path = [];
-							node.parent = parent;
-							path.unshift({X: node.P.X, Y: node.P.Y});
-							while(!node.P.is(start)){
-								node = node.parent;
-								path.unshift({X: node.P.X, Y: node.P.Y});
-							}
-							return path;
-						}
-						if(isInList(node, closedList) === -1 && (collisionMap[node.P.X][node.P.Y] === 0 || collisionMap[node.P.X][node.P.Y] === 2) /* collision.PASSABLE */){
-							node.H = node.P.distanceTo(end);
-							node.F = node.G + node.H;
-							var listNode = openList[isInList(node, openList)];
-							if(listNode && listNode.F > node.F){
-								listNode.parent = parent;
-								listNode.F = node.F;
-								listNode.G = node.G;
-							}
-							else if(!listNode){
-								node.parent = parent;
-								openList.push(node);
-							}
-						}
+			function heuristic(start, end) {
+				return Math.abs(start.X - end.X) + Math.abs(start.Y - end.Y);
+			}
+
+			var pathGrid = populateGrid(collisionMap.length, collisionMap[0].length),
+				openList = new BinaryHeap(function(n) { return n.F; }),				
+				start = pathGrid.get(s),
+				end = pathGrid.get(e);
+			parent.H = heuristic(s, e);
+			parent.F = heuristic(s, e);
+			openList.push(start);
+
+			while(openList.size() > 0) {				
+				var currentNode = openList.pop();
+				var neighbors = getNeighbors(currentNode);
+				if(currentNode == end) {
+					var path = [];
+					while(currentNode) {
+						path.unshift(currentNode.position);
+						currentNode = currentNode.parent;
+					}
+					return path;
+				}
+				currentNode.closed = true;
+				for(var n = 0; n < neighbors.length; n++) {
+					var neighbor = neighbors[n];
+					if(!neighbor.closed && collisionMap[neighbor.position.X][neighbor.position.Y] === 0) {
+						var g = currentNode.G + 1,
+							visited = neighbor.visited;
+						if(!visited || g < neighbor.G) {
+							neighbor.visited = true;
+							neighbor.parent = currentNode;
+							neighbor.H = neighbor.H > 0 ? neighbor.H : heuristic(neighbor.position, e);
+							neighbor.G = g;
+							neighbor.F = neighbor.G + neighbor.H;						
+							if(!visited) {
+								openList.push(neighbor);
+							}	
+
+						} else {
+							openList.remove(neighbor);
+							openList.push(neighbor);
+							//openList.rescoreElement(neighbor);
+						}					
 					}
 				}
-		        lowest = 0;
-				for(i = 0; i < openList.length; i++){
-					if(openList[i].F < openList[lowest].F){
-						lowest = i;
-					}
-				}
-				parent = openList[lowest];
 			}
 			//No path found
 			return [];
 		}
-
 	};
-
 };
 
 
 window.addEventListener("load", function() {
 	var canvas = Canvas(512, 512);
-	var map = map2;//procedural.noiseMap(128, 128, 40, 4);
+	var map = procedural.noiseMap(128, 128, 40, 4);
 	var astar = AStar();
 	var astar2 = AStar2();
 	var startTime, endTime, timeSpent, path;
@@ -366,6 +553,9 @@ window.addEventListener("load", function() {
 	startTime = (new Date()).getTime();
 	path = astar.findPath(collisionMap, pathStart, pathEnd);
 	endTime = (new Date()).getTime();
+	for(var i = 0; i < path.length; i++) {
+		map[path[i].X][path[i].Y] = 4;
+	}
 	timeSpent = endTime - startTime;
 	alert("time to find path: " + timeSpent + " path length: " + path.length);
 	startTime = (new Date()).getTime();
@@ -375,7 +565,7 @@ window.addEventListener("load", function() {
 	alert("time to find path: " + timeSpent + " path length: " + path.length);
 
 	for(var i = 0; i < path.length; i++) {
-		map[path[i].X][path[i].Y] = 4
+		map[path[i].X][path[i].Y] = 5;
 	}
 	setInterval(renderer.draw, 20);
 	document.addEventListener("keyup", function(e) {
