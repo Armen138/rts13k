@@ -108,8 +108,9 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 						for(var x = 0; x < 128; x++) {
 							for(var y = 0; y < 128; y++) {
 								//context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
-								minicontext.fillStyle = color[map[x][y]];
+								minicontext.fillStyle = color[map[x][y] / 14 | 0];
 								minicontext.fillRect(x, y, 1, 1);//tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+								//minicontext.drawImage(tilearray[ts.pickTile(map, x, y)], x , y);
 							}
 						}
 						br.release();
@@ -120,17 +121,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 			map: { value : map }
 		});
 
-	//create initial collision map
-	for(var x = 0; x < map.length; x++) {
-		game.collisionMap[x] = new Uint8Array(map[0].length);
-		for(var y = 0; y < map[0].length; y++) {
-			if(ts.pickTile(map, x, y) === 0) {
-				game.collisionMap[x][y] = collision.UNPASSABLE;
-			} else {
-				game.collisionMap[x][y] = collision.PASSABLE;
-			}
-		}
-	}
+
     tileSet.offset = bt.Vector(0, 0);
 	return tileSet;
 }

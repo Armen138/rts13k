@@ -1,3 +1,35 @@
+
+/* quick + dirty image preloader */
+qdip = {
+	total: 0,
+	loaded: 0,
+	images: {},
+	load: function(files) {
+		function loaded(file) {
+			qdip.loaded++;
+			qdip.fire("progress", file);
+			if(qdip.loaded === qdip.total) {
+				qdip.fire("load");
+			}
+		}
+		for(var file in files) {
+			qdip.total++;
+			var img = new Image();
+			(function(img, file){
+				img.onload = function() {
+					loaded(file);
+				};
+				img.onerror = function() {
+					//fail silently.
+					loaded(file);
+				};
+			}(img, file));
+			img.src = files[file];
+			qdip.images[file] = img;
+		}
+	}
+};
+Events.attach(qdip);
 function makeCanvas(w, h) {
 	var canvas = document.createElement("canvas");
 	canvas.width = w;
@@ -22,10 +54,22 @@ var menu = {
 	},
 	show: function(id) {
 		document.getElementById(id).style.display = 'block';	
-	},
+	}
 };
 
 window.addEventListener("load", function() {
+	qdip.on("load", function() {
+		menu.click('connect', function() {
+			menu.hide('menu');
+			//menu.show('logbook');
+			//game.connect("ws://armen138.server.jit.su");
+			game.connect("ws://localhost:8080");
+		});		
+
+	});
+	qdip.load({
+		"terrain": "images/terrain32.png"
+	});
 	/*menu.click('play', function() {
 		menu.show('difficulty');
 	});*/
@@ -44,12 +88,6 @@ window.addEventListener("load", function() {
 		menu.hide('menu');
 		startGame(2);
 	});
-	menu.click('connect', function() {
-		menu.hide('menu');
-		//menu.show('logbook');
-		//game.connect("ws://armen138.server.jit.su");
-		game.connect("ws://localhost:8080");
-	});		
 	menu.click('shortcuts', function() {
 		menu.hide('shortcuts');
 	});

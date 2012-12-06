@@ -63,6 +63,7 @@ var ui = {
 		game.context.fillText(text ,  x, y);	
 	},
 	draw: function() {
+		ui.leftHud();
 		ui.hud();
 		ui.stats();
 		ui.minimap();
@@ -174,6 +175,17 @@ var ui = {
 		game.context.strokeRect(0, 0, ui.hudSize.W, ui.hudSize.H);
 		game.context.restore();
 	},
+	leftHud: function() {
+		game.context.save();
+		game.context.globalAlpha = ui.alpha;
+		game.context.fillStyle = "grey";
+		game.context.strokeStyle = "black";
+		game.context.lineWidth = 4;
+		game.context.translate(0, 0);
+		game.context.fillRect(0, 0, 200, 200);
+		//game.context.strokeRect(0, 0, ui.hudSize.W, ui.hudSize.H);
+		game.context.restore();
+	},	
 	minimap: function() {
 		if(!ui.minimapImage) {
 			ui.minimapImage = game.map.drawMini();
