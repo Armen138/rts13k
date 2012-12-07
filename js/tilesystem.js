@@ -44,11 +44,11 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 			screenSize: {
 				value: screenSize
 			},
-			at: {
+			/*at: {
 				value: function(x, y) {
 					return bt.Vector((x / tileSize + tileSet.offset.X) | 0, (y / tileSize + tileSet.offset.Y) | 0);
 				}
-			},
+			},*/
 			width: {
 				value: map.length
 			},
@@ -57,6 +57,8 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 			},
 			at: {
 				value: function(x, y) {
+					x -= gameView.offset.X;
+					y -= gameView.offset.Y;
 					return bt.Vector((x / tileSize | 0)+ game.map.offset.X, (y / tileSize | 0) + game.map.offset.Y);
 				}
 			},

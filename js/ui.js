@@ -63,7 +63,7 @@ var ui = {
 		game.context.fillText(text ,  x, y);	
 	},
 	draw: function() {
-		ui.leftHud();
+		//ui.leftHud();
 		ui.hud();
 		ui.stats();
 		ui.minimap();

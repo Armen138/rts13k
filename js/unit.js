@@ -80,12 +80,12 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 				selected = false;
 			},
 			draw: function() {
-				unitObject.art(x, y, color.toString(), selected ? "yellow" : "black", angle, cannonAngle);
+				unitObject.art(x + gameView.offset.X, y + gameView.offset.Y, color.toString(), selected ? "yellow" : "black", angle, cannonAngle);
 				if(unit.badge !== "") {				
 					game.context.fillStyle = "black";
 					game.context.font = "10px Dejavu Sans, Arial";
 					game.context.textAlign = "left";					
-					game.context.fillText(unit.badge ,  x - game.map.offset.X * tileSize, y - game.map.offset.Y * tileSize);					
+					game.context.fillText(unit.badge ,  x + gameView.offset.X - game.map.offset.X * tileSize, y  + gameView.offset.X - game.map.offset.Y * tileSize);					
 				}
 				this.update();
 			},
@@ -112,7 +112,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 				return false;*/
 			},
 			isInside: function(rect, noffset) {
-				var ox = game.map.offset.X * tileSize, oy = game.map.offset.Y * tileSize;
+				var ox = game.map.offset.X * tileSize - gameView.offset.X, oy = game.map.offset.Y * tileSize - gameView.offset.Y;
 				if(noffset) {
 					ox = 0; oy = 0;
 				}

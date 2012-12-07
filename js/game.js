@@ -1,5 +1,7 @@
 var tileSize = 32,
     game = {
+        buildables: [ def.mine, def.powerplant, def.turret, def.factory ],
+        unitBuildables: [def.tank, def.heavyTank],
         tileSize: 32,
         difficulty: 1,
         root: ns.Node(),
@@ -33,7 +35,7 @@ var tileSize = 32,
         ],
         EASY: 0,
         MEDIUM: 1,
-        HARD: 2,
+        HARD: 2
     }, collision = {
         PASSABLE: 0,
         UNPASSABLE: 1,
@@ -112,6 +114,7 @@ game.canvasInit = function() {
             shadow: true
         }
     );    
+    game.hud = Hud(game.context);
     game.log.onMessage(function(msg) {
         network.chat(msg);
     });    
@@ -127,6 +130,11 @@ game.init = function(difficulty) {
     if(!game.canvas) {
         game.canvasInit();
     }
+    game.hud.on("minimap", function(pos) {
+        game.map.offset.X = pos.X & (127 - game.map.screenSize.X) | 0;
+        game.map.offset.Y = pos.Y & (127 - game.map.screenSize.Y) | 0;      
+        game.map.draw();
+    });
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
         game.dragStart = {X: e.clientX, Y: e.clientY};
@@ -212,6 +220,9 @@ game.init = function(difficulty) {
         }
 
     });
+    game.hud.buttons = game.hud.Buttons([{image: qdip.images.mine, action: function() {
+        game.buildMode = def.mine;
+    }}]);
     game.canvas.addEventListener("mouseup", function(e) {
         /* if(game.dragStart)
             game.dragStart.release(); */
@@ -222,24 +233,19 @@ game.init = function(difficulty) {
             if(game.buildMode) {
                 if(e.button === 0) {
                     var buildable = game.buildMode,
-                        pos = {X: (e.clientX / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y) | 0};
-                    //if(game.legalPosition(pos, game.buildMode)) {
-                        //game.players[0].build(pos.X, pos.Y, buildable);
-                        network.build(pos, buildable);
-                    //} else {
-                    //    ui.alert("You can't build that there.");
-                    //}
+                        pos = {X: ((e.clientX  - gameView.offset.X) / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y - gameView.offset.Y) | 0};
+                    network.build(pos, buildable);
                 }
                 if(!e.shiftKey) {
                     game.buildMode = null;
                 }
             } else {
                 if(!game.uiDrag) {
-                    if(bt.Vec.distance(game.dragStart, {X: e.clientX, Y: e.clientY }) < 32) {
+                    if(bt.Vec.distance(game.dragStart, {X: e.clientX , Y: e.clientY }) < 32) {
                         var selected = false;
                         if(e.button === 0) {
                             game.units.each(function() {
-                                if(this.click(e.clientX, e.clientY)) {
+                                if(this.click(e.clientX - gameView.offset.X, e.clientY - gameView.offset.Y)) {
                                     selected = true;
                                 }
                             });
@@ -305,8 +311,9 @@ game.run = function() {
         }        
         game.energyWarning = now;
     }
-    if(game.log) {
+    if(game.log && game.hud) {
         game.log.draw();
+        game.hud.draw();
     }
     ui.draw();
 

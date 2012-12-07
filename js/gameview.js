@@ -1,6 +1,6 @@
 //merge into Map object
 function gameView(wx, hx, map) {
-    var w = wx - wx % 32 + 32,
+    var w = (wx - 148) - (wx - 148) % 32 + 32,
         h = hx - hx % 32 + 32;
     var c = makeCanvas(w, h),
         colors = [  bt.Color("#152568"), //0
@@ -13,6 +13,7 @@ function gameView(wx, hx, map) {
     gameView.context = c.context;
     gameView.width = w;
     gameView.height = h;
+    gameView.offset = {X: 148, Y: 0};
 
     function terrainTile(idx) {
         var c = document.createElement("canvas"),
@@ -263,7 +264,7 @@ gameView.mapTileSet = function(tile, tileMap, map, except) {
 };
 gameView.draw = function() {
 
-    game.context.drawImage(gameView.canvas, 0 ,0);
+    game.context.drawImage(gameView.canvas, 148 ,0);
 };
 
 gameView.scrollHandler = function() {

@@ -42,7 +42,6 @@ function startGame(difficulty) {
 	game.players.push(Player(10, 10, Player.modes.LOCAL));
 	game.players.push(Player(100, 100, Player.modes.AI));
 	game.run();
-
 }
 
 var menu = {
@@ -68,7 +67,8 @@ window.addEventListener("load", function() {
 
 	});
 	qdip.load({
-		"terrain": "images/terrain32.png"
+		"terrain": "images/terrain32.png",
+		"mine": "images/mine32.png"
 	});
 	/*menu.click('play', function() {
 		menu.show('difficulty');
