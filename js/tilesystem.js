@@ -107,12 +107,13 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					var minicontext = minicanvas.getContext('2d');
 					if(tileSet.offset) {
 						var br = tileSet.offset.add(screenSize);
+						var m = tileSet.width / minicanvas.width;
 						for(var x = 0; x < 128; x++) {
-							for(var y = 0; y < 128; y++) {
+							for(var y = 0; y < 128; y++) {								
 								//context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
-								minicontext.fillStyle = color[map[x][y] / 14 | 0];
-								minicontext.fillRect(x, y, 1, 1);//tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
-								//minicontext.drawImage(tilearray[ts.pickTile(map, x, y)], x , y);
+								//minicontext.fillStyle = color[map[x * m][y * m] / 14 | 0];
+								//minicontext.fillRect(x, y, 1, 1);//tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
+								minicontext.drawImage(tilearray[ts.pickTile(map, x * m, y * m)], x , y);
 							}
 						}
 						br.release();

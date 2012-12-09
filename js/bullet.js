@@ -10,7 +10,7 @@ var Bullet = function(from, to, damage) {
 		bullet = {
 			draw: function() {
 				game.context.save();
-				game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+				game.context.translate(x + gameView.offset.X - game.map.offset.X * tileSize + tileSize / 2, y + gameView.offset.Y - game.map.offset.Y * tileSize + tileSize / 2);
 				game.context.fillStyle = "#FF0000";			
 				game.context.fillRect(-1 * (size / 2), -1 * (size / 2), size, size);
 				game.context.restore();
@@ -23,12 +23,6 @@ var Bullet = function(from, to, damage) {
 				if(d > travelTime) {
 					game.root.remove(bullet);
 					var u = game.unitAt({ X: to.X / tileSize | 0, Y: to.Y / tileSize | 0 });
-					if(u) {
-						//server needs to do the killing.
-						/*if(u.hit(damage)) {
-							bullet.owner.kill();
-						}*/
-					}
 				}
 			}
 		};

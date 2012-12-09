@@ -139,7 +139,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 				return (x > rect[0] + ox && x < rect[0] + ox + rect[2] && y > rect[1] + oy && y < rect[1] + oy + rect[3]);
 			},
 			attack: function(target) {
-				unit.targetUnit = target;				
+				unit.targetUnit = target;
 			},
 			go: function(dest, evading) {
 				if(unitObject.mobile) {
@@ -154,7 +154,9 @@ exports.Unit = function(tx, ty, unitObject, game) {
 						var time = (new Date()).getTime();
 						var path = astar.findPath(game.collisionMap, {X: tx, Y: ty}, dest);
 						var pathTime = (new Date()).getTime() - time;
-						console.log("finding path took " + pathTime + "ms");
+						if(pathTime > 100) {
+							console.log("finding path took " + pathTime + "ms");
+						}
 						if(path.length === 0) {
 							setTimeout(function() {
 								unit.go(dest, evading);

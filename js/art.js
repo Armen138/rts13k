@@ -112,7 +112,7 @@ var art = {
 		game.context.restore();
 	},
 	mine: function(x, y, fill, stroke, z, a, notranslate) {
-		/*
+		
 		var lines = [[{"X":-13,"Y":-13},{"X":14,"Y":-13}],[{"X":13,"Y":-13},{"X":13,"Y":15}],[{"X":13,"Y":15},{"X":7,"Y":-7}],[{"X":7,"Y":-7},{"X":-12,"Y":-13}],[{"X":6,"Y":-7},{"X":-14,"Y":12}],[{"X":-14,"Y":12},{"X":-10,"Y":15}],[{"X":-10,"Y":14},{"X":7,"Y":-6}]];
 		art.open(fill, stroke);	
 		if(!notranslate) {
@@ -130,14 +130,14 @@ var art = {
 		//game.context.strokeRect(-16, -16, 32, 32);
 		//game.context.strokeRect(-16 - 128, -16 - 128, 256 + 32, 256 + 32);
 		art.lines(lines);
-		*/
+		/*
 		game.context.save();
 		if(!notranslate) {
 			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
 		} else {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
 		}
-		game.context.drawImage(qdip.images.mine, 0, 0, 32, 32, -16, -16, 32, 32);
+		game.context.drawImage(qdip.images.mine, 0, 0, 32, 32, -16, -16, 32, 32);*/
 		game.context.restore();		
 	},
 	hydroplant: function(x, y, fill, stroke, z, a, notranslate) {

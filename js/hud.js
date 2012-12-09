@@ -16,15 +16,24 @@
 				}
 				context.drawImage(image, x, y);
 				mapOverlay.context.clearRect(0, 0, w, h);
-				mapOverlay.context.strokeRect(game.map.offset.X, game.map.offset.Y, game.canvas.width / tileSize, game.canvas.height / tileSize);
-				context.drawImage(mapOverlay.canvas, x, y);
+				game.units.each(function() {
+					if(this.owner === game.players[0]) {
+						mapOverlay.context.fillStyle = "#7eff15";
+						mapOverlay.context.fillRect(this.tile.X, this.tile.Y, 2, 2);
+					} else {
+						mapOverlay.context.fillStyle = "red";
+						mapOverlay.context.fillRect(this.tile.X, this.tile.Y, 2, 2);
+					}
+				});
+				mapOverlay.context.strokeRect(game.map.offset.X, game.map.offset.Y, (game.canvas.width / tileSize), (game.canvas.height / tileSize));
+				context.drawImage(mapOverlay.canvas, 0, 0, sw, sh, x, y, w, h);
 			},
 			inside: function(pos){
 				if (pos.X > x &&
 					pos.X < x + w &&
 					pos.Y > y &&
 					pos.Y < y + h) {
-					return {X: pos.X - x, Y: pos.Y - y};
+					return {X: (pos.X - x), Y: (pos.Y - y)};
 				}
 				return -1;
 			}
@@ -68,8 +77,16 @@
 				for(var i = 0; i < buttons.length; i++) {
 					var x = margin + 69 * (i % 2),
 						y = top + 69 * (i / 2 | 0);
-					//context.fillRect(x, y, 59, 59);
-					context.drawImage(buttons[i].image, x, y, 59, 59);
+					if(typeof(buttons[i].image) === "function") {
+						buttons[i].image(x, y, "gray", "black", 0, 0, true);
+					} else {
+						context.drawImage(buttons[i].image, x, y, 59, 59);
+					}
+					if(buttons[i].badge) {
+						context.fillStyle = "black";
+						context.font = "12px Arial";
+						context.fillText(buttons[i].badge, x, y);
+					}
 				}
 				context.restore();
 			},
@@ -81,6 +98,47 @@
 						pos.X < x + 59 &&
 						pos.Y > y &&
 						pos.Y < y + 59) {
+						buttons[i].action();
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+	}
+
+	function SmallButtons(buttons) {
+		var buttonSize = 32,
+			buttonMargin = 16,
+			top = margin + 128 + margin + 32 + margin;
+		return {
+			draw: function() {
+				context.save();
+				for(var i = 0; i < buttons.length; i++) {
+					//var x = margin + 69 * (i % 2),
+					var x = margin + (i % 3) * (buttonSize + buttonMargin),//(margin + i * buttonSize + i * buttonMargin),
+						y = top + 48 * (i / 3 | 0);
+					if(typeof(buttons[i].image) === "function") {
+						buttons[i].image(x, y);//, "gray", "black", 0, 0, true);
+					} else {
+						context.drawImage(buttons[i].image, x, y, 32, 32);
+					}
+					if(buttons[i].badge) {
+						context.fillStyle = "black";
+						context.font = "12px Arial";
+						context.fillText(buttons[i].badge, x, y);
+					}
+				}
+				context.restore();
+			},
+			click: function(pos) {
+				for(var i = 0; i < buttons.length; i++) {
+					var x = margin + (i % 3) * (buttonSize + buttonMargin),
+						y = top + 48 * (i / 3 | 0);
+					if (pos.X > x &&
+						pos.X < x + buttonSize &&
+						pos.Y > y &&
+						pos.Y < y + buttonSize) {
 						buttons[i].action();
 						return true;
 					}
@@ -125,14 +183,21 @@
 		var width = window.innerWidth;
 		return {
 			draw: function() {
+				var player = game.players[0];
 				context.save();
-				context.fillStyle = "black";
-				context.font = "14px Arial";
+				context.fillStyle = "yellow";
+				context.font = "20px Arial";
+
+				context.shadowColor = "black";
+				context.shadowOffsetX = 0;
+				context.shadowOffsetY = 0;
+				context.shadowBlur = 4;
+
 				context.textAlign ="center";
 				context.textBaseline = "hanging";
-				context.fillText("energy: 100", sideMargins + (width - sideMargins * 2) / 6, y);
-				context.fillText("credits: 99", width - sideMargins - (width - sideMargins * 2) / 6, y);
-				context.fillText("units: 101/200", width / 2, y);
+				context.fillText("energy: " + player.energy, sideMargins + (width - sideMargins * 2) / 6, y);
+				context.fillText("credits: " + player.credits, width - sideMargins - (width - sideMargins * 2) / 6, y);
+				context.fillText("units: " + player.units.length + "/200", width / 2, y);
 				context.restore();
 			}
 		};
@@ -179,7 +244,8 @@
 					events[evt][i](obj);
 				}
 			},
-			Buttons: Buttons
+			Buttons: Buttons,
+			SmallButtons: SmallButtons
 		};
 		document.addEventListener("click", function(e) {
 			var pos = { X: e.clientX, Y: e.clientY };

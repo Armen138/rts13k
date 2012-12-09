@@ -88,6 +88,7 @@ game.deselectAll = function() {
         this.deselect();
     });
     game.selectedUnits.clear();
+    game.hud.buttons = game.hud.defaultButtons;
 };
 
 game.sell = function(building) {
@@ -220,15 +221,56 @@ game.init = function(difficulty) {
         }
 
     });
-    game.hud.buttons = game.hud.Buttons([{image: qdip.images.mine, action: function() {
-        game.buildMode = def.mine;
-    }}]);
+
+    var defaultButtonLayout = [];
+    for(var i = 0; i < game.buildables.length; i++) {
+        (function(buildable) {
+            defaultButtonLayout.push({
+                image: function(x, y) {
+                    var color = game.players[0].credits > buildable.cost ? "gray" : "red";
+                    buildable.art(x, y, color, "black", 0, 0, true);
+                },
+                action: function() { game.buildMode = buildable; },
+                badge: "$" + buildable.cost,
+                tooltip: buildable.name
+            });
+        }(game.buildables[i]));
+    }
+    game.hud.defaultButtons = game.hud.SmallButtons(defaultButtonLayout);
+    game.hud.buttons = game.hud.defaultButtons;
+    /*
+    game.hud.buttons = game.hud.Buttons([
+        {
+            image: art.mine,
+            action: function() { game.buildMode = def.mine; },
+            badge: "$" + def.mine.cost,
+            tooltip: def.mine.name
+        },
+        {
+            image: art.powerplant,
+            action: function() { game.buildMode = def.powerplant; },
+            badge: "$" + def.powerplant.cost,
+            tooltip: def.powerplant.name
+        },
+        {
+            image: art.turret,
+            action: function() { game.buildMode = def.turret; },
+            badge: "$" + def.turret.cost
+        },
+        {
+            image: art.factory,
+            action: function() { game.buildMode = def.factory; },
+            badge: "$" + def.factory.cost
+        }
+    ]);*/
     game.canvas.addEventListener("mouseup", function(e) {
         /* if(game.dragStart)
             game.dragStart.release(); */
         game.mouseDown = false;
-        if( ui.has(e.clientX, e.clientY) ) {
-            ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
+        //if( ui.has(e.clientX, e.clientY) ) {
+        //    ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
+        if(game.hud.inside({X: e.clientX, Y:e.clientY})) {
+
         } else {
             if(game.buildMode) {
                 if(e.button === 0) {
@@ -247,6 +289,7 @@ game.init = function(difficulty) {
                             game.units.each(function() {
                                 if(this.click(e.clientX - gameView.offset.X, e.clientY - gameView.offset.Y)) {
                                     selected = true;
+                                    game.hud.buttons = game.hud.SmallButtons(this.buttons());
                                 }
                             });
                             if(!selected) {
@@ -263,12 +306,19 @@ game.init = function(difficulty) {
                     } else {
                         //select inside box
                         game.deselectAll();
+                        var unitButtons = [];
                         game.units.each(function() {
                             if(this.isInside(game.selection) && this.owner.local && this.mobile) {
                                 this.select();
                                 game.selectedUnits.add(this);
+                                (function(unit) {
+                                    unitButtons.push(unit.buttons()[0]);
+                                }(this));
+                                game.hud.buttons = game.hud.SmallButtons(unitButtons);
                             }
                         });
+                        
+
                     }
                 }
             }
@@ -302,7 +352,7 @@ game.run = function() {
         if(!game.legalPosition(pos, game.buildMode) || game.buildMode.cost > game.players[0].credits) {
             color = "red";
         }
-        game.buildMode.art(game.mousePosition.X - game.mousePosition.X % 32 , game.mousePosition.Y - game.mousePosition.Y % 32 , color, "black", 0, 0, true);
+        game.buildMode.art(-12 + game.mousePosition.X - game.mousePosition.X % 32, game.mousePosition.Y - game.mousePosition.Y % 32 , color, "black", 0, 0, true);
     }
     var now = (new Date()).getTime();
     if(game.players[0].energy < 0 && now - game.energyWarning > 10000) {

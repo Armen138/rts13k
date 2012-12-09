@@ -45,7 +45,6 @@ var def = {
 		loadTime: 700,
 		upkeep: -50,
 		cost: 100,
-		//collision.STRUCTURE
 		collision: 3		
 	},
 	mine: {
@@ -59,7 +58,6 @@ var def = {
 		art: art.mine,
 		//resource crystal thingies
 		terrain: 3,
-		//collision.STRUCTURE
 		collision: 3
 	},
 	powerplant: {
@@ -70,7 +68,6 @@ var def = {
 		upkeep: 150,
 		cost: 50,
 		art: art.powerplant,
-		//collision.STRUCTURE
 		collision: 3
 	},	
 	hydroplant: {
@@ -82,7 +79,6 @@ var def = {
 		cost: 500,
 		art: art.hydroplant,
 		terrain: 0,
-		//collision.STRUCTURE
 		collision: 3
 	},
 	factory: {
@@ -92,10 +88,10 @@ var def = {
 		art: art.factory,
 		factory: true,
 		range: 5,
-		//collision.STRUCTURE
 		collision: 3,
 		cost: 150,
 		upkeep: -100,
-		big: true
+		big: true,
+		builds: ["tank", "heavyTank"]
 	}	
 };

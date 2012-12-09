@@ -72,66 +72,6 @@ function gameView(wx, hx, map) {
         gameView.mapTileSet(2, tileMap, map, 1);
         gameView.mapTileSet(1, tileMap, map, 0);
         gameView.mapTileSet(0, tileMap, map, 0);
-        /*
-        for(var tx = 0; tx < map.length; tx++) {
-            tileMap[tx] = [];
-            for(var ty = 0; ty < map[0].length; ty++) {
-                var tile = map[tx][ty];
-                tileMap[tx][ty] = tile;
-                if(tile === 0) {
-                    if (rightOf(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 5;
-                    }
-                    if (leftOf(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 6;
-                    }
-                    if (above(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 9;
-                    }        
-                    if (below(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 10;
-                    }        
-                    if (rightOf(tx, ty) !== tile && 
-                        above(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 7;
-                    }
-                    if (leftOf(tx, ty) !== tile && 
-                        below(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 15;
-                    }                    
-
-                    if (rightOf(tx, ty) !== tile && 
-                        below(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 13;
-                    }                    
-                    if (leftOf(tx, ty) !== tile && 
-                        above(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 11;
-                    }  
-                    if (leftOf(tx, ty) == tile && 
-                        above(tx, ty) == tile &&
-                        aboveLeft(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 14;
-                    }  
-                    if (rightOf(tx, ty) == tile && 
-                        above(tx, ty) == tile &&
-                        aboveRight(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 8;
-                    }      
-                    if (rightOf(tx, ty) == tile && 
-                        below(tx, ty) == tile &&
-                        belowRight(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 12;
-                    }                                   
-                    if (leftOf(tx, ty) == tile && 
-                        below(tx, ty) == tile &&
-                        belowLeft(tx, ty) !== tile) {
-                        tileMap[tx][ty] = 16;
-                    }                    
-                }
-
-            }
-        }*/
         game.map = ts.TileSet(tileSet, tileMap, gameView.canvas, w, h);    
     }
     game.mousePosition = bt.Vector(0, 0);
@@ -267,15 +207,56 @@ gameView.draw = function() {
     game.context.drawImage(gameView.canvas, 148 ,0);
 };
 
+gameView.scrollIntent = 0;
+gameView.scrollDelay = 1000;
 gameView.scrollHandler = function() {
-    if(!game.map || ui.has(game.mousePosition.X, game.mousePosition.Y)) return;
-    if(game.mousePosition.X < tileSize * 2)
-        if(game.map.offset.X > 0) game.map.horizontal(1);
-    if(game.mousePosition.X > gameView.width - tileSize * 2)
-        if(game.map.offset.X < game.map.width - gameView.width / tileSize) game.map.horizontal(-1);
-    if(game.mousePosition.Y < tileSize * 2)
-        if(game.map.offset.Y > 0) game.map.vertical(1);
-    if(game.mousePosition.Y > game.canvas.height - tileSize * 2)
-        if(game.map.offset.Y < game.map.height - ((game.canvas.height / tileSize + 0.5) | 0)) game.map.vertical(-1);
+
+    if(!game.map) return;
+
+    var now = (new Date()).getTime();
+    var intent = false;
+    function declareIntent() {
+        if(gameView.scrollIntent === 0) {
+            gameView.scrollIntent = now;
+        }
+    }
+
+    if(game.mousePosition.X < 148 + tileSize * 2 && !game.hud.inside(game.mousePosition) && game.map.offset.X > 0) {
+        if(now - gameView.scrollIntent > gameView.scrollDelay) {
+            game.map.horizontal(1);    
+        } else {
+            declareIntent();    
+        }
+        
+    }        
+    if ((game.mousePosition.X > gameView.width - tileSize * 2) &&
+        (game.map.offset.X < game.map.width - gameView.width / tileSize)) {
+        if(now - gameView.scrollIntent > gameView.scrollDelay) {
+            game.map.horizontal(-1);    
+        } else {
+            declareIntent();
+        }        
+    }
+        
+    if(game.mousePosition.Y < tileSize * 2 && (game.map.offset.Y > 0)) {
+        if(now - gameView.scrollIntent > gameView.scrollDelay) {
+            game.map.vertical(1);    
+        } else {
+            declareIntent();
+        }
+        
+    }
+        
+    if ((game.mousePosition.Y > game.canvas.height - tileSize * 2) && 
+        (game.map.offset.Y < game.map.height - ((game.canvas.height / tileSize + 0.5) | 0)) ) {
+        if(now - gameView.scrollIntent > gameView.scrollDelay) {
+            game.map.vertical(-1);    
+        } else {
+            declareIntent();    
+        }        
+    }
+    if(!intent) {
+        gameView.scrollIntent = 0;
+    }    
 };
 
