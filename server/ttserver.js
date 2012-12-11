@@ -6,9 +6,10 @@ var procedural = require('./modules/procedural'),
     collision = require('./modules/collision'),
     Message = require('./modules/message').Message,
     game = require('./modules/game').Game,
+    logger = require('./modules/logger');
     MAX_PLAYERS = 4;
 
-//console.log(game.addPlayer);
+//logger.info(game.addPlayer);
 
 var ttServer = (function() {
     var WebSocketServer = require('websocket').server,
@@ -21,12 +22,17 @@ var ttServer = (function() {
     var ttserver =  {
         listen: function(port) {
                 server = http.createServer(function(request, Message) {
-                console.log((new Date()) + ' Received request for ' + request.url);
-                Message.writeHead(404);
-                Message.end();
+                logger.info((new Date()) + ' Received request for ' + request.url);
+                if(request.url.indexOf("log") !== -1) {
+                    Message.writeHead(200, {'Content-Type' : 'text/html' });
+                    Message.end(logger.log());                
+                } else {
+                    Message.writeHead(404);
+                    Message.end();                    
+                }
             });
             server.listen(port, function() {
-                console.log(ttserver.timestamp() + ' Server is listening on port ' + port);
+                logger.info(ttserver.timestamp() + ' Server is listening on port ' + port);
             });
 
             wsServer = new WebSocketServer({
@@ -44,29 +50,32 @@ var ttServer = (function() {
         onRequest: function(request) {
             if(!ttserver.allowOrigin(request.origin)) {
                 request.reject();
-                console.log(ttserver.timestamp() + " connection from origin " + request.origin + " rejected.");
+                //logger.info(ttserver.timestamp() + " connection from origin " + request.origin + " rejected.");
+                logger.info("connection from origin " + request.origin + " rejected.");
                 return;
             }
             if(request.requestedProtocols[0] !== protocol) {                
                 request.reject();
-                console.log(ttserver.timestamp() + " protocol version mismatch.");
+                //logger.info(ttserver.timestamp() + " protocol version mismatch.");
+                logger.info("protocol version mismatch.");
                 return;                
             }
-            //console.log(request);
+            //logger.info(request);
             var connection = request.accept(protocol, request.origin),
                 player = null;
-            console.log(ttserver.timestamp() + ' Connection accepted.');
+            //logger.info(ttserver.timestamp() + ' Connection accepted.');
+            logger.info("Connection accepted");
             connection.on('message', function(message) {
                 if (message.type === 'utf8') {
                     var data;
                     try {
                         data = JSON.parse(message.utf8Data);
                     } catch(e) {
-                        console.log("invalid data: " + message.utf8Data);
+                        logger.info("invalid data: " + message.utf8Data);
                         return;
                     }
                     
-                    //console.log('Received Message: ' + message.utf8Data);
+                    //logger.info('Received Message: ' + message.utf8Data);
                     switch(data.type) {
                         case "map":
                             var mapdata = Message("map");
@@ -125,7 +134,7 @@ var ttServer = (function() {
                                 unitPath.path = unit.go(data);
                                 unitPath.id = data.id;                                
                             } else {
-                                console.log("warning - got move order, but can't find unit");
+                                logger.info("warning - got move order, but can't find unit");
                             }
                             //connection.sendUTF(unitPath.serialized);
                         break;
@@ -135,7 +144,7 @@ var ttServer = (function() {
                                 player.credits += unit.cost / 2;
                                 unit.die();
                             } else {
-                                console.log("trying to sell unit, but can't find it in inventory");
+                                logger.info("trying to sell unit, but can't find it in inventory");
                             }
                             var creditsMsg = Message("credits");
                             creditsMsg.credits = player.credits;
@@ -176,7 +185,7 @@ var ttServer = (function() {
                     }
                 }
                 else if (message.type === 'binary') {
-                    console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+                    logger.info('Received Binary Message of ' + message.binaryData.length + ' bytes');
                     connection.sendBytes(message.binaryData);
                 }
             });
@@ -189,7 +198,7 @@ var ttServer = (function() {
                     game.broadcast(disconnectMsg.serialized);
                     player.die();                    
                 }
-                console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+                logger.info((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
             });            
         },
         stringMessage: function(message) {

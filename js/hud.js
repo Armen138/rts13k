@@ -26,7 +26,7 @@
 					}
 				});
 				mapOverlay.context.strokeRect(game.map.offset.X, game.map.offset.Y, (game.canvas.width / tileSize), (game.canvas.height / tileSize));
-				context.drawImage(mapOverlay.canvas, 0, 0, sw, sh, x, y, w, h);
+				context.drawImage(mapOverlay.canvas, 0, 0, game.map.width, game.map.height, x, y, w, h);
 			},
 			inside: function(pos){
 				if (pos.X > x &&
