@@ -17,14 +17,17 @@ var ttServer = (function() {
         server = null,
         wsServer = null,
         protocol = "tt.0",
-        allowedOrigins = ["null", "http://dev138.info"];
+        allowedOrigins = ["null", "http://dev138.info", "http://13t.dev138.info"],
+        command = function(cmd) {
+            logger.info("Command received. Not sure what to do about it.");
+        };
 
     var ttserver =  {
         listen: function(port) {
                 server = http.createServer(function(request, Message) {
-                logger.info((new Date()) + ' Received request for ' + request.url);
+                logger.info('HTTP request: ' + request.url);
                 if(request.url.indexOf("log") !== -1) {
-                    Message.writeHead(200, {'Content-Type' : 'text/html' });
+                    Message.writeHead(200, {'Content-Type' : 'application/json'});
                     Message.end(logger.log());                
                 } else {
                     Message.writeHead(404);
@@ -32,7 +35,7 @@ var ttServer = (function() {
                 }
             });
             server.listen(port, function() {
-                logger.info(ttserver.timestamp() + ' Server is listening on port ' + port);
+                logger.info('Server is listening on port ' + port);
             });
 
             wsServer = new WebSocketServer({
@@ -41,9 +44,9 @@ var ttServer = (function() {
             }); 
             wsServer.on('request', ttserver.onRequest);
         },
-        timestamp: function() {
+        /*timestamp: function() {
             return (new Date()).getTime();
-        },
+        },*/
         allowOrigin: function(origin) {            
             return (allowedOrigins.indexOf(origin) !== -1);
         },
@@ -80,7 +83,10 @@ var ttServer = (function() {
                         case "map":
                             var mapdata = Message("map");
                                 mapdata.map = game.map;
-                            connection.sendUTF(mapdata.serialized);   
+                            connection.sendUTF(mapdata.serialized);
+                        break;
+                        case "command":
+                            command(data.command);                            
                         break;
                         case "chat":
                             var chat = Message("chat");

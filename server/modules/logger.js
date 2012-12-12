@@ -6,9 +6,10 @@ function timestamp() {
 
 exports.info = function(msg) {
 	console.log(timestamp() + " " + msg);
-	log.push(msg);
+	var logMessage = { time: timestamp(), message: msg };
+	log.push(logMessage);
 };
 
 exports.log = function() {
-	return log.join("<br/>\n");
+	return JSON.stringify(log);
 };

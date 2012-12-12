@@ -7,7 +7,7 @@ var procedural = require('./procedural'),
     bt = require('./basictypes.js');
 
 
-var map = procedural.noiseMapFine(256, 256, 50, 4),
+var map = procedural.noiseMapFine(128, 128, 50, 4),
     players = [],
     units = Node(),
     positions = [
