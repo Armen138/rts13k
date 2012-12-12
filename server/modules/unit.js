@@ -35,10 +35,12 @@ exports.Unit = function(tx, ty, unitObject, game) {
 		path = [],
 		range = unitObject.range || 5,
 		selected = false,
-		tileTime = 0,	
+		tileTime = 0,
 		setTile = function(ntx, nty, collide) {
 			//if(collide)
+			//if(game.collisionMap[tx][ty] == unit.d) {
 			game.collisionMap[tx][ty] = collision.PASSABLE;
+			//}
 			tx = ntx;
 			ty = nty;
 			x = ntx * tileSize;
@@ -47,10 +49,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 				if(game.collisionMap[tx][ty] > 0) {
 					var u = game.getUnit(unit.owner, game.collisionMap[tx][ty]);
 					if(u && (u.owner !== unit.owner || !u.mobile)) {
-						unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);													
+						unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
 						return true;
 					}
-				//} > 0 && (game.getUnit(unit.owner, game.collisionMap[tx][ty]).owner !== unit.owner || !game.getUnit(unit.owner, game.collisionMap[tx][ty]).mobile)) {					
+				//} > 0 && (game.getUnit(unit.owner, game.collisionMap[tx][ty]).owner !== unit.owner || !game.getUnit(unit.owner, game.collisionMap[tx][ty]).mobile)) {
 				} else {
 					game.collisionMap[tx][ty] = unit.id;
 				}
@@ -150,6 +152,8 @@ exports.Unit = function(tx, ty, unitObject, game) {
 						if(!evading) {
 							game.collisionMap[tx][ty] = collision.PASSABLE;
 							game.unitMap[tx][ty] = null;
+
+							//unit.to = dest;
 						}
 						var time = (new Date()).getTime();
 						var path = astar.findPath(game.collisionMap, {X: tx, Y: ty}, dest);
@@ -203,10 +207,15 @@ exports.Unit = function(tx, ty, unitObject, game) {
 									unit.fire("path", path);
 								}
 							} else {
-								unit.fire("position", { position: to, path: path });
+								if(unit.to && !bt.Vec.equal(unit.to, to)) {
+									unit.go(unit.to);
+								} else {
+									unit.to = null;
+									unit.fire("position", { position: to, path: path });
+								}
 							}
 							
-						}  
+						}
 						 /*else {
 							var xdest = path[0].X * tileSize,
 								ydest = path[0].Y * tileSize,

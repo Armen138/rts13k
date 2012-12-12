@@ -34,7 +34,10 @@ exports.Vec = {
 	distance: function(vector, other) {
 		var xdiff = Math.abs(vector.X - other.X),
 			ydiff = Math.abs(vector.Y - other.Y);
-		return Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2)); 
+		return Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2));
+	},
+	equal: function(vector, other) {
+		return (vector.X === other.X && vector.Y === other.Y);
 	}
 };
 

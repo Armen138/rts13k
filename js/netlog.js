@@ -217,9 +217,9 @@
 				if(e.keyCode === 8) {
 					netlog.backspace();
 				}
-				if(e.keyCode === 32) {
+				/*if(e.keyCode === 32) {
 					entry += " ";
-				}
+				}*/
 				if(e.keyCode === 33) {
 					//pgUp
 					scrollIndex += 10;

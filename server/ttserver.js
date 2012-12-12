@@ -204,7 +204,7 @@ var ttServer = (function() {
                     game.broadcast(disconnectMsg.serialized);
                     player.die();                    
                 }
-                logger.info((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+                logger.info('Peer ' + connection.remoteAddress + ' disconnected.');
             });            
         },
         stringMessage: function(message) {

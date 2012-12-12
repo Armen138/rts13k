@@ -34,6 +34,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
             ty = nty;
             x = ntx * tileSize;
             y = nty * tileSize;
+            /*
             if(collide) {
                 if(game.collisionMap[tx][ty] === collider) {
                     unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
@@ -41,7 +42,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                 } else {
                     game.collisionMap[tx][ty] = collider;
                 }
-            }
+            }*/
             return false;
         },
         followPath = function(foundPath) {
