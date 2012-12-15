@@ -17,17 +17,18 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
         {X: 118, Y: 10}
     ],
     game = {
+        bytecount: 0,
         get players(){
             return players;
         },
         update: function() {
             for(var i = 0; i < players.length; i++) {
                 if(!players[i].defeated) {
-                    players[i].update();    
+                    players[i].update();
                 } else {
                     players[i].kick();
                 }
-                
+
             }
         },
         broadcast: function(msg) {
@@ -50,7 +51,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                     serializedPlayers.push({
                         "name" : players[i].name,
                         "id": players[i].id
-                    });                    
+                    });
                 }
             }
             return serializedPlayers;
@@ -74,7 +75,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                 var p1 = game.spiral(13, positions[playerId]);
                 players[playerId] = player;
                 player.on("unit-update", game.unitUpdate);
-                
+
                 for( var i = 0; i < 13; i++) {
                     units.add(player.unit(p1[i].X, p1[i].Y, definitions.tank, true));
                 }
@@ -97,7 +98,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                 unitUpdate.eat(data.data);
             }
             unitUpdate.id = data.unit.id;
-            unitUpdate.owner = data.unit.owner.id;            
+            unitUpdate.owner = data.unit.owner.id;
             for(var i = 0; i < players.length; i++) {
                 if(players[i].canSee(data.unit)) {
                     players[i].send(unitUpdate);
@@ -105,7 +106,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
             }
         },
         unitReport: function(playerId) {
-            var player = game.getPlayer(playerId);                
+            var player = game.getPlayer(playerId);
             var units = player.units,
                 serializedUnits = [];
             units.each(function() {
@@ -115,7 +116,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
         },
         getUnit: function(player, id) {
             if(player) {
-                return player.units.find("id", id);   
+                return player.units.find("id", id);
             } else {
                 var unit = null;
                 for(var i = 0; i < players.length; i++) {
@@ -127,9 +128,10 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
             }
             //var unit = players[origin].units.find("id", id);
             //return unit;
-            return null;                
+            return null;
         },
-        getClosestUnit: function(position, excludeOwner, range, spec) {    
+        getClosestUnit: function(position, excludeOwner, range, spec) {
+/*
             var closest = null;
             var shortest = null;
             var rangeBox = {top: -1 * range, left: -1 * range, width: range * 2 , height: range * 2 };
@@ -147,7 +149,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                     if(unit > 0) {
                         var u = game.getUnit(null, unit);
                         if(u && u.owner.id !== excludeOwner &&
-                            !(spec && spec !== u.spec)) {                            
+                            !(spec && spec !== u.spec)) {
                             var dist = bt.Vec.distance(u.position, position);
                             if(!shortest || dist < shortest) {
                                 closest = u;
@@ -155,12 +157,24 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                                 if(u.position.X !== position.X + x) {
                                     console.log("targetting position mismatch: " + u.position.X + ", " + u.position.Y + " vs. " + (position.X + x) + ", " + (position.Y + y));
                                 }
-                            }                               
+                            }
                         }
                     }
                 }
+            }*/
+            var closest = null;
+            for(var i = 0; i < players.length; i++) {
+                if(players[i].id !== excludeOwner) {
+                    var units = players[i].units;
+                    units.each(function() {
+                        if(bt.Vec.distance(this.position, position) < range) {
+                            closest = this;
+                            return true;
+                        }
+                    });
+                }
+                if(closest) break;
             }
-
             return closest;
         },
         unitMap: (function(){
@@ -168,7 +182,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
             for(var x = 0; x < map.length; x++) {
                 unitMap[x] = [];
             }
-            return unitMap;                
+            return unitMap;
         }()),
         collisionMap: (function(){
             var collisionMap = [];
@@ -182,7 +196,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                     }
                 }
             }
-            return collisionMap;                
+            return collisionMap;
         }()),
         spiral: function(n, p, spec) {
             var x = 0,
@@ -204,21 +218,21 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                 if(spec) {
                     if(game.legalPosition({X: p.X + x, Y: p.Y + y}, spec)) {//game.collisionMap[p.X + x] && game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
                         positions.push({X: p.X + x, Y: p.Y + y});
-                    }            
+                    }
                 } else {
                     if(game.collisionMap[p.X + x] && game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
                         positions.push({X: p.X + x, Y: p.Y + y});
                     }
-                }        
+                }
                 x += dx;
                 y += dy;
             }
             return positions;
-        },       
+        },
         legalPosition: function(position, spec) {
             if(typeof(spec.terrain) === 'number') {
                 var proximity = (game.getClosestUnit(position, null, 6, spec) !== null);
-                
+
                 /*units.each(function() {
                     if(this.spec == spec && bt.Vec.distance(this.tile, position) < 6) {
                         proximity = true;
@@ -227,7 +241,7 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                 if(proximity) return false;
                 return  (map[position.X] && map[position.X][position.Y] === spec.terrain &&
                         (game.collisionMap[position.X][position.Y] === 0));
-            }    
+            }
             if(spec.big) {
                 return (map[position.X] &&
                         map[position.X][position.Y] !== 0 &&
@@ -247,5 +261,5 @@ Object.defineProperty(game, "map", {
     get: function() {
         return map;
     }
-});    
+});
 exports.Game = game;

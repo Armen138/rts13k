@@ -101,12 +101,12 @@
 						context.globalAlpha = alpha + levelCorrector;
 					}
 					context.lineWidth = 2;
-					if(netlog.shadow) {						
+					if(netlog.shadow) {
 						context.shadowColor = "black";
 						context.shadowOffsetX = 0;
 						context.shadowOffsetY = 0;
 						context.shadowBlur = 4;
-					} 
+					}
 					if(netlog.outline) {
 						context.strokeText(queue[i].message, rect.left + 10, line);
 					}
@@ -176,6 +176,9 @@
 					break;
 					case 8:
 					break;
+					case 32:
+						entry += " ";
+					break;
 					default:
 						if(netlog.inputMode) {
 							scrollIndex = 0;
@@ -199,12 +202,12 @@
 			//because firefox will kill the websocket connection on escape. do not want.
 			if(e.keyCode === 27) {
 				e.preventDefault();
-				return false;				
+				return false;
 			}
 			//because all browsers "scroll down" on space
 			if(e.keyCode === 32) {
-				e.preventDefault();
-				return false;								
+				//e.preventDefault();
+				return true;
 			}
 		});
 		document.addEventListener("keyup", function(e) {
@@ -219,6 +222,7 @@
 				}
 				/*if(e.keyCode === 32) {
 					entry += " ";
+					alert("space2");
 				}*/
 				if(e.keyCode === 33) {
 					//pgUp

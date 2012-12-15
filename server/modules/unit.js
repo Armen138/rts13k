@@ -200,7 +200,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 
 							setTile(to.X, to.Y, true /*path.length === 0*/);
 							tileTime = (new Date()).getTime();
-							
+
 							if(path.length > 0) {
 								if(game.collisionMap[path[0].X][path[0].Y] === collision.STRUCTURE) {
 									unit.go(path[path.length -1]);
@@ -214,7 +214,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 									unit.fire("position", { position: to, path: path });
 								}
 							}
-							
+
 						}
 						 /*else {
 							var xdest = path[0].X * tileSize,
@@ -251,10 +251,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 							var dist = bt.Vec.distance(target.position, unit.position);
 							if(dist > range) {
 								console.log("targetting bugged: claims to be within range " + range + ", but is at distance " + dist);
-							}							
+							}
 						}*/
 					}
-					
+
 					if(target !== lastTarget) {
 						unit.target = target;
 						unit.fire("target", target);
@@ -267,7 +267,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					});*/
 					var now = (new Date()).getTime();
 					//aim cannon
-					if(unit.target) {						
+					if(unit.target) {
 						if(now - fireTime > loadTime) {
 						/*	var b = Bullet({X: x, Y: y}, unit.target, unitObject.damage || 10);
 							b.owner = unit;
@@ -279,8 +279,8 @@ exports.Unit = function(tx, ty, unitObject, game) {
 									if(u > 0) {
 										u = game.getUnit(null, u);
 										if(u) {
-											u.hit(damage);	
-										}										
+											u.hit(damage);
+										}
 									}
 								}, delay);
 							}({X: tx, Y: ty}, unit.target.position, unitObject.damage || 10));
@@ -301,7 +301,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
 	Object.defineProperty( unit, "kills", {
 		get: function() { return kills;}
 	});
-	
+
 	game.collisionMap[tx][ty] = unit.id;
 	if(unitObject.big) {
 		game.collisionMap[tx][ty + 1] = unit.id;
@@ -318,9 +318,9 @@ exports.Unit = function(tx, ty, unitObject, game) {
 /*
 //enum unit modes.
 //Fire when enemy is in range, do not chase
-Unit.GUARD = 0; 
+Unit.GUARD = 0;
 // Move into range to attack nearby enemies
-Unit.AGRESSIVE = 1; 
+Unit.AGRESSIVE = 1;
 // Do not fire on anything ever
-Unit.CEASEFIRE = 0; 
+Unit.CEASEFIRE = 0;
 */

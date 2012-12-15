@@ -37,7 +37,7 @@ function makeCanvas(w, h) {
 	return { canvas : canvas, context: canvas.getContext("2d") };
 }
 
-function startGame(difficulty) {	
+function startGame(difficulty) {
 	game.init(difficulty);
 	game.players.push(Player(10, 10, Player.modes.LOCAL));
 	game.players.push(Player(100, 100, Player.modes.AI));
@@ -52,7 +52,7 @@ var menu = {
 		document.getElementById(id).style.display = 'none';
 	},
 	show: function(id) {
-		document.getElementById(id).style.display = 'block';	
+		document.getElementById(id).style.display = 'block';
 	}
 };
 
@@ -61,22 +61,25 @@ window.addEventListener("load", function() {
 		menu.click('connect', function() {
 			menu.hide('menu');
 			//menu.show('logbook');
-			//game.connect("ws://armen138.server.jit.su");
-			game.connect("ws://13t.dev138.info:8080");
+			game.connect("ws://armen138.server.jit.su");
+			//game.connect("ws://13t.dev138.info:8080");
 			//game.connect("ws://hq138.info:8080");
-		});		
+		});
 
 	});
 	qdip.load({
 		"terrain": "images/terrain32.png",
-		"mine": "images/mine32.png"
+		"mine": "images/mine32.png",
+		"tankbody": "images/tankbody.png",
+		"cannon1": "images/cannon1_1.png",
+		"cannon2": "images/cannon2.png"
 	});
 	/*menu.click('play', function() {
 		menu.show('difficulty');
 	});*/
 	menu.click('help', function() {
 		menu.show('shortcuts');
-	});	
+	});
 	menu.click('easy', function() {
 		menu.hide('menu');
 		startGame(0);
@@ -84,7 +87,7 @@ window.addEventListener("load", function() {
 	menu.click('medium', function() {
 		menu.hide('menu');
 		startGame(1);
-	});	
+	});
 	menu.click('hard', function() {
 		menu.hide('menu');
 		startGame(2);

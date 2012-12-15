@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+
+
 var procedural = require('./modules/procedural'),
     Player = require('./modules/player').Player,
     units = require('./modules/definitions').units,
@@ -10,6 +11,22 @@ var procedural = require('./modules/procedural'),
     MAX_PLAYERS = 4;
 
 //logger.info(game.addPlayer);
+
+var httpRequest = function(request, Message) {
+    logger.info('HTTP request: ' + request.url);
+    Message.writeHead(200, {'Content-Type' : 'application/json'});
+    switch(request.url) {
+        case "/log.json":
+            Message.end(logger.log());
+        break;
+        case "/bytes.json":
+            Message.end("{ \"bytes\": " + game.bytecount + "}");
+        break;
+        default:
+            Message.end("{}");
+        break;
+    }
+};
 
 var ttServer = (function() {
     var WebSocketServer = require('websocket').server,
@@ -24,16 +41,7 @@ var ttServer = (function() {
 
     var ttserver =  {
         listen: function(port) {
-                server = http.createServer(function(request, Message) {
-                logger.info('HTTP request: ' + request.url);
-                if(request.url.indexOf("log") !== -1) {
-                    Message.writeHead(200, {'Content-Type' : 'application/json'});
-                    Message.end(logger.log());                
-                } else {
-                    Message.writeHead(404);
-                    Message.end();                    
-                }
-            });
+                server = http.createServer(httpRequest);
             server.listen(port, function() {
                 logger.info('Server is listening on port ' + port);
             });
@@ -41,13 +49,13 @@ var ttServer = (function() {
             wsServer = new WebSocketServer({
                 httpServer: server,
                 autoAcceptConnections: false
-            }); 
+            });
             wsServer.on('request', ttserver.onRequest);
         },
         /*timestamp: function() {
             return (new Date()).getTime();
         },*/
-        allowOrigin: function(origin) {            
+        allowOrigin: function(origin) {
             return (allowedOrigins.indexOf(origin) !== -1);
         },
         onRequest: function(request) {
@@ -57,11 +65,11 @@ var ttServer = (function() {
                 logger.info("connection from origin " + request.origin + " rejected.");
                 return;
             }
-            if(request.requestedProtocols[0] !== protocol) {                
+            if(request.requestedProtocols[0] !== protocol) {
                 request.reject();
                 //logger.info(ttserver.timestamp() + " protocol version mismatch.");
                 logger.info("protocol version mismatch.");
-                return;                
+                return;
             }
             //logger.info(request);
             var connection = request.accept(protocol, request.origin),
@@ -77,7 +85,7 @@ var ttServer = (function() {
                         logger.info("invalid data: " + message.utf8Data);
                         return;
                     }
-                    
+
                     //logger.info('Received Message: ' + message.utf8Data);
                     switch(data.type) {
                         case "map":
@@ -86,7 +94,7 @@ var ttServer = (function() {
                             connection.sendUTF(mapdata.serialized);
                         break;
                         case "command":
-                            command(data.command);                            
+                            command(data.command);
                         break;
                         case "chat":
                             var chat = Message("chat");
@@ -94,7 +102,7 @@ var ttServer = (function() {
                             chat.name = player.name;
                             game.broadcast(chat);
                         break;
-                        case "user":       
+                        case "user":
                             var freeSpot = false;
                             for(var i = 0; i < game.players.length; i++) {
                                 if(game.players[i].defeated) {
@@ -108,7 +116,7 @@ var ttServer = (function() {
                                 connection.sendUTF('{"type":"error", "message": "server full"}');
                                 connection.close();
                                 return;
-                            }                            
+                            }
                             var otherPlayers = game.getPlayers();
                             var name = data.name;
                             if(game.getPlayer(name) !== null) {
@@ -116,8 +124,8 @@ var ttServer = (function() {
                                 while(game.getPlayer(name + seq) !== null) {
                                     seq++;
                                 }
-                                name = name + seq;                                        
-                            }                            
+                                name = name + seq;
+                            }
                             player = game.addPlayer(name, connection);
                             var playerMsg = Message("player");
                             playerMsg.id = player.id;
@@ -130,21 +138,21 @@ var ttServer = (function() {
                             connectMsg.id = player.id;
                             game.broadcast(connectMsg);
                         break;
-                        case "units":                        
+                        case "units":
                             connection.sendUTF(JSON.stringify(game.unitReport(data.id)));
                         break;
                         case "unit-go":
-                            var unitPath = Message("path"); 
+                            var unitPath = Message("path");
                             var unit = game.getUnit(player, data.id);
                             if(unit) {
                                 unitPath.path = unit.go(data);
-                                unitPath.id = data.id;                                
+                                unitPath.id = data.id;
                             } else {
                                 logger.info("warning - got move order, but can't find unit");
                             }
                             //connection.sendUTF(unitPath.serialized);
                         break;
-                        case "sell": 
+                        case "sell":
                             var unit = game.getUnit(player, data.id);
                             if(unit) {
                                 player.credits += unit.cost / 2;
@@ -154,7 +162,7 @@ var ttServer = (function() {
                             }
                             var creditsMsg = Message("credits");
                             creditsMsg.credits = player.credits;
-                            player.send(creditsMsg.serialized); 
+                            player.send(creditsMsg.serialized);
                         break;
                         case "unit":
                             var unit = game.getUnit(null, data.id);
@@ -178,7 +186,7 @@ var ttServer = (function() {
                                 }
                                 var creditsMsg = Message("credits");
                                 creditsMsg.credits = player.credits;
-                                player.send(creditsMsg.serialized);                                
+                                player.send(creditsMsg.serialized);
                             } else {
                                 var errorMsg = Message("error");
                                 errorMsg.message = "You can't build that there.";
@@ -186,7 +194,7 @@ var ttServer = (function() {
                             }
                         break;
                         default:
-                            connection.sendUTF(message.utf8Data.toUpperCase());   
+                            connection.sendUTF(message.utf8Data.toUpperCase());
                         break;
                     }
                 }
@@ -196,16 +204,16 @@ var ttServer = (function() {
                 }
             });
             connection.on('close', function(reasonCode, description) {
-                
+
                 if(player) {
-                    var disconnectMsg = Message("disconnect");    
+                    var disconnectMsg = Message("disconnect");
                     disconnectMsg.name = player.name;
                     disconnectMsg.id = player.id;
                     game.broadcast(disconnectMsg.serialized);
-                    player.die();                    
+                    player.die();
                 }
                 logger.info('Peer ' + connection.remoteAddress + ' disconnected.');
-            });            
+            });
         },
         stringMessage: function(message) {
 
@@ -216,6 +224,6 @@ var ttServer = (function() {
     };
     return ttserver;
 }());
-
+game.logger = logger;
 ttServer.listen(8080);
 setInterval(game.update, 50);
