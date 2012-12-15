@@ -61,8 +61,8 @@ window.addEventListener("load", function() {
 		menu.click('connect', function() {
 			menu.hide('menu');
 			//menu.show('logbook');
-			game.connect("ws://armen138.server.jit.su");
-			//game.connect("ws://13t.dev138.info:8080");
+			//game.connect("ws://armen138.server.jit.su");
+			game.connect("ws://13t.dev138.info:8080");
 			//game.connect("ws://hq138.info:8080");
 		});
 

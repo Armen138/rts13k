@@ -190,7 +190,10 @@ exports.Unit = function(tx, ty, unitObject, game) {
 					if(now - incomeTime > 1000 && unit.owner.energy >= 0) {
 						unit.owner.credits += unitObject.income;
 						incomeTime = now;
-					}
+						game.logger.info("credits " + unit.owner.credits);
+					} /*else {
+						game.logger.info("player energy: " + unit.owner.energy);
+					}*/
 				}
 				if(unitObject.mobile) {
 					if(path.length > 0) {
