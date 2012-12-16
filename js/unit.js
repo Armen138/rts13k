@@ -27,7 +27,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
         path = [],
         range = unitObject.range || 5,
         selected = false,
-        tileTime = 0, 
+        tileTime = 0,
         setTile = function(ntx, nty, collide) {
             //if(collide)game.collisionMap[tx][ty] = collision.PASSABLE;
             tx = ntx;
@@ -169,6 +169,9 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                 }
                 return false;*/
             },
+            isIn: function(rect) {
+                return (tx >= rect[0] && ty >= rect[1] && tx <= rect[0] + rect[2] && ty <= rect[1] + rect[3]);
+            },
             isInside: function(rect, noffset) {
                 var ox = game.map.offset.X * tileSize - gameView.offset.X, oy = game.map.offset.Y * tileSize - gameView.offset.Y;
                 if(noffset) {
@@ -177,7 +180,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                 return (x > rect[0] + ox && x < rect[0] + ox + rect[2] && y > rect[1] + oy && y < rect[1] + oy + rect[3]);
             },
             attack: function(target) {
-                unit.targetUnit = target;               
+                unit.targetUnit = target;
             },
             go: function(dest, evading) {
                 if(unitObject.mobile) {
@@ -230,13 +233,13 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                             var to = path.shift();
                             setTile(to.X, to.Y, path.length === 0);
                             tileTime = (new Date()).getTime();
-                            
+
                                 /*if(path.length > 0) {
                                     if(game.collisionMap[path[0].X][path[0].Y] === collision.STRUCTURE) {
                                         unit.go(path[path.length -1]);
                                     }
                                 }*/
-                            
+
                         }
                         else {
                             var xdest = path[0].X * tileSize,
@@ -267,7 +270,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                     });*/
                     var now = (new Date()).getTime();
                     //aim cannon
-                    if(unit.target) { //&& !isNaN(unit.target.X) && !isNaN(unit.target.Y)) {                        
+                    if(unit.target) { //&& !isNaN(unit.target.X) && !isNaN(unit.target.Y)) {
                         cannonAngle = Math.atan2((unit.target.position.X - x), (y - unit.target.position.Y) );
                         if(now - fireTime > loadTime) {
                             var b = Bullet({X: x, Y: y}, unit.target.position, unitObject.damage || 10);
@@ -304,8 +307,8 @@ var Unit = function(tx, ty, tc, unitObject, id) {
 
 //enum unit modes.
 //Fire when enemy is in range, do not chase
-Unit.GUARD = 0; 
+Unit.GUARD = 0;
 // Move into range to attack nearby enemies
-Unit.AGRESSIVE = 1; 
+Unit.AGRESSIVE = 1;
 // Do not fire on anything ever
-Unit.CEASEFIRE = 0; 
+Unit.CEASEFIRE = 0;

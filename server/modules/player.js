@@ -23,6 +23,10 @@ exports.Player = function(name, game, connection, id) {
                 return energy;
             },
             set energy(num) {
+                if(isNaN(num)) {
+                    game.logger.info("cannot set energy, this is not a number: " + num);
+                    return;
+                }
                 energy = num;
                 var energyMsg = Message("energy");
                 energyMsg.energy = energy;
@@ -45,7 +49,7 @@ exports.Player = function(name, game, connection, id) {
                     if(!freebie) {
                         player.credits -= def.cost;
                     }
-                    if(def.upkeep !== null) {
+                    if(def.upkeep) {
                         player.energy += def.upkeep;
                     }
                     var unitPosition = function(unit, position) {
@@ -147,7 +151,7 @@ exports.Player = function(name, game, connection, id) {
                         //var seconds = (now - game.start) / 1000,
                         //  playTime = (seconds / 60 | 0) + " minutes and " + (seconds % 60 | 0) + " seconds";
                         //ui.modalMessage = "☠ " + name + " was defeated. Playtime: " + playTime;
-                        console.log("player " + player.id + " was defeated.");
+                        game.logger.info("player " + player.id + " was defeated.");
                         var defeatMsg = Message("defeat");
                         defeatMsg.id = player.id;
                         defeatMsg.name = player.name;

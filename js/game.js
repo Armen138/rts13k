@@ -8,6 +8,7 @@ var tileSize = 32,
         count: 0,
         frames: 0,
         selectedUnits: ns.Node(),
+        selection: [0, 0, 0, 0],
         mousePosition: {X: window.innerWidth / 2, Y: window.innerHeight / 2},
         units: ns.Node(),
         enemy: ns.Node(),
@@ -68,7 +69,7 @@ game.centerOn = function(position) {
     }
     if(game.map.offset.Y - game.map.screenSize.Y / 2 < 0) {
         game.map.offset.Y = 0;
-    }    
+    }
     console.log("actual offset " + game.map.offset.X + ", " + game.map.offset.Y);
     game.map.draw();
 };
@@ -102,8 +103,8 @@ game.canvasInit = function() {
     game.canvas = document.getElementById("game");
     game.context = game.canvas.getContext("2d");
     game.canvas.width = window.innerWidth;
-    game.canvas.height = window.innerHeight;   
-    game.log = NetLog(game.context, 
+    game.canvas.height = window.innerHeight;
+    game.log = NetLog(game.context,
         {
             top: 0,
             left: game.canvas.width - 400,
@@ -114,12 +115,12 @@ game.canvasInit = function() {
             outline: false,
             shadow: true
         }
-    );    
+    );
     game.hud = Hud(game.context);
     game.log.onMessage(function(msg) {
         network.chat(msg);
-    });    
-}
+    });
+};
 
 game.connect = function(server) {
     network.connect(server);
@@ -133,28 +134,31 @@ game.init = function(difficulty) {
     }
     game.hud.on("minimap", function(pos) {
         game.map.offset.X = pos.X & (127 - game.map.screenSize.X) | 0;
-        game.map.offset.Y = pos.Y & (127 - game.map.screenSize.Y) | 0;      
+        game.map.offset.Y = pos.Y & (127 - game.map.screenSize.Y) | 0;
         game.map.draw();
     });
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
-        game.dragStart = {X: e.clientX, Y: e.clientY};
-        if( ui.has(e.clientX, e.clientY) ) {
+        //game.dragStart = {X: e.clientX, Y: e.clientY};
+        game.dragStart = game.map.at(e.clientX, e.clientY);
+        console.log(game.dragStart);
+        /*if( ui.has(e.clientX, e.clientY) ) {
             game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
-        }            
+        } */
     });
     game.canvas.addEventListener("mousemove", function(e) {
         game.mousePosition.X = e.clientX;
         game.mousePosition.Y = e.clientY;
         if(game.mouseDown) {
             var topLeft = {X: game.dragStart.X, Y: game.dragStart.Y };//.shallow(),
-                w = Math.abs(e.clientX - game.dragStart.X),
-                h = Math.abs(e.clientY - game.dragStart.Y);
-            if(e.clientX < topLeft.X) {
-                topLeft.X = e.clientX;
+                corner = game.map.at(e.clientX, e.clientY);
+                w = Math.abs(corner.X - game.dragStart.X),
+                h = Math.abs(corner.Y - game.dragStart.Y);
+            if(corner.tX < topLeft.X) {
+                topLeft.X = corner.X;
             }
-            if(e.clientY < topLeft.Y) {
-                topLeft.Y = e.clientY;
+            if(corner.Y < topLeft.Y) {
+                topLeft.Y = corner.Y;
             }
 
             if(!game.uiDrag) {
@@ -172,7 +176,7 @@ game.init = function(difficulty) {
             return;
         }
         var nr = e.keyCode - 48;
-        if(e.ctrlKey) {            
+        if(e.ctrlKey) {
             e.preventDefault();
             if(nr > 0 && nr < 10 ) {
                 game.units.each(function() {
@@ -283,7 +287,8 @@ game.init = function(difficulty) {
                 }
             } else {
                 if(!game.uiDrag) {
-                    if(bt.Vec.distance(game.dragStart, {X: e.clientX , Y: e.clientY }) < 32) {
+                    //if(bt.Vec.distance(game.dragStart, {X: e.clientX , Y: e.clientY }) < 32) {
+                    if(!game.selection || (game.selection[2] < 2 && game.selection[3] < 2)) {
                         var selected = false;
                         if(e.button === 0) {
                             game.units.each(function() {
@@ -303,12 +308,13 @@ game.init = function(difficulty) {
                         } else {
                             game.deselectAll();
                         }
-                    } else {
+                    } else if(game.selection){
+                        console.log(game.selection);
                         //select inside box
                         game.deselectAll();
                         var unitButtons = [];
                         game.units.each(function() {
-                            if(this.isInside(game.selection) && this.owner.local && this.mobile) {
+                            if(this.isIn(game.selection) && this.owner.local && this.mobile) {
                                 this.select();
                                 game.selectedUnits.add(this);
                                 (function(unit) {
@@ -317,7 +323,7 @@ game.init = function(difficulty) {
                                 game.hud.buttons = game.hud.SmallButtons(unitButtons);
                             }
                         });
-                        
+
 
                     }
                 }
@@ -325,7 +331,7 @@ game.init = function(difficulty) {
         }
         game.uiDrag = false;
         ui.alpha = 1.0;
-        
+
         game.selection = null;
         return false;
     });
@@ -344,7 +350,10 @@ game.run = function() {
     });
     if(game.selection) {
         game.context.fillStyle = "rgba(30, 210, 230, 0.5)";
-        game.context.fillRect.apply(game.context, game.selection);
+        var w = game.selection[2] * 32,
+            h = game.selection[3] * 32,
+            pos = game.map.atPix(game.selection[0], game.selection[1]);
+        game.context.fillRect(pos.X, pos.Y, w, h);
     }
     if(game.buildMode) {
         var color = "grey",
@@ -357,8 +366,8 @@ game.run = function() {
     var now = (new Date()).getTime();
     if(game.players[0].energy < 0 && now - game.energyWarning > 10000) {
         if(game.log) {
-            game.log.info("Low energy, buildings offline.");    
-        }        
+            game.log.info("Low energy, buildings offline.");
+        }
         game.energyWarning = now;
     }
     if(game.log && game.hud) {
@@ -400,12 +409,12 @@ game.spiral = function(n, p, spec) {
         if(spec) {
             if(game.legalPosition({X: p.X + x, Y: p.Y + y}, spec)) {//game.collisionMap[p.X + x] && game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
                 positions.push({X: p.X + x, Y: p.Y + y});
-            }            
+            }
         } else {
             if(game.collisionMap[p.X + x] && game.collisionMap[p.X + x][p.Y + y] === collision.PASSABLE) {
                 positions.push({X: p.X + x, Y: p.Y + y});
             }
-        }        
+        }
         x += dx;
         y += dy;
     }
@@ -423,7 +432,7 @@ game.legalPosition = function(position, spec) {
         if(proximity) return false;
         return  (game.map.map[position.X] && game.map.map[position.X][position.Y] === spec.terrain &&
                 (game.collisionMap[position.X][position.Y] !== collision.UNIT || collision.STRUCTURE));
-    }    
+    }
     if(spec.big) {
         return (game.map.map[position.X] &&
                 game.map.map[position.X][position.Y] !== 0 &&

@@ -62,10 +62,25 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					return bt.Vector((x / tileSize | 0)+ game.map.offset.X, (y / tileSize | 0) + game.map.offset.Y);
 				}
 			},
+			atTile: {
+				value: function(x, y) {
+					x -= gameView.offset.X;
+					y -= gameView.offset.Y;
+					return {X: (x / tileSize | 0) + game.map.offset.X , Y: (y / tileSize | 0) + game.map.offset.Y };
+				}
+			},
+			atPix: {
+				value: function(x, y) {
+					return {
+						X: x * tileSize + gameView.offset.X - (game.map.offset.X * 32),
+						Y: y * tileSize + gameView.offset.Y - (game.map.offset.Y * 32)
+					};
+				}
+			},
 			horizontal: {
 				value: function(d) {
 					context.drawImage(canvas, tileSize * d, 0);
-					tileSet.offset.X -= d;					
+					tileSet.offset.X -= d;
 					for(var y = 0 + tileSet.offset.Y; y < tileSet.offset.Y + screenSize.Y; y++) {
 						var x = (d < 0 ? screenSize.X: 0) + tileSet.offset.X - (d < 0 ? 1 : 0),
 							tile = tilearray[ts.pickTile(map, x, y)];
@@ -109,7 +124,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 						var br = tileSet.offset.add(screenSize);
 						var m = tileSet.width / minicanvas.width;
 						for(var x = 0; x < 128; x++) {
-							for(var y = 0; y < 128; y++) {								
+							for(var y = 0; y < 128; y++) {
 								//context.drawImage(tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
 								//minicontext.fillStyle = color[map[x * m][y * m] / 14 | 0];
 								//minicontext.fillRect(x, y, 1, 1);//tilearray[ts.pickTile(map, x, y)], (x - tileSet.offset.X) * tileSize, (y - tileSet.offset.Y) * tileSize);
@@ -120,7 +135,7 @@ ts.TileSet = function(tilearray, map, canvas, w, h) {
 					}
 					return minicanvas;
 				}
-			},			
+			},
 			map: { value : map }
 		});
 
