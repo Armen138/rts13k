@@ -37,26 +37,21 @@ exports.Unit = function(tx, ty, unitObject, game) {
         selected = false,
         tileTime = 0,
         setTile = function(ntx, nty, collide) {
-            //if(collide)
-            //if(game.collisionMap[tx][ty] == unit.d) {
             game.collisionMap[tx][ty] = collision.PASSABLE;
-            //}
             tx = ntx;
             ty = nty;
             x = ntx * tileSize;
             y = nty * tileSize;
-            //if(collide) {
-                if(game.collisionMap[tx][ty] > 0) {
-                    var u = game.getUnit(unit.owner, game.collisionMap[tx][ty]);
-                    if(u && (u.owner !== unit.owner || !u.mobile)) {
-                        unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
-                        return true;
-                    }
-                //} > 0 && (game.getUnit(unit.owner, game.collisionMap[tx][ty]).owner !== unit.owner || !game.getUnit(unit.owner, game.collisionMap[tx][ty]).mobile)) {
-                } else {
-                    game.collisionMap[tx][ty] = unit.id;
+            if(game.collisionMap[tx][ty] > 0) {
+                var u = game.getUnit(unit.owner, game.collisionMap[tx][ty]);
+                if(u && (u.owner !== unit.owner || !u.mobile) || collide) {
+                    unit.go(game.spiral(2, {X: tx, Y: ty})[1], true);
+                    return true;
                 }
-            //}
+
+            } else {
+                game.collisionMap[tx][ty] = unit.id;
+            }
             return false;
         },
         followPath = function(foundPath) {
@@ -198,7 +193,7 @@ exports.Unit = function(tx, ty, unitObject, game) {
                         if(curTime > moveDuration) {
                             var to = path.shift();
 
-                            setTile(to.X, to.Y, true /*path.length === 0*/);
+                            setTile(to.X, to.Y, path.length === 0);
                             tileTime = (new Date()).getTime();
 
                             if(path.length > 0) {

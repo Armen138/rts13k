@@ -139,12 +139,8 @@ game.init = function(difficulty) {
     });
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
-        //game.dragStart = {X: e.clientX, Y: e.clientY};
         game.dragStart = game.map.at(e.clientX, e.clientY);
         console.log(game.dragStart);
-        /*if( ui.has(e.clientX, e.clientY) ) {
-            game.uiDrag = {X: e.clientX - ui.hudPosition.X, Y: e.clientY - ui.hudPosition.Y };
-        } */
     });
     game.canvas.addEventListener("mousemove", function(e) {
         game.mousePosition.X = e.clientX;
@@ -152,23 +148,15 @@ game.init = function(difficulty) {
         if(game.mouseDown) {
             var topLeft = {X: game.dragStart.X, Y: game.dragStart.Y };//.shallow(),
                 corner = game.map.at(e.clientX, e.clientY);
-                w = Math.abs(corner.X - game.dragStart.X),
-                h = Math.abs(corner.Y - game.dragStart.Y);
-            if(corner.tX < topLeft.X) {
+                w = Math.abs(corner.X - game.dragStart.X) + 1,
+                h = Math.abs(corner.Y - game.dragStart.Y) + 1;
+            if(corner.X < topLeft.X) {
                 topLeft.X = corner.X;
             }
             if(corner.Y < topLeft.Y) {
                 topLeft.Y = corner.Y;
             }
-
-            if(!game.uiDrag) {
-                if(w < 0) { topLeft.X += w; w *= -1; }
-                if(h < 0) { topLeft.Y += h; h *= -1; }
-                game.selection = [topLeft.X, topLeft.Y,  w, h];
-            } else {
-                ui.alpha = 0.5;
-                ui.hudPosition = {X: topLeft.X + w - game.uiDrag.X, Y: topLeft.Y + h - game.uiDrag.Y};
-            }
+            game.selection = [topLeft.X, topLeft.Y,  w, h];
         }
     });
     document.addEventListener("keydown", function(e) {
@@ -220,10 +208,6 @@ game.init = function(difficulty) {
                 menu.show('shortcuts');
             break;
         }
-        if(action !== -1 && ui.actionButtons[action]) {
-            ui.actionButtons[action]();
-        }
-
     });
 
     var defaultButtonLayout = [];
@@ -271,8 +255,6 @@ game.init = function(difficulty) {
         /* if(game.dragStart)
             game.dragStart.release(); */
         game.mouseDown = false;
-        //if( ui.has(e.clientX, e.clientY) ) {
-        //    ui.click(e.clientX - ui.hudPosition.X, e.clientY - ui.hudPosition.Y);
         if(game.hud.inside({X: e.clientX, Y:e.clientY})) {
 
         } else {
@@ -329,9 +311,6 @@ game.init = function(difficulty) {
                 }
             }
         }
-        game.uiDrag = false;
-        ui.alpha = 1.0;
-
         game.selection = null;
         return false;
     });
@@ -374,7 +353,6 @@ game.run = function() {
         game.log.draw();
         game.hud.draw();
     }
-    ui.draw();
 
     //ts.collisionDebug();
     setTimeout(game.run, 5);
