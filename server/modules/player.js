@@ -173,6 +173,11 @@ exports.Player = function(name, game, connection, id) {
                 }
                 game.bytecount += data.length;
                 connection.sendUTF(data);
+            },
+            ping: function() {
+                var pingMsg = Message("ping");
+                pingMsg.timestamp = (new Date()).getTime();
+                player.send(pingMsg);
             }
         },
         units = Node(),
@@ -189,6 +194,8 @@ exports.Player = function(name, game, connection, id) {
     for( var i = 0; i < 13; i++) {
         addUnit(p1[i].X, p1[i].Y);
     }*/
+    player.ping();
+    setInterval(player.ping, 5000);
     Events.attach(player);
     return player;
 };

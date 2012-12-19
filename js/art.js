@@ -1,4 +1,5 @@
 var art = {
+	colorizer: Colorizer(),
 	open: function (fill, stroke) {
 		game.context.save();
 		game.context.fillStyle = fill;
@@ -19,46 +20,37 @@ var art = {
 		}
 	},
 	tank: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
-		/*
-		art.open(fill, stroke);
-		if(!notranslate) {
-			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
-		} else {
-			game.context.translate(x + tileSize / 2, y + tileSize / 2);
+		var hue;
+		if(!art.tank.body) { art.tank.body = {}; }
+		if(!art.tank.cannon) { art.tank.cannon = {}; }
+		if(!art.tank.body[fill]) {
+			hue = art.colorizer.Color(fill).hue;
+			art.tank.body[fill] = art.colorizer.swapHues(qdip.images.tankbody, 0, hue);
 		}
-		art.body(angle);
-		if(cannonAngle !== 0) {
-			game.context.rotate(-angle);
-			game.context.rotate(cannonAngle);
+		if(!art.tank.cannon[fill]) {
+			hue = art.colorizer.Color(fill).hue;
+			art.tank.cannon[fill] = art.colorizer.swapHues(qdip.images.cannon1, 0, hue);
 		}
-		game.context.fillRect(-2, -16, 4, 24);
-		game.context.strokeRect(-2, -16, 4, 24);
-		game.context.fillRect(-5, -5, 10, 10);
-		game.context.strokeRect(-5, -5, 10, 10);*/
 		game.context.save();
 		if(!notranslate) {
 			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
 		} else {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
-			game.context.fillStyle = fill;
-			game.context.globalAlpha = 0.7;
+		}
+		game.context.rotate(angle);
+		if(stroke !== "black") {
+			game.context.globalAlpha = 0.3;
+			game.context.fillStyle = stroke;
 			game.context.fillRect(-16, -16, 32, 32);
 			game.context.globalAlpha = 1.0;
 		}
-		game.context.rotate(angle);
-		game.context.drawImage(qdip.images.tankbody, 0, 0, 64, 64, -16, -16, 32, 32);
+
+		game.context.drawImage(art.tank.body[fill], 0, 0, 64, 64, -16, -16, 32, 32);
 		if(cannonAngle !== 0) {
 			game.context.rotate(-angle);
 			game.context.rotate(cannonAngle);
 		}
-		game.context.drawImage(qdip.images.cannon1, 0, 0, 64, 64, -16, -16, 32, 32);
-		if(stroke !== "black") {
-			game.context.strokeStyle = stroke;
-			game.context.strokeRect(-16, -16, 32, 32);
-		} else {
-			game.context.strokeStyle = fill;
-			game.context.strokeRect(-16, -16, 32, 32);
-		}
+		game.context.drawImage(art.tank.cannon[fill], 0, 0, 64, 64, -16, -16, 32, 32);
 		game.context.restore();
 	},
 	heavyTank: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
@@ -186,18 +178,18 @@ var art = {
 		game.context.restore();
 	},
 	powerplant: function(x, y, fill, stroke, z, a, notranslate) {
-		var lines = [[{"X":-1,"Y":-3},{"X":11,"Y":-2}],[{"X":11,"Y":-2},{"X":-10,"Y":10}],[{"X":-10,"Y":10},{"X":1,"Y":0}],[{"X":1,"Y":0},{"X":-13,"Y":-2}],[{"X":-13,"Y":-2},{"X":10,"Y":-10}],[{"X":10,"Y":-10},{"X":-1,"Y":-3}]];
-		art.open(fill, stroke);
-		//game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+		if(!art.powerplant[fill]) {
+			var hue = art.colorizer.Color(fill).hue;
+			art.powerplant[fill] = art.colorizer.swapHues(qdip.images.powerplant, 0, hue);
+		}
+		game.context.save();
 		if(!notranslate) {
 			game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+			game.context.drawImage(art.powerplant[fill], 0, 0, 128, 128, -16, -16, 64, 64);
 		} else {
 			game.context.translate(x + tileSize / 2, y + tileSize / 2);
+			game.context.drawImage(art.powerplant[fill], 0, 0, 128, 128, -16, -16, 32, 32);
 		}
-		//game.context.fillRect(-16, -16, 32, 32);
-		//game.context.strokeRect(-16, -16, 32, 32);
-		art.box();
-		art.lines(lines);
 		game.context.restore();
 	},
 	lines: function(lines) {

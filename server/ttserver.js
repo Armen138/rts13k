@@ -34,7 +34,7 @@ var ttServer = (function() {
         server = null,
         wsServer = null,
         protocol = "tt.0",
-        allowedOrigins = ["null", "http://dev138.info", "http://13t.dev138.info"],
+        allowedOrigins = ["null", "http://dev138.info", "http://13t.dev138.info", "file://"],
         command = function(cmd) {
             logger.info("Command received. Not sure what to do about it.");
         };
@@ -88,6 +88,11 @@ var ttServer = (function() {
 
                     //logger.info('Received Message: ' + message.utf8Data);
                     switch(data.type) {
+                        case "pong":
+                        var now = (new Date()).getTime();
+                            player.ping = now - data.timestamp;
+                            //console.log(player.ping);
+                        break;
                         case "map":
                             var mapdata = Message("map");
                                 mapdata.map = game.map;

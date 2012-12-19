@@ -72,7 +72,8 @@ window.addEventListener("load", function() {
 		"mine": "images/mine32.png",
 		"tankbody": "images/tankbody.png",
 		"cannon1": "images/cannon1_1.png",
-		"cannon2": "images/cannon2.png"
+		"cannon2": "images/cannon2.png",
+		"powerplant": "images/power_plant.png"
 	});
 	/*menu.click('play', function() {
 		menu.show('difficulty');

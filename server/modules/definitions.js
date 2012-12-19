@@ -32,7 +32,7 @@ exports.units = {
 		loadTime: 1500,
 		moveDuration: 600,
 		cost: 200
-	},	
+	},
 	turret: {
 		name: "turret",
 		mobile: false,
@@ -43,12 +43,12 @@ exports.units = {
 		upkeep: -50,
 		cost: 100,
 		//collision.STRUCTURE
-		collision: 3		
+		collision: 3
 	},
 	mine: {
 		name: "mine",
 		mobile: false,
-		health: 100,		
+		health: 100,
 		range: 7,
 		upkeep: -100,
 		cost: 150,
@@ -61,17 +61,18 @@ exports.units = {
 	powerplant: {
 		name: "powerplant",
 		mobile: false,
-		health: 100,		
+		health: 100,
 		range: 7,
 		upkeep: 150,
 		cost: 50,
 		//collision.STRUCTURE
-		collision: 3
-	},	
+		collision: 3,
+		big: true
+	},
 	hydroplant: {
 		name: "hydroplant",
 		mobile: false,
-		health: 100,		
+		health: 100,
 		range: 7,
 		upkeep: 800,
 		cost: 500,
@@ -82,7 +83,7 @@ exports.units = {
 	factory: {
 		name: "factory",
 		mobile: false,
-		health: 1000,		
+		health: 1000,
 		factory: true,
 		range: 5,
 		//collision.STRUCTURE
@@ -90,5 +91,5 @@ exports.units = {
 		cost: 150,
 		upkeep: -100,
 		big: true
-	}	
+	}
 };

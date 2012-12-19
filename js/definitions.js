@@ -34,7 +34,7 @@ var def = {
 		loadTime: 1500,
 		moveDuration: 600,
 		cost: 200
-	},	
+	},
 	turret: {
 		name: "turret",
 		mobile: false,
@@ -45,12 +45,12 @@ var def = {
 		loadTime: 700,
 		upkeep: -50,
 		cost: 100,
-		collision: 3		
+		collision: 3
 	},
 	mine: {
 		name: "mine",
 		mobile: false,
-		health: 100,		
+		health: 100,
 		range: 7,
 		upkeep: -100,
 		cost: 150,
@@ -63,17 +63,18 @@ var def = {
 	powerplant: {
 		name: "powerplant",
 		mobile: false,
-		health: 100,		
+		health: 100,
 		range: 7,
 		upkeep: 150,
 		cost: 50,
 		art: art.powerplant,
-		collision: 3
-	},	
+		collision: 3,
+		big: true
+	},
 	hydroplant: {
 		name: "hydroplant",
 		mobile: false,
-		health: 100,		
+		health: 100,
 		range: 7,
 		upkeep: 800,
 		cost: 500,
@@ -84,7 +85,7 @@ var def = {
 	factory: {
 		name: "factory",
 		mobile: false,
-		health: 1000,		
+		health: 1000,
 		art: art.factory,
 		factory: true,
 		range: 5,
@@ -93,5 +94,5 @@ var def = {
 		upkeep: -100,
 		big: true,
 		builds: ["tank", "heavyTank"]
-	}	
+	}
 };

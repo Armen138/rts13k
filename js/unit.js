@@ -89,7 +89,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                         (function(build){
                             buttons.push({
                                 image: function(x, y) {
-                                    var color = game.players[0].credits > build.cost ? "gray" : "red";
+                                    var color = game.players[0].credits > build.cost ? "#CCC" : "#F00";
                                     build.art(x, y, color, "black", 0, 0, true);
                                 },
                                 action: function() {
@@ -106,10 +106,10 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                     buttons = [{
                         image: function(x, y) {
                             if(!unit.dead) {
-                                var c = bt.Color("#0F0");
+                                /*var c = bt.Color("#0F0");
                                 c.red = (1.0 - unit.percent) * 255 | 0;
-                                c.green = (unit.percent) * 255 | 0;
-                                var color = c.toString();
+                                c.green = (unit.percent) * 255 | 0;*/
+                                var color = unit.percent > 0.5 ? "#0F0" : "#F00"; //c.toString();
                                 unit.art(x, y, color, "black", 0, 0, true);
                             }
                         },
