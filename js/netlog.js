@@ -18,7 +18,6 @@
 				}
 			};
 			/** @scope NetLog **/
-			console.log("poop");
 		var netlog = {
 			inputMode: false,
 			shadow: true,

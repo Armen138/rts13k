@@ -1,6 +1,6 @@
 
 /* quick + dirty image preloader */
-qdip = {
+window.qdip = {
 	total: 0,
 	loaded: 0,
 	images: {},
@@ -21,6 +21,7 @@ qdip = {
 				};
 				img.onerror = function() {
 					//fail silently.
+					console.log("failed to load: " + file);
 					loaded(file);
 				};
 			}(img, file));
@@ -60,8 +61,8 @@ window.addEventListener("load", function() {
 	qdip.on("load", function() {
 		menu.click('connect', function() {
 			menu.hide('menu');
-			//menu.show('logbook');
 			//game.connect("ws://armen138.server.jit.su");
+			loadTiles();
 			game.connect("ws://13t.dev138.info:8080");
 			//game.connect("ws://hq138.info:8080");
 		});
@@ -69,19 +70,19 @@ window.addEventListener("load", function() {
 	});
 	qdip.load({
 		"terrain": "images/terrain32.png",
-		"mine": "images/mine32.png",
 		"tankbody": "images/tankbody.png",
 		"cannon1": "images/cannon1_1.png",
 		"cannon2": "images/cannon2.png",
-		"powerplant": "images/power_plant.png"
+		"powerplant": "images/power_plant.png",
+		"powerplant_active": "images/power_plant_glow.png",
+		"turretbody": "images/turretbody.png",
+		"turretcannon": "images/turretcannon.png",
+		"mine": "images/resource_gatherer.png"
 	});
-	/*menu.click('play', function() {
-		menu.show('difficulty');
-	});*/
 	menu.click('help', function() {
 		menu.show('shortcuts');
 	});
-	menu.click('easy', function() {
+	/*menu.click('easy', function() {
 		menu.hide('menu');
 		startGame(0);
 	});
@@ -92,7 +93,7 @@ window.addEventListener("load", function() {
 	menu.click('hard', function() {
 		menu.hide('menu');
 		startGame(2);
-	});
+	});*/
 	menu.click('shortcuts', function() {
 		menu.hide('shortcuts');
 	});

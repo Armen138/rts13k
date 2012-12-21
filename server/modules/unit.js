@@ -276,6 +276,13 @@ exports.Unit = function(tx, ty, unitObject, game) {
                                             u.hit(damage);
                                         }
                                     }
+                                    //this is a backup solution in case the collisionmap fails to find the right unit
+                                    if(unit.target) {
+                                        if (unit.target.position.X === end.X &&
+                                            unit.target.position.Y === end.Y) {
+                                            unit.target.hit(damage);
+                                        }
+                                    }
                                 }, delay);
                             }({X: tx, Y: ty}, unit.target.position, unitObject.damage || 10));
                             fireTime = now;
