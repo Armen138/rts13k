@@ -1,3 +1,51 @@
+var ShadowMapper = function() {
+    function alphaIndex(x, y, image) {
+        if(x < 0 || x > image.width ||
+            y < 0 || y > image.height) {
+            return -1;
+        }
+        return (x * 4) + (y * (image.width * 4)) + 3;
+    }
+    function blur(x, y, image) {
+        var radius = 4,
+            values = 0,
+            count = 0;
+        for(var bx = -radius; bx < radius; bx++) {
+            for(var by = -radius; by < radius; by++) {
+                var idx = alphaIndex(x + bx, y + by, image);
+                if(idx > 0) {
+                    values += image.data[idx];
+                    count++;
+                }
+            }
+        }
+        var blurred = values / count | 0;
+        return blurred;
+    }
+    var shadowMapper = {
+        shadow: function(image) {
+            var imgCanvas = document.createElement("canvas");
+            var imgContext = imgCanvas.getContext("2d");
+            imgCanvas.width = image.width;
+            imgCanvas.height = image.height;
+            imgContext.drawImage(image, 0, 0);
+            var imgData = imgContext.getImageData(0, 0, imgCanvas.width, imgCanvas.height);
+            var shadowData = imgContext.createImageData(imgCanvas.width, imgCanvas.height);
+            for(var x = 0; x < image.width; x++) {
+                for(var y = 0; y < image.width; y++) {
+                    var X = blur(x, y, imgData);
+                    var idx = alphaIndex(x, y, imgData);
+                    shadowData.data[idx] = X;
+                }
+            }
+            imgCanvas.width = imgCanvas.width;
+            imgContext.putImageData(shadowData, 0, 0);
+            return imgCanvas;
+        }
+    };
+    return shadowMapper;
+};
+
 var Colorizer = function() {
     var Color = function(r, g, b, a) {
         "use strict";
@@ -119,8 +167,8 @@ var Colorizer = function() {
             imgContext.drawImage(image, 0, 0);
             var imgData = imgContext.getImageData(0, 0, imgCanvas.width, imgCanvas.height);
             for(var i = 0; i < imgData.width * imgData.height; i++) {
-                var color = Color(imgData.data[i * 4], imgData.data[i * 4 + 1], imgData.data[i * 4 + 2], imgData.data[i * 4 + 3]);
-                if(color.hue == hue1) {
+                if(imgData.data[i * 4] > imgData.data[i * 4 + 1] && imgData.data[i * 4] > imgData.data[i * 4 + 2]) {
+                    var color = Color(imgData.data[i * 4], imgData.data[i * 4 + 1], imgData.data[i * 4 + 2], imgData.data[i * 4 + 3]);
                     color.hue = hue2;
                     imgData.data[i * 4] = color.red;
                     imgData.data[i * 4 + 1] = color.green;

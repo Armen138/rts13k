@@ -1,5 +1,6 @@
 var art = {
     colorizer: Colorizer(),
+    shadowMapper: ShadowMapper(),
     open: function (fill, stroke) {
         game.context.save();
         game.context.fillStyle = fill;
@@ -19,18 +20,28 @@ var art = {
             game.context.strokeRect(-16, -16, 32, 32);
         }
     },
-    tank: function (x, y, fill, selected, angle, cannonAngle) {
+    tank: function (x, y, fill, selected, angle, cannonAngle, thumbnail) {
         var BODY = 0,
-            CANNON = 1,
-            X = x - game.map.offset.X * tileSize + tileSize / 2,
-            Y = y - game.map.offset.Y * tileSize + tileSize / 2;
-        if (X < window.innerWidth &&
-            Y < window.innerHeight &&
-            X > 0 &&
-            Y > 0) {
-            tiles.tank.layers[BODY].angle = angle;
-            tiles.tank.layers[CANNON].angle = cannonAngle === 0 ? angle : cannonAngle;
-            tiles.tank.draw(X, Y, fill);
+            CANNON = 1;
+        if(!thumbnail) {
+            var X = x - game.map.offset.X * tileSize + tileSize / 2,
+                Y = y - game.map.offset.Y * tileSize + tileSize / 2;
+            if (X < window.innerWidth &&
+                Y < window.innerHeight &&
+                X > 0 &&
+                Y > 0) {
+                if(selected !== "black") {
+                    game.context.strokeStyle = "green";
+                    game.context.strokeRect(X - 16, Y - 16, 32, 32);
+                }
+                tiles.tank.layers[BODY].angle = angle;
+                tiles.tank.layers[CANNON].angle = cannonAngle === 0 ? angle : cannonAngle;
+                tiles.tank.draw(X, Y, fill);
+            }
+        } else {
+            tiles.tank.layers[BODY].angle = 0;
+            tiles.tank.layers[CANNON].angle = 0;
+            tiles.tank.draw(x + tileSize / 2, y + tileSize / 2, "#3A3");
         }
     },
     heavyTank: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
@@ -69,31 +80,25 @@ var art = {
         art.lines(lines);
         game.context.restore();
     },
-    turret: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
-        var hue;
-        if(!art.turret.body) { art.turret.body = {}; }
-        if(!art.turret.cannon) { art.turret.cannon = {}; }
-        if(!art.turret.body[fill]) {
-            hue = art.colorizer.Color(fill).hue;
-            art.turret.body[fill] = art.colorizer.swapHues(qdip.images.turretbody, 0, hue);
-        }
-        if(!art.turret.cannon[fill]) {
-            hue = art.colorizer.Color(fill).hue;
-            art.turret.cannon[fill] = art.colorizer.swapHues(qdip.images.turretcannon, 0, hue);
-        }
-        game.context.save();
-        //art.open(fill, stroke);
-        if(!notranslate) {
-            game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
+    turret: function (x, y, fill, stroke, angle, cannonAngle, thumbnail) {
+        var BODY = 0,
+            CANNON = 1;
+        if(!thumbnail) {
+            var X = x - game.map.offset.X * tileSize + tileSize / 2,
+                Y = y - game.map.offset.Y * tileSize + tileSize / 2;
+            if (X < window.innerWidth &&
+                Y < window.innerHeight &&
+                X > 0 &&
+                Y > 0) {
+                tiles.turret.layers[BODY].angle = angle;
+                tiles.turret.layers[CANNON].angle = cannonAngle === 0 ? angle : cannonAngle;
+                tiles.turret.draw(X, Y, fill);
+            }
         } else {
-            game.context.translate(x + tileSize / 2, y + tileSize / 2);
+            tiles.turret.layers[BODY].angle = 0;
+            tiles.turret.layers[CANNON].angle = 0;
+            tiles.turret.draw(x + tileSize / 2, y + tileSize / 2, "#3A3");
         }
-        game.context.drawImage(art.turret.body[fill], 0, 0, 64, 64, -16, -16, 32, 32);
-        if(cannonAngle !== 0) {
-            game.context.rotate(cannonAngle);
-        }
-        game.context.drawImage(art.turret.cannon[fill], 0, 0, 64, 64, -16, -16, 32, 32);
-        game.context.restore();
     },
     sell: function(x, y, fill, stroke, z, a, n) {
         art.open(fill, stroke);
@@ -107,25 +112,17 @@ var art = {
         game.context.fillText("$",  0, 6);
         game.context.restore();
     },
-    mine: function(x, y, fill, stroke, z, a, notranslate) {
-        if(!art.mine[fill]) {
-            var hue = art.colorizer.Color(fill).hue;
-            art.mine[fill] = art.colorizer.swapHues(qdip.images.mine, 0, hue);
-        }
-        game.context.save();
-        if(!notranslate) {
-            game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
-            if(game.buildMode && game.buildMode === def.mine) {
-                game.context.globalAlpha = 0.3;
-                game.context.fillRect(-1 * 32 * 5, -1 * 32 * 5, 32 * 10, 32 * 10);
-                game.context.globalAlpha = 1.0;
-            }
-            game.context.drawImage(art.mine[fill], 0, 0, 128, 128, -16, -16, 64, 64);
+    mine: function(x, y, fill, stroke, z, a, thumbnail) {
+        if(!thumbnail) {
+            var X = x - game.map.offset.X * tileSize + tileSize / 2,
+                Y = y - game.map.offset.Y * tileSize + tileSize / 2;
+            tiles.mine.draw(X, Y, fill);
         } else {
+            game.context.save();
             game.context.translate(x + tileSize / 2, y + tileSize / 2);
-            game.context.drawImage(art.mine[fill], 0, 0, 128, 128, -16, -16, 32, 32);
+            game.context.drawImage(qdip.images.mine, 0, 0, 128, 128, -16, -16, 32, 32);
+            game.context.restore();
         }
-        game.context.restore();
     },
     hydroplant: function(x, y, fill, stroke, z, a, notranslate) {
         var lines = [[{"X":-13,"Y":0},{"X":-4,"Y":-10}],[{"X":-4,"Y":-10},{"X":2,"Y":0}],[{"X":2,"Y":0},{"X":9,"Y":-10}],[{"X":-12,"Y":7},{"X":-4,"Y":-2}],[{"X":-4,"Y":-2},{"X":2,"Y":7}],[{"X":2,"Y":7},{"X":9,"Y":-2}]];
@@ -147,41 +144,17 @@ var art = {
         art.lines(lines);
         game.context.restore();
     },
-    powerplant: function(x, y, fill, stroke, z, a, notranslate) {
-        if(!art.powerplant[fill]) {
-            var hue = art.colorizer.Color(fill).hue;
-            art.powerplant[fill] = art.colorizer.swapHues(qdip.images.powerplant_active, 0, hue);
-        }
-        var fps = 4;
-        var now = (new Date()).getTime();
-        if(!art.powerplant.lastTileTime) {
-            art.powerplant.lastTileTime = 0;
-        }
-        if(!art.powerplant.tile) {
-            art.powerplant.tile = 0;
-        }
-        if(!art.powerplant.step) {
-            art.powerplant.step = 1;
-        }
-        if(now - art.powerplant.lastTileTime > 1000 / fps) {
-            art.powerplant.tile += art.powerplant.step;
-            if(art.powerplant.tile > 2) {
-                art.powerplant.step = -1;
-            }
-            if(art.powerplant.tile < 1) {
-                art.powerplant.step = 1;
-            }
-            art.powerplant.lastTileTime = now;
-        }
-        game.context.save();
-        if(!notranslate) {
-            game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
-            game.context.drawImage(art.powerplant[fill], art.powerplant.tile * 128, 0, 128, 128, -16, -16, 64, 64);
+    powerplant: function(x, y, fill, stroke, z, a, thumbnail) {
+        if(!thumbnail) {
+            var X = x - game.map.offset.X * tileSize + tileSize / 2,
+                Y = y - game.map.offset.Y * tileSize + tileSize / 2;
+            tiles.powerplant.draw(X, Y, fill);
         } else {
+            game.context.save();
             game.context.translate(x + tileSize / 2, y + tileSize / 2);
-            game.context.drawImage(art.powerplant[fill], 0, 0, 128, 128, -16, -16, 32, 32);
+            game.context.drawImage(qdip.images.powerplant, 0, 0, 128, 128, -16, -16, 32, 32);
+            game.context.restore();
         }
-        game.context.restore();
     },
     lines: function(lines) {
         game.context.beginPath();
@@ -195,10 +168,12 @@ var art = {
 
 var Tile = function(images, displaySize) {
     function Layer(image) {
-        var frameSize = image.width > image.height ? image.height : image.width;
-        var frameCount = image.width / frameSize | 0;
+        var frameSize = image.height;//image.width > image.height ? image.height : image.width;
+        var frameCount = (image.width / frameSize) | 0;
         var frameDirection = 1;
         var frameTime = 0;
+        console.log(frameSize);
+        console.log(frameCount);
         var layer = {
             frame: 0,
             image: { neutral: image },
@@ -219,9 +194,11 @@ var Tile = function(images, displaySize) {
                 if(layer.fps !== 0) {
                     var now = (new Date()).getTime();
                     if(now - frameTime > (1000 / layer.fps)) {
+                        frameTime = now;
                         layer.frame += frameDirection;
-                        if(layer.frame > frameCount) {
+                        if(layer.frame > frameCount - 1 || layer.frame < 0) {
                             if(layer.yoyo) {
+                                layer.frame -= frameDirection;
                                 frameDirection *= -1;
                             } else {
                                 layer.frame = 0;
@@ -249,6 +226,12 @@ var Tile = function(images, displaySize) {
     var tile = {
             draw: function(x, y, color) {
                 game.context.save();
+                game.context.translate(x + 2, y + 2);
+                game.context.rotate(tile.layers[0].angle);
+                game.context.globalAlpha = 0.6;
+                game.context.drawImage(tile.shadow, tile.layers[0].frame * tile.shadow.height, 0, tile.shadow.height, tile.shadow.height, -16, -16, displaySize, displaySize);
+                game.context.restore();
+                game.context.save();
                 game.context.translate(x, y);
                 for(var i = 0; i < tile.layers.length; i++) {
                     tile.layers[i].draw(color);
@@ -268,19 +251,23 @@ var Tile = function(images, displaySize) {
     for(var i = 0; i < images.length; i++) {
         tile.layers.push(Layer(images[i]));
     }
+    tile.shadow = art.shadowMapper.shadow(images[0]);
     return tile;
 };
 var tiles = {};
 function loadTiles() {
     tiles = {
-        tank: Tile([qdip.images.tankbody, qdip.images.cannon1], 32)
+        tank: Tile([qdip.images.tankbody, qdip.images.cannon1], 32),
+        powerplant: Tile([qdip.images.powerplant_active], 64),
+        mine: Tile([qdip.images.mine], 64),
+        turret: Tile([qdip.images.turretbody, qdip.images.turretcannon], 32)
     };
 
-    tiles.tank.cacheColors([
-                "#3A3",
-                "#A3A",
-                "#AA3",
-                "#33A",
-                "#A33",
-                "#3AA"]);
+    tiles.tank.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
+    tiles.powerplant.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
+    tiles.mine.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
+    tiles.turret.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
+    tiles.powerplant.layers[0].fps = 8;
+    tiles.powerplant.layers[0].yoyo = true;
+
 }

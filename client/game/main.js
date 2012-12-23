@@ -56,7 +56,7 @@ var menu = {
 		document.getElementById(id).style.display = 'block';
 	}
 };
-
+/*
 window.addEventListener("load", function() {
 	qdip.on("load", function() {
 		menu.click('connect', function() {
@@ -82,20 +82,8 @@ window.addEventListener("load", function() {
 	menu.click('help', function() {
 		menu.show('shortcuts');
 	});
-	/*menu.click('easy', function() {
-		menu.hide('menu');
-		startGame(0);
-	});
-	menu.click('medium', function() {
-		menu.hide('menu');
-		startGame(1);
-	});
-	menu.click('hard', function() {
-		menu.hide('menu');
-		startGame(2);
-	});*/
 	menu.click('shortcuts', function() {
 		menu.hide('shortcuts');
 	});
-});
+});*/
 

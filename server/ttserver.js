@@ -8,7 +8,9 @@ var procedural = require('./modules/procedural'),
     Message = require('./modules/message').Message,
     game = require('./modules/game').Game,
     logger = require('./modules/logger');
-    MAX_PLAYERS = 4;
+    MAX_PLAYERS = 4,
+    PORT = 8090,
+    NAME = process.argv[2] || "13T Server";
 
 //logger.info(game.addPlayer);
 
@@ -21,6 +23,19 @@ var httpRequest = function(request, Message) {
         break;
         case "/bytes.json":
             Message.end("{ \"bytes\": " + game.bytecount + "}");
+        break;
+        case "/status.json":
+            var players = 0;
+            for(var i = 0; i < game.players.length; i++) {
+                if(!game.players[i].defeated) {
+                    players++;
+                }
+            }
+            var status = {
+                players: players,
+                status: "open"
+            };
+            Message.end(JSON.stringify(status));
         break;
         default:
             Message.end("{}");
@@ -40,6 +55,29 @@ var ttServer = (function() {
         };
 
     var ttserver =  {
+        register: function(lobbyServer) {
+            var options = {
+                hostname: lobbyServer,
+                port: 10138,
+                path: "/register",
+                method: "POST"
+            };
+            var request = http.request(options);//, function(res) {
+
+            //});
+            var serverIdentity = {
+                "maxPlayers": MAX_PLAYERS,
+                "port": PORT,
+                "name": NAME,
+                "players": 0,
+                "status": "open"
+            };
+            request.write(JSON.stringify(serverIdentity));
+            request.on("error", function(e) {
+                logger.info("Lobby server down? " + e.message);
+            });
+            request.end();
+        },
         listen: function(port) {
                 server = http.createServer(httpRequest);
             server.listen(port, function() {
@@ -219,6 +257,9 @@ var ttServer = (function() {
                 }
                 logger.info('Peer ' + connection.remoteAddress + ' disconnected.');
             });
+            connection.on("error", function(e) {
+                logger.info("Connection error: " + e.message);
+            });
         },
         stringMessage: function(message) {
 
@@ -230,5 +271,6 @@ var ttServer = (function() {
     return ttserver;
 }());
 game.logger = logger;
-ttServer.listen(8080);
+ttServer.listen(PORT);
+ttServer.register("dev138.info");
 setInterval(game.update, 50);

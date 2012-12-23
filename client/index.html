@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>13T</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/persona.css" rel="stylesheet">
+    <link href="font/laconic.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+        background-image: url(images/13t.png);
+        background-size: 100%;
+      }
+      p {
+        word-wrap: break-word;
+      }
+      #chat {
+        display: none;
+      }
+      .serverlist {
+        min-height: 500px;
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="shortcut icon" href="ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <body oncontextmenu="return false;">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">13T</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#" id="listButton">Lobby</a></li>
+              <li><a href="#" id="chatButton">Help</a></li>
+            </ul>
+            <div class="pull-right" style="margin-top:8px">
+              <a href="#" class="persona-button dark" id="sign_in"><span>Sign in</span></a>
+            </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <!-- div class="hero-unit" id="serverlist">
+        <h1>Server list.</h1>
+      </div -->
+      <div class="row">
+        <div class="span12 serverlist">
+          <h1>Server list</h1>
+          <br/>
+          <div id="serverlist">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Players</th>
+                  <th>Address</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+                <tbody id="servertable">
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row" id="chat">
+        <div class="span10 well">chat</div>
+        <div class="span1 well">users</div>
+      </div>
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="span4">
+          0 players connected<br/>
+          0 games available<br/>
+          0 games in progress<br/>
+        </div>
+        <div class="span4">
+          top players:<br/>
+       </div>
+        <div class="span4">
+          <a href="https://twitter.com/Armen138">@Armen138 - Programming</a><br/>
+          <a href="https://twitter.com/tsa_tse">@tsa_tse - Graphics</a>
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; The 13T Project</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script src="js/serverlist.js"></script>
+    <script src="https://login.persona.org/include.js"></script>
+    <script src='game/colorizer.js'></script>
+    <script src='game/art.js'></script>
+    <script src='game/definitions.js'></script>
+    <script src='game/events.js'></script>
+    <script src='game/netlog.js'></script>
+    <script src='game/hud.js'></script>
+    <script src='game/nodes.js'></script>
+    <script src='game/basictypes.js'></script>
+    <script src='game/tilesystem.js'></script>
+    <script src='game/simplex.js'></script>
+    <script src='game/procedural.js'></script>
+    <script src='game/gameview.js'></script>
+    <script src='game/bullet.js'></script>
+    <script src='game/unit.js'></script>
+    <script src='game/game.js'></script>
+    <script src='game/ai.js'></script>
+    <script src='game/player.js'></script>
+    <script src='game/network.js'></script>
+    <script src='game/main.js'></script>
+  </body>
+</html>

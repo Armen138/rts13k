@@ -12,8 +12,11 @@ socket = new WebSocket(server, "tt.0");
             var dataObject = JSON.parse(event.data);
         } catch(e) {
             console.log(e.message + " :: " + event.data);
+            return;
         }
-
+        if(!dataObject || !dataObject.type) {
+            return;
+        }
         switch(dataObject.type) {
             case "unitreport":
                 for(var i = 0; i < dataObject.units.length; i++) {

@@ -400,6 +400,12 @@ game.spiral = function(n, p, spec) {
 };
 
 game.legalPosition = function(position, spec) {
+    if(position.X < 0 ||
+        position.Y < 0 ||
+        position.X > game.map.width - 2 ||
+        position.Y > game.map.height - 2) {
+        return false;
+    }
     if(typeof(spec.terrain) === 'number') {
         var proximity = false;
         game.units.each(function() {
