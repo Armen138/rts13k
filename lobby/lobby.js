@@ -43,10 +43,20 @@ var respond = function(request) {
             data += msg;
         });
         request.on("end", function() {
-            var serverIdentity = JSON.parse(data);
-            serverIdentity.address = request.connection.remoteAddress;
-            console.log(serverIdentity);
-            serverlist[serverIdentity.address + serverIdentity.port] = serverIdentity;
+            var dataObject;
+            try {
+                dataObject = JSON.parse(data);
+            } catch(e) {
+                dataObject = {};
+            }
+            if(dataObject.type = "auth") {
+               console.log(dataObject);
+            } else {
+                var serverIdentity = dataObject;
+                serverIdentity.address = request.connection.remoteAddress;
+                console.log(serverIdentity);
+                serverlist[serverIdentity.address + serverIdentity.port] = serverIdentity;
+            }
         });
         return {"status" : "ok" };
     } else {
