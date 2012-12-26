@@ -7,7 +7,7 @@ var update = function(server, status) {
         server[prop] = status[prop];
     }
 };
-
+/*
 var updateServers = function() {
     for(var server in serverlist) {
         var options = {
@@ -40,6 +40,7 @@ var updateServers = function() {
         }(server, options));
     }
 };
+*/
 
 var authenticate = function(assertion, res) {
     var content = JSON.stringify({
@@ -73,6 +74,7 @@ var authenticate = function(assertion, res) {
 var respond = function(request, res) {
     if(request.method === "POST") {
         console.log("post got");
+        console.log('HEADERS: ' + JSON.stringify(request.headers));
         var data = "";
         request.on("data", function(msg) {
             data += msg;
@@ -124,6 +126,6 @@ var server = http.createServer(function(req, res) {
     var response = respond(req, res);
 });
 
-setInterval(updateServers, 20000);
+//setInterval(updateServers, 20000);
 server.listen(8080);
 //server.listen(10138);
