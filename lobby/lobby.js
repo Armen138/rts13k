@@ -94,6 +94,9 @@ var respond = function(request, res) {
             } else {
                 var serverIdentity = dataObject;
                 serverIdentity.address = request.connection.remoteAddress;
+                if(request.headers["x-real-ip"]) {
+                    serverIdentity.address = request.headers["x-real-ip"];
+                }
                 //console.log(serverIdentity);
                 console.log("server registered: " + serverIdentity.name);
                 serverlist[serverIdentity.address + serverIdentity.port] = serverIdentity;
