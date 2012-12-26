@@ -58,8 +58,8 @@ var ttServer = (function() {
         register: function(lobbyServer) {
             var options = {
                 hostname: lobbyServer,
-                port: 10138,
-                path: "/register",
+                port: 80,//10138,
+                path: "/register.json",
                 method: "POST"
             };
             var request = http.request(options);//, function(res) {
@@ -272,5 +272,5 @@ var ttServer = (function() {
 }());
 game.logger = logger;
 ttServer.listen(PORT);
-ttServer.register("dev138.info");
+ttServer.register("13tanks.com");
 setInterval(game.update, 50);
