@@ -56,11 +56,22 @@ var ttServer = (function() {
 
     var ttserver =  {
         register: function(lobbyServer) {
+            var serverIdentity = JSON.stringify({
+                "maxPlayers": MAX_PLAYERS,
+                "port": PORT,
+                "name": NAME,
+                "players": 0,
+                "status": "open"
+            });
+
             var options = {
                 hostname: lobbyServer,
                 port: 80,//10138,
                 path: "/register.json",
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Length" : serverIdentity.length
+                }
             };
             var request = http.request(options, function(res) {
                 console.log('STATUS: ' + res.statusCode);
@@ -70,14 +81,7 @@ var ttServer = (function() {
                     console.log('BODY: ' + chunk);
                 });
             });
-            var serverIdentity = {
-                "maxPlayers": MAX_PLAYERS,
-                "port": PORT,
-                "name": NAME,
-                "players": 0,
-                "status": "open"
-            };
-            request.write(JSON.stringify(serverIdentity));
+            request.write(serverIdentity);
             request.on("error", function(e) {
                 logger.info("Lobby server down? " + e.message);
             });
