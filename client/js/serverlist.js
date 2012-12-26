@@ -3,7 +3,7 @@
 			logged: false,
 			email: null
 		},
-		lobbyServer = "http://dev138.info:10138/",
+		lobbyServer = "";//"http://13tanks.com/",
 		ServerList = {
 			servers: {},
 			updateInterval: null
@@ -34,7 +34,7 @@
 		xhr.onload = function() {
 			callback(JSON.parse(xhr.responseText));
 		};
-		xhr.open("POST", lobbyServer, true);
+		xhr.open("POST", lobbyServer + "register.json", true);
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");//"application/json");
 		xhr.send(params);
 	}
@@ -72,7 +72,7 @@
 	}
 
 	function fetchServerList() {
-		var list = lobbyServer + "list";
+		var list = lobbyServer + "list.json";
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", list, true);
 		xhr.onload = function() {
