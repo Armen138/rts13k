@@ -1,6 +1,7 @@
-var http = require("http");
+var http = require("http"),
+    https = require("https");
 var serverlist = {};
-
+var sessions = {};
 var update = function(server, status) {
     for(var prop in status) {
         server[prop] = status[prop];
@@ -19,9 +20,13 @@ var updateServers = function() {
         (function(index, options){
             var request = http.request(options, function(response) {
                 response.on("data", function(data) {
-                    var serverStatus = JSON.parse(data);
-                    console.log("update: " + data);
-                    update(serverlist[index], serverStatus);
+                    try {
+                        var serverStatus = JSON.parse(data);
+                        console.log("update: " + data);
+                        update(serverlist[index], serverStatus);
+                    } catch(e) {
+                        console.log("invalid data: " + data);
+                    }
                 });
                 response.on("error", function(e) {
                     console.log("update error: " + e.message);
@@ -36,7 +41,36 @@ var updateServers = function() {
     }
 };
 
-var respond = function(request) {
+var authenticate = function(assertion, res) {
+    var content = JSON.stringify({
+        "assertion": assertion,
+        "audience": "http://13tanks.com:80"
+    });//"assertion=" + assertion + "&audience=http://dev138.info:80";
+    var options = {
+        hostname: "verifier.login.persona.org",
+        port: "443",
+        path: "/verify",
+        method: "POST",
+        headers: {
+            "Content-Length": content.length,
+            "Content-Type": "application/json"
+        }
+    };
+    var request = https.request(options, function(response){
+        var data = "";
+        response.on("data", function(d) {
+            data += d;
+        });
+        response.on("end", function() {
+            console.log(data);
+            res.end(data);
+        });
+    });
+    request.write(content);
+    request.end();
+};
+
+var respond = function(request, res) {
     if(request.method === "POST") {
         var data = "";
         request.on("data", function(msg) {
@@ -47,27 +81,37 @@ var respond = function(request) {
             try {
                 dataObject = JSON.parse(data);
             } catch(e) {
+                console.log("invalid data: " + data);
                 dataObject = {};
             }
-            if(dataObject.type = "auth") {
+            if(dataObject.type === "auth") {
                console.log(dataObject);
+               authenticate(dataObject.assertion, res);
+               return;
             } else {
                 var serverIdentity = dataObject;
                 serverIdentity.address = request.connection.remoteAddress;
-                console.log(serverIdentity);
+                //console.log(serverIdentity);
+                console.log("server registered: " + serverIdentity.name);
                 serverlist[serverIdentity.address + serverIdentity.port] = serverIdentity;
+                res.end(JSON.stringify({ "status" : "ok" }));
             }
         });
-        return {"status" : "ok" };
+        return;
     } else {
+        var response;
         switch(request.url) {
-            case "/list":
-            return serverlist;
-            case "/count":
-            return { "players" : 0 };
+            case "/list.json":
+            response = serverlist;
+            break;
+            case "/count.json":
+            response = { "players" : 0 };
+            break;
             default:
-            return { "error" : "404" };
+            respones = { "error" : "404" };
+            break;
         }
+        res.end(JSON.stringify(response));
     }
 };
 
@@ -76,9 +120,9 @@ var server = http.createServer(function(req, res) {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
     });
-    var response = respond(req);
-    res.end(JSON.stringify(response));
+    var response = respond(req, res);
 });
 
 setInterval(updateServers, 20000);
-server.listen(10138);
+server.listen(8080);
+//server.listen(10138);

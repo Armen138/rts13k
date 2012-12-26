@@ -44,7 +44,30 @@ var art = {
             tiles.tank.draw(x + tileSize / 2, y + tileSize / 2, "#3A3");
         }
     },
-    heavyTank: function (x, y, fill, stroke, angle, cannonAngle, notranslate) {
+    heavyTank: function (x, y, fill, selected, angle, cannonAngle, thumbnail) {
+        var BODY = 0,
+            CANNON = 1;
+        if(!thumbnail) {
+            var X = x - game.map.offset.X * tileSize + tileSize / 2,
+                Y = y - game.map.offset.Y * tileSize + tileSize / 2;
+            if (X < window.innerWidth &&
+                Y < window.innerHeight &&
+                X > 0 &&
+                Y > 0) {
+                if(selected !== "black") {
+                    game.context.strokeStyle = "green";
+                    game.context.strokeRect(X - 16, Y - 16, 32, 32);
+                }
+                tiles.heavytank.layers[BODY].angle = angle;
+                tiles.heavytank.layers[CANNON].angle = cannonAngle === 0 ? angle : cannonAngle;
+                tiles.heavytank.draw(X, Y, fill);
+            }
+        } else {
+            tiles.heavytank.layers[BODY].angle = 0;
+            tiles.heavytank.layers[CANNON].angle = 0;
+            tiles.heavytank.draw(x + tileSize / 2, y + tileSize / 2, "#3A3");
+        }
+        /*
         art.open(fill, stroke);
         if(!notranslate) {
             game.context.translate(x - game.map.offset.X * tileSize + tileSize / 2, y - game.map.offset.Y * tileSize + tileSize / 2);
@@ -67,6 +90,7 @@ var art = {
         game.context.strokeRect(-5, -5, 10, 10);
 
         game.context.restore();
+        */
     },
     factory: function(x, y, fill, stroke, angle, cannonAngle, notranslate) {
         var lines = [[{"X":-12,"Y":3},{"X":11,"Y":3}],[{"X":10,"Y":3},{"X":10,"Y":-1}],[{"X":10,"Y":-1},{"X":-12,"Y":-1}],[{"X":-12,"Y":-1},{"X":-12,"Y":3}],[{"X":-6,"Y":-1},{"X":-6,"Y":-5}],[{"X":-6,"Y":-5},{"X":2,"Y":-5}],[{"X":2,"Y":-5},{"X":2,"Y":-1}],[{"X":2,"Y":-4},{"X":14,"Y":-4}],[{"X":13,"Y":-3},{"X":2,"Y":-3}],[{"X":-11,"Y":2},{"X":-13,"Y":5}],[{"X":-13,"Y":5},{"X":-10,"Y":7}],[{"X":-10,"Y":7},{"X":10,"Y":7}],[{"X":10,"Y":6},{"X":12,"Y":5}],[{"X":12,"Y":5},{"X":11,"Y":3}]];
@@ -258,12 +282,14 @@ var tiles = {};
 function loadTiles() {
     tiles = {
         tank: Tile([qdip.images.tankbody, qdip.images.cannon1], 32),
+        heavytank: Tile([qdip.images.tankbody2, qdip.images.cannon2], 32),
         powerplant: Tile([qdip.images.powerplant_active], 64),
         mine: Tile([qdip.images.mine], 64),
         turret: Tile([qdip.images.turretbody, qdip.images.turretcannon], 32)
     };
 
     tiles.tank.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
+    tiles.heavytank.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
     tiles.powerplant.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
     tiles.mine.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
     tiles.turret.cacheColors(["#3A3","#A3A","#AA3","#33A"]);

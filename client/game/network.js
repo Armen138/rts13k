@@ -4,12 +4,13 @@ socket = new WebSocket(server, "tt.0");
     socket.addEventListener("open", function(event) {
         //game.log.info("connected");
         socket.send('{"type": "map"}');
-        socket.send('{"type": "user", "name": "Guest"}');
+        socket.send('{"type": "user", "name": "' + /*(account && account.logged? account.nickname : "Guest")*/ "guest" + '"}' );
     });
     var netId, netName, player;
     socket.addEventListener("message", function(event) {
+        var dataObject = {};
         try {
-            var dataObject = JSON.parse(event.data);
+            dataObject = JSON.parse(event.data);
         } catch(e) {
             console.log(e.message + " :: " + event.data);
             return;
