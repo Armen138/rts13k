@@ -72,6 +72,7 @@ var authenticate = function(assertion, res) {
 
 var respond = function(request, res) {
     if(request.method === "POST") {
+        console.log("post got");
         var data = "";
         request.on("data", function(msg) {
             data += msg;
@@ -108,7 +109,7 @@ var respond = function(request, res) {
             response = { "players" : 0 };
             break;
             default:
-            respones = { "error" : "404" };
+            response = { "error" : "404" };
             break;
         }
         res.end(JSON.stringify(response));
