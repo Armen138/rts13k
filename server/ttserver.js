@@ -49,7 +49,7 @@ var ttServer = (function() {
         server = null,
         wsServer = null,
         protocol = "tt.0",
-        allowedOrigins = ["null", "http://dev138.info", "http://13t.dev138.info", "file://"],
+        allowedOrigins = ["null", "http://dev138.info", "http://13t.dev138.info", "http://13tanks.com", "file://"],
         command = function(cmd) {
             logger.info("Command received. Not sure what to do about it.");
         };
