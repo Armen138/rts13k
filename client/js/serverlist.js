@@ -89,12 +89,13 @@
 			}
 			dom.id("servertable").innerHTML = table;
 			dom.tag("button").each(function() {
-				button = this;
-				button.addEventListener("click", function(e) {
-					var srv = button.getAttribute("server");
-					console.log(srv);
-					join(srv);
-				});
+				(function(button) {
+					button.addEventListener("click", function(e) {
+						var srv = button.getAttribute("server");
+						console.log(srv);
+						join(srv);
+					});
+				}(this));
 			});
 			ServerList.servers = servers;
 		};
