@@ -89,7 +89,10 @@ var ttServer = (function() {
             request.end();
         },
         listen: function(port) {
-                server = http.createServer(httpRequest);
+            server = http.createServer(httpRequest);
+            server.on("error", function(e) {
+                logger.info("error: " + e);
+            });
             server.listen(port, function() {
                 logger.info('Server is listening on port ' + port);
             });
@@ -282,8 +285,5 @@ var ttServer = (function() {
 }());
 game.logger = logger;
 ttServer.listen(PORT);
-ttServer.on("error", function(e) {
-    logger.info("error: " + e);
-});
 ttServer.register("13tanks.com");
 setInterval(game.update, 50);
