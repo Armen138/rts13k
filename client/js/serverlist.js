@@ -92,6 +92,7 @@
 				button = this;
 				button.addEventListener("click", function(e) {
 					var srv = button.getAttribute("server");
+					console.log(srv);
 					join(srv);
 				});
 			});
