@@ -9,9 +9,10 @@ var procedural = require('./modules/procedural'),
     game = require('./modules/game').Game,
     logger = require('./modules/logger');
     MAX_PLAYERS = 4,
-    PORT = 10138,
+    PORT = process.argv[3] || 10138,
     NAME = process.argv[2] || "13T Server";
 
+logger.info("port: " + PORT);
 //logger.info(game.addPlayer);
 
 var httpRequest = function(request, Message) {
@@ -281,5 +282,8 @@ var ttServer = (function() {
 }());
 game.logger = logger;
 ttServer.listen(PORT);
+ttServer.on("error", function(e) {
+    logger.info("error: " + e);
+});
 ttServer.register("13tanks.com");
 setInterval(game.update, 50);
