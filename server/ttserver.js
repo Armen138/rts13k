@@ -9,7 +9,7 @@ var procedural = require('./modules/procedural'),
     game = require('./modules/game').Game,
     logger = require('./modules/logger');
     MAX_PLAYERS = 4,
-    PORT = 8090,
+    PORT = 10138,
     NAME = process.argv[2] || "13T Server";
 
 //logger.info(game.addPlayer);
