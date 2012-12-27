@@ -83,7 +83,7 @@
 				table += "<tr>" +
 						"<td>" + servers[server].name + "</td>" +
 						"<td>" + servers[server].players + "/" + servers[server].maxPlayers + "</td>" +
-						"<td>" + servers[server].address + "</td>" +
+						"<td>" + servers[server].address + ":" + servers[server].port + "</td>" +
 						"<td>" + servers[server].status + "</td>" +
 						"<td>" + button + "</td>";
 			}
