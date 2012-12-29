@@ -4,7 +4,9 @@ var procedural = require('./procedural'),
     Node = require('./nodes.js').Node,
     Message = require('./message.js').Message,
     collision = require('./collision'),
-    bt = require('./basictypes.js');
+    bt = require('./basictypes.js'),
+    http = require('http'),
+    lobby = "13tanks.com";
 
 
 var map = procedural.noiseMapFine(128, 128, 50, 4),
@@ -20,6 +22,34 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
         bytecount: 0,
         get players(){
             return players;
+        },
+        lobby: function(data, cb) {
+            var dataSerialized = JSON.stringify(data);
+            var options = {
+                hostname: lobby,
+                port: 80,//10138,
+                path: "/register.json",
+                method: "POST",
+                headers: {
+                    "Content-Length" : dataSerialized.length
+                }
+            };
+            var request = http.request(options, function(res) {
+                //console.log('STATUS: ' + res.statusCode);
+                //console.log('HEADERS: ' + JSON.stringify(res.headers));
+                res.setEncoding('utf8');
+                res.on('data', function (chunk) {
+                    //console.log('BODY: ' + chunk);
+                    if(cb) {
+                        cb(JSON.parse(chunk));
+                    }
+                });
+            });
+            request.write(dataSerialized);
+            request.on("error", function(e) {
+                logger.info("Lobby server down? " + e.message);
+            });
+            request.end();
         },
         update: function() {
             for(var i = 0; i < players.length; i++) {
@@ -56,31 +86,65 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
             }
             return serializedPlayers;
         },
-        addPlayer: function(name, connection) {
-            playerId = 0;
-            for(var i = 0; i < players.length; i++) {
-                if(players[i].defeated) {
-                    playerId = i;
-                }
-            }
-            if(playerId === 0) {
-                playerId = players.length;
-            }
-            var player = Player(name, game, connection, playerId);
-            if(!positions[playerId]) {
-                console.log("no position available");
-                player.send("no player positions available");
-                player.kick();
-            } else {
-                var p1 = game.spiral(13, positions[playerId]);
-                players[playerId] = player;
-                player.on("unit-update", game.unitUpdate);
+        addPlayer: function(session /*name*/, connection, cb) {
+            game.lobby({
+                "type": "ident",
+                "session": session
+            }, function(data) {
+                playerId = 0;
+                var i,
+                    name = data.error ? "Guest" : data.nickname;
 
-                for( var i = 0; i < 13; i++) {
-                    units.add(player.unit(p1[i].X, p1[i].Y, definitions.tank, true));
+                if(game.getPlayer(name) !== null) {
+                    var seq = 0;
+                    while(game.getPlayer(name + seq) !== null) {
+                        seq++;
+                    }
+                    name = name + seq;
                 }
-            }
-            return player;
+
+                for(i = 0; i < players.length; i++) {
+                    if(players[i].defeated) {
+                        playerId = i;
+                    }
+                }
+                if(playerId === 0) {
+                    playerId = players.length;
+                }
+                var otherPlayers = game.getPlayers();
+                var player = Player(name, game, connection, playerId);
+                if(!positions[playerId]) {
+                    console.log("no position available");
+                    player.send("no player positions available");
+                    player.kick();
+                } else {
+                    var p1 = game.spiral(13, positions[playerId]);
+                    players[playerId] = player;
+                    player.on("unit-update", game.unitUpdate);
+
+                    for(i = 0; i < 13; i++) {
+                        units.add(player.unit(p1[i].X, p1[i].Y, definitions.tank, true));
+                    }
+                }
+
+                //broad cast player connect
+                var playerMsg = Message("player");
+                playerMsg.id = player.id;
+                playerMsg.name = player.name;
+                playerMsg.credits = player.credits;
+                playerMsg.otherPlayers = otherPlayers;
+                connection.sendUTF(playerMsg.serialized);
+                var connectMsg = Message("connect");
+                connectMsg.name = name;
+                connectMsg.id = player.id;
+                game.broadcast(connectMsg);
+
+                if(cb) {
+                    cb(player);
+                }
+            });
+
+            //return player;
         },
         removePlayer: function(player) {
             for(var i = 0; i < players.length; i++) {

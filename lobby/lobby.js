@@ -42,6 +42,14 @@ var updateServers = function() {
 };
 */
 
+function updateIdentity(ident1, ident2) {
+    var ident = ident1;
+    for(var p in ident2) {
+        ident[p] = ident2[p];
+    }
+    return ident;
+}
+
 function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -73,6 +81,7 @@ var authenticate = function(assertion, res) {
             console.log(data);
             var identity = JSON.parse(data);
             identity.session = generateUUID();
+            identity.nickname = identity.email.split("@")[0];
             sessions[identity.session] = identity;
             res.end(JSON.stringify(identity));
         });
@@ -83,8 +92,7 @@ var authenticate = function(assertion, res) {
 
 var respond = function(request, res) {
     if(request.method === "POST") {
-        console.log("post got");
-        console.log('HEADERS: ' + JSON.stringify(request.headers));
+        //console.log('HEADERS: ' + JSON.stringify(request.headers));
         var data = "";
         request.on("data", function(msg) {
             data += msg;
@@ -98,11 +106,15 @@ var respond = function(request, res) {
                 dataObject = {};
             }
             if(dataObject.type === "ident") {
-                res.end(JSON.stringify(sessions[dataObject.session]));
+                if(sessions[dataObject.session]) {
+                    res.end(JSON.stringify(sessions[dataObject.session]));
+                } else {
+                    res.end('{"error": "no such session"}');
+                }
                 return;
             }
             if(dataObject.type === "auth") {
-               console.log(dataObject);
+               //console.log(dataObject);
                authenticate(dataObject.assertion, res);
                return;
             } else {
@@ -112,7 +124,13 @@ var respond = function(request, res) {
                     serverIdentity.address = request.headers["x-real-ip"];
                 }
                 //console.log(serverIdentity);
-                console.log("server registered: " + serverIdentity.name);
+
+                if(serverlist[serverIdentity.address + serverIdentity.port]) {
+                    serverIdentity = updateIdentity(serverlist[serverIdentity.address + serverIdentity.port], serverIdentity);
+                    console.log("server updated: " + serverIdentity.name);
+                } else {
+                    console.log("server registered: " + serverIdentity.name);
+                }
                 serverlist[serverIdentity.address + serverIdentity.port] = serverIdentity;
                 res.end(JSON.stringify({ "status" : "ok" }));
             }

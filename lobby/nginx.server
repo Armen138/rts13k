@@ -4,7 +4,6 @@ server {
         error_log /srv/13tanks/error.log;
         index index.html;
 
-        # Make site accessible from http://localhost/
         server_name 13tanks.com;
 
         location / {

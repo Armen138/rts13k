@@ -56,7 +56,8 @@ exports.units = {
 		//resource crystal thingies
 		terrain: 3,
 		//collision.STRUCTURE
-		collision: 3
+		collision: 3,
+		big: true
 	},
 	powerplant: {
 		name: "powerplant",

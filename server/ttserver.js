@@ -56,15 +56,28 @@ var ttServer = (function() {
         };
 
     var ttserver =  {
+        update: function() {
+            var players = 0;
+            for(var i = 0; i < game.players.length; i++) {
+                if(!game.players[i].defeated) {
+                    players++;
+                }
+            }
+            game.lobby({
+                players: players,
+                port: PORT
+            });
+        },
         register: function(lobbyServer) {
-            var serverIdentity = JSON.stringify({
+            var serverIdentity = {
                 "maxPlayers": MAX_PLAYERS,
                 "port": PORT,
                 "name": NAME,
                 "players": 0,
                 "status": "open"
-            });
-
+            };
+            game.lobby(serverIdentity);
+            /*
             var options = {
                 hostname: lobbyServer,
                 port: 80,//10138,
@@ -87,6 +100,7 @@ var ttServer = (function() {
                 logger.info("Lobby server down? " + e.message);
             });
             request.end();
+            */
         },
         listen: function(port) {
             server = http.createServer(httpRequest);
@@ -173,7 +187,9 @@ var ttServer = (function() {
                                 connection.close();
                                 return;
                             }
-                            var otherPlayers = game.getPlayers();
+
+                            //var otherPlayers = game.getPlayers();
+                            /*
                             var name = data.name;
                             if(game.getPlayer(name) !== null) {
                                 var seq = 0;
@@ -181,8 +197,13 @@ var ttServer = (function() {
                                     seq++;
                                 }
                                 name = name + seq;
-                            }
-                            player = game.addPlayer(name, connection);
+                            }*/
+                            //player =
+                            game.addPlayer(data.session /*name*/, connection, function(p) {
+                                player = p;
+                                ttserver.update();
+                            });
+                            /*
                             var playerMsg = Message("player");
                             playerMsg.id = player.id;
                             playerMsg.name = name;
@@ -193,6 +214,7 @@ var ttServer = (function() {
                             connectMsg.name = name;
                             connectMsg.id = player.id;
                             game.broadcast(connectMsg);
+                            */
                         break;
                         case "units":
                             connection.sendUTF(JSON.stringify(game.unitReport(data.id)));
@@ -267,6 +289,7 @@ var ttServer = (function() {
                     disconnectMsg.id = player.id;
                     game.broadcast(disconnectMsg.serialized);
                     player.die();
+                    ttserver.update();
                 }
                 logger.info('Peer ' + connection.remoteAddress + ' disconnected.');
             });
