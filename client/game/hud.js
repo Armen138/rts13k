@@ -71,16 +71,19 @@
 
 	function Buttons(buttons) {
 		var top = margin + 128 + margin + 32 + margin;
-		return {
+		var toolTipLeft = 150;
+		var toolTipSize = {W: 160, H: 50};
+		var b = {
 			draw: function() {
 				context.save();
 				for(var i = 0; i < buttons.length; i++) {
 					var x = margin + 69 * (i % 2),
 						y = top + 69 * (i / 2 | 0);
+					context.drawImage(qdip.images.button64, x, y, 64, 64);
 					if(typeof(buttons[i].image) === "function") {
-						buttons[i].image(x, y, "gray", "black", 0, 0, true);
+						buttons[i].image(x, y, "gray", "black", 0, 0, true, 48);
 					} else {
-						context.drawImage(buttons[i].image, x, y, 59, 59);
+						context.drawImage(buttons[i].image, x, y, 48, 48);
 					}
 					if(buttons[i].badge) {
 						context.fillStyle = "black";
@@ -88,10 +91,46 @@
 						context.fillText(buttons[i].badge, x, y);
 					}
 				}
+				var button = b.at(game.mousePosition);
+				if(button !== -1 && buttons[button].tooltip) {
+					toolTipSize.H = buttons[button].tooltip.length * 20 + 8;
+					context.fillStyle = "gray";
+					context.fillRect(toolTipLeft, game.mousePosition.Y, toolTipSize.W, toolTipSize.H);
+	//				context.fillStyle = "black";
+					context.fillStyle = "yellow";
+					context.font = "20px Arial";
+
+					context.shadowColor = "black";
+					context.shadowOffsetX = 0;
+					context.shadowOffsetY = 0;
+					context.shadowBlur = 4;
+
+					context.textAlign ="left";
+					context.textBaseline = "hanging";
+
+					for(var t = 0; t < buttons[button].tooltip.length; t++) {
+						context.fillText(buttons[button].tooltip[t], toolTipLeft + 4, game.mousePosition.Y + 4 + t * 20);
+					}
+				}
 				context.restore();
 			},
+			at: function(pos) {
+				//if(x < 148) {
+					for(var i = 0; i < buttons.length; i++) {
+						var x = margin + 69 * (i % 2),
+							y = top + 69 * (i / 2 | 0);
+						if (pos.X > x &&
+							pos.X < x + 59 &&
+							pos.Y > y &&
+							pos.Y < y + 59) {
+							return i;
+						}
+					}
+				//}
+				return -1;
+			},
 			click: function(pos) {
-				for(var i = 0; i < buttons.length; i++) {
+				/*for(var i = 0; i < buttons.length; i++) {
 					var x = margin + 69 * (i % 2),
 						y = top + 69 * (i / 2 | 0);
 					if (pos.X > x &&
@@ -101,10 +140,16 @@
 						buttons[i].action();
 						return true;
 					}
+				}*/
+				var i = b.at(pos);
+				if(i !== -1) {
+					buttons[i].action();
+					return true;
 				}
 				return false;
 			}
 		};
+		return b;
 	}
 
 	function SmallButtons(buttons) {
@@ -118,8 +163,9 @@
 					//var x = margin + 69 * (i % 2),
 					var x = margin + (i % 3) * (buttonSize + buttonMargin),//(margin + i * buttonSize + i * buttonMargin),
 						y = top + 48 * (i / 3 | 0);
+					context.drawImage(qdip.images.button64, x - 4, y - 4, 40, 40);
 					if(typeof(buttons[i].image) === "function") {
-						buttons[i].image(x, y);//, "gray", "black", 0, 0, true);
+						buttons[i].image(x - 16, y - 16);//, "gray", "black", 0, 0, true);
 					} else {
 						context.drawImage(buttons[i].image, x, y, 32, 32);
 					}
@@ -205,8 +251,11 @@
 
 	function bg() {
 		context.save();
+		//context.fillStyle = "#815f4b";
 		context.fillStyle = "gray";
 		context.fillRect(0, 0, 148, window.innerHeight);
+		//context.drawImage(qdip.images.hudborder, 0, 0);
+		//context.drawImage(qdip.images.hud, 0, 0);
 		context.restore();
 	}
 

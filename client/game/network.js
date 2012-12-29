@@ -4,7 +4,7 @@ socket = new WebSocket(server, "tt.0");
     socket.addEventListener("open", function(event) {
         //game.log.info("connected");
         socket.send('{"type": "map"}');
-        socket.send('{"type": "user", "name": "' + /*(account && account.logged? account.nickname : "Guest")*/ "guest" + '"}' );
+        socket.send('{"type": "user", "name": "' + /*(account && account.logged? account.nickname : "Guest")*/ "guest" + '", "session": "' + game.session + '"}' );
     });
     var netId, netName, player;
     socket.addEventListener("message", function(event) {

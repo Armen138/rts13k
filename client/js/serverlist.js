@@ -67,7 +67,10 @@
 			"powerplant_active": "images/power_plant_glow.png",
 			"turretbody": "images/turretbody.png",
 			"turretcannon": "images/turretcannon.png",
-			"mine": "images/mine.png"
+			"mine": "images/mine.png",
+			"button64": "images/button64.png",
+			"hud": "images/hud1.png",
+			"hudborder": "images/hudborder.png"
 		});
 	}
 
@@ -129,6 +132,7 @@
 						account.logged = true;
 						account.email = data.email;
 						account.nickname = data.email.substr(0, data.email.indexOf("@"));
+						game.session = data.session;
 						dom.id("persona-label").innerHTML = account.nickname;
 					}
 				});

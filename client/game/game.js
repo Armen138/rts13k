@@ -20,6 +20,7 @@ var tileSize = 32,
         map: [],
         energy: 0,
         energyWarning: 0,
+        tacticalView: false,
         colors: [
             "#3A3",
             "#A3A",
@@ -49,6 +50,8 @@ var tileSize = 32,
         E: 69,
         R: 82,
         T: 84,
+        SHIFT: 16,
+        CTRL: 17,
         ESC: 27,
         F1: 112
     };
@@ -120,6 +123,12 @@ game.canvasInit = function() {
     game.log.onMessage(function(msg) {
         network.chat(msg);
     });
+
+    game.tactical = {};
+    game.tactical.canvas = document.createElement("canvas");
+    game.tactical.canvas.width = game.canvas.width;
+    game.tactical.canvas.height = game.canvas.height;
+    game.tactical.context = game.tactical.canvas.getContext("2d");
 };
 
 game.connect = function(server) {
@@ -159,6 +168,11 @@ game.init = function(difficulty) {
             game.selection = [topLeft.X, topLeft.Y,  w, h];
         }
     });
+    document.addEventListener("keyup", function(e) {
+        if(e.keyCode === key.CTRL) {
+            game.tacticalView = false;
+        }
+    });
     document.addEventListener("keydown", function(e) {
         if(game.log && game.log.inputMode) {
             return;
@@ -184,6 +198,9 @@ game.init = function(difficulty) {
         }
         var action = -1;
         switch(e.keyCode) {
+            case key.CTRL:
+                game.tacticalView = true;
+            break;
             case key.Q:
                 action = 0;
             break;
@@ -215,16 +232,19 @@ game.init = function(difficulty) {
         (function(buildable) {
             defaultButtonLayout.push({
                 image: function(x, y) {
-                    var color = game.players[0].credits > buildable.cost ? "gray" : "red";
+                    var color = game.colors[game.players[0].id]; //game.players[0].credits > buildable.cost ? "gray" : "red";
+                    var opacity = game.players[0].credits > buildable.cost ? 1.0 : 0.5;
+                    game.context.globalAlpha = opacity;
                     buildable.art(x, y, color, "black", 0, 0, true);
+                    game.context.globalAlpha = 1.0;
                 },
                 action: function() { game.buildMode = buildable; },
-                badge: "$" + buildable.cost,
-                tooltip: buildable.name
+                //badge: "$" + buildable.cost,
+                tooltip: [buildable.name, "cost: " + buildable.cost + " credits", "energy: " + buildable.upkeep]
             });
         }(game.buildables[i]));
     }
-    game.hud.defaultButtons = game.hud.SmallButtons(defaultButtonLayout);
+    game.hud.defaultButtons = game.hud.Buttons(defaultButtonLayout);
     game.hud.buttons = game.hud.defaultButtons;
     /*
     game.hud.buttons = game.hud.Buttons([
@@ -276,7 +296,7 @@ game.init = function(difficulty) {
                             game.units.each(function() {
                                 if(this.click(e.clientX - gameView.offset.X, e.clientY - gameView.offset.Y)) {
                                     selected = true;
-                                    game.hud.buttons = game.hud.SmallButtons(this.buttons());
+                                    game.hud.buttons = game.hud.Buttons(this.buttons());
                                 }
                             });
                             if(!selected) {
@@ -321,6 +341,7 @@ game.init = function(difficulty) {
 
 game.run = function() {
     game.frames++;
+    game.tactical.canvas.width = game.tactical.canvas.width;
     for(var i = 0; i < game.players.length; i++) {
         game.players[i].update();
     }
@@ -335,12 +356,14 @@ game.run = function() {
         game.context.fillRect(pos.X, pos.Y, w, h);
     }
     if(game.buildMode) {
-        var color = "grey",
+        var opacity = 1.0,
             pos = game.map.at(game.mousePosition.X, game.mousePosition.Y);
         if(!game.legalPosition(pos, game.buildMode) || game.buildMode.cost > game.players[0].credits) {
-            color = "red";
+            opacity = 0.5;
         }
-        game.buildMode.art(-12 + game.mousePosition.X - game.mousePosition.X % 32, game.mousePosition.Y - game.mousePosition.Y % 32 , color, "black", 0, 0, true);
+        game.context.globalAlpha = opacity;
+        game.buildMode.art(pos.X * tileSize + 148, pos.Y * tileSize , game.colors[game.players[0].id], "black", 0, 0, false);
+        game.context.globalAlpha = 1.0;
     }
     var now = (new Date()).getTime();
     if(game.players[0].energy < 0 && now - game.energyWarning > 10000) {
@@ -349,6 +372,9 @@ game.run = function() {
         }
         game.energyWarning = now;
     }
+
+    game.context.drawImage(game.tactical.canvas, 0, 0);
+
     if(game.log && game.hud) {
         game.log.draw();
         game.hud.draw();

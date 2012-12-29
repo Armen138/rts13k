@@ -53,6 +53,8 @@ var Unit = function(tx, ty, tc, unitObject, id) {
             }
         },
         unit = {
+            range: unitObject.range,
+            canShoot: unitObject.loadTime !== undefined,
             health: unitObject.health || 100,
             mobile: unitObject.mobile,
             target: null,
@@ -97,8 +99,9 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                                     var rallyPoint = game.spiral(1, unit.rallyPoint || unit.tile)[0];
                                     network.build(p, build, rallyPoint);
                                 },
-                                badge: "$" + build.cost,
-                                id: unit.id
+                                badge: "", //"$" + build.cost,
+                                id: unit.id,
+                                tooltip: [build.name, "cost: " + build.cost]
                             });
                         }(def[unit.builds[i]]));
                     }
@@ -109,7 +112,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                                 /*var c = bt.Color("#0F0");
                                 c.red = (1.0 - unit.percent) * 255 | 0;
                                 c.green = (unit.percent) * 255 | 0;*/
-                                var color = unit.percent > 0.5 ? "#0F0" : "#F00"; //c.toString();
+                                var color = game.colors[unit.owner.id];//unit.percent > 0.5 ? "#0F0" : "#F00"; //c.toString();
                                 unit.art(x, y, color, "black", 0, 0, true);
                             }
                         },
@@ -117,10 +120,10 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                             game.deselectAll();
                             game.selectedUnits.add(unit);
                             unit.select();
-                            game.hud.buttons = game.hud.SmallButtons([unit.buttons()[0]]);
+                            game.hud.buttons = game.hud.Buttons([unit.buttons()[0]]);
                         },
-                        badge: unit.hp,
-                        tooltip: unit.hp,
+                        badge: "",//unit.hp,
+                        tooltip: ["Health: " + unit.health],
                         id: unit.id
                     }];
                 }
@@ -143,7 +146,7 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                     game.context.fillStyle = "black";
                     game.context.font = "10px Dejavu Sans, Arial";
                     game.context.textAlign = "left";
-                    game.context.fillText(unit.badge ,  x + gameView.offset.X - game.map.offset.X * tileSize, y  + gameView.offset.X - game.map.offset.Y * tileSize);
+                    game.context.fillText(unit.badge ,  x + gameView.offset.X - game.map.offset.X * tileSize, y  + gameView.offset.Y - game.map.offset.Y * tileSize);
                 }
                 this.update();
             },

@@ -42,6 +42,13 @@ var updateServers = function() {
 };
 */
 
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+}
+
 var authenticate = function(assertion, res) {
     var content = JSON.stringify({
         "assertion": assertion,
@@ -64,7 +71,10 @@ var authenticate = function(assertion, res) {
         });
         response.on("end", function() {
             console.log(data);
-            res.end(data);
+            var identity = JSON.parse(data);
+            identity.session = generateUUID();
+            sessions[identity.session] = identity;
+            res.end(JSON.stringify(identity));
         });
     });
     request.write(content);
@@ -86,6 +96,10 @@ var respond = function(request, res) {
             } catch(e) {
                 console.log("invalid data: " + data);
                 dataObject = {};
+            }
+            if(dataObject.type === "ident") {
+                res.end(JSON.stringify(sessions[dataObject.session]));
+                return;
             }
             if(dataObject.type === "auth") {
                console.log(dataObject);
