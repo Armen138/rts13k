@@ -91,6 +91,8 @@ exports.units = {
 		collision: 3,
 		cost: 150,
 		upkeep: -100,
-		big: true
+		shape: [[1,1,1],
+				[1,1,0],
+				[1,1,1]]
 	}
 };

@@ -32,9 +32,9 @@ function gameView(wx, hx, map) {
     for(var n = 0; n < 4; n++) {
         for(var i = 0; i < 14; i++) {
             tileSet.push(terrainTile(sets[n] + i));
-        }        
+        }
     }
-    var tiles = [        
+    var tiles = [
         terrainTile(set + 4),                            //0
         terrainTile(set1 + 4),                            //1
         procedural.terrain(tileSize, colors[2]),    //2
@@ -63,7 +63,7 @@ function gameView(wx, hx, map) {
                 game.collisionMap[x][y] = collision.PASSABLE;
             }
         }
-    }    
+    }
     tiles[3].getContext('2d').drawImage(procedural.noise(tileSize, 10, 12, colors[1], 6), 0, 0);
 
     if(map) {
@@ -72,7 +72,7 @@ function gameView(wx, hx, map) {
         gameView.mapTileSet(2, tileMap, map, 1);
         gameView.mapTileSet(1, tileMap, map, 0);
         gameView.mapTileSet(0, tileMap, map, 0);
-        game.map = ts.TileSet(tileSet, tileMap, gameView.canvas, w, h);    
+        game.map = ts.TileSet(tileSet, tileMap, gameView.canvas, w, h);
     }
     game.mousePosition = bt.Vector(0, 0);
     game.root.add(gameView);
@@ -94,11 +94,11 @@ gameView.mapTileSet = function(tile, tileMap, map, except) {
                     map[x  + 1][y] == tiles[1]);
         }
         return true;
-    }    
+    }
     function above(x, y, tiles) {
         if(y > 0) {
             return (map[x][y - 1] == tiles[0] ||
-                    map[x][y - 1] == tiles[1]); 
+                    map[x][y - 1] == tiles[1]);
         }
         return true;
     }
@@ -122,7 +122,7 @@ gameView.mapTileSet = function(tile, tileMap, map, except) {
                     map[x - 1][y - 1] == tiles[1]);
         }
         return true;
-    }    
+    }
     function belowRight(x, y, tiles) {
         if(x < map.length -1 && y < map[0].length -1) {
             return (map[x + 1][y + 1] == tiles[0] ||
@@ -136,7 +136,7 @@ gameView.mapTileSet = function(tile, tileMap, map, except) {
                     map[x - 1][y + 1] == tiles[1]);
         }
         return true;
-    }        
+    }
     var baseTile = tile * 14;
     for(var tx = 0; tx < map.length; tx++) {
         if(!tileMap[tx]) {
@@ -154,52 +154,52 @@ gameView.mapTileSet = function(tile, tileMap, map, except) {
                 }
                 if (!above(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 1;
-                }        
+                }
                 if (!below(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 7;
-                }        
-                if (!rightOf(tx, ty, [tile, except]) && 
+                }
+                if (!rightOf(tx, ty, [tile, except]) &&
                     !above(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 2;
                 }
-                if (!leftOf(tx, ty, [tile, except]) && 
+                if (!leftOf(tx, ty, [tile, except]) &&
                     !below(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 6;
-                }                    
-                if (!rightOf(tx, ty, [tile, except]) && 
+                }
+                if (!rightOf(tx, ty, [tile, except]) &&
                     !below(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 8;
-                }                    
-                if (!leftOf(tx, ty, [tile, except]) && 
+                }
+                if (!leftOf(tx, ty, [tile, except]) &&
                     !above(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile;
-                }  
-                if (leftOf(tx, ty, [tile, except]) && 
+                }
+                if (leftOf(tx, ty, [tile, except]) &&
                     above(tx, ty, [tile, except]) &&
                     !aboveLeft(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 9;
-                }  
-                if (rightOf(tx, ty, [tile, except]) && 
+                }
+                if (rightOf(tx, ty, [tile, except]) &&
                     above(tx, ty, [tile, except]) &&
                     !aboveRight(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 10;
-                }      
-                if (rightOf(tx, ty, [tile, except]) && 
+                }
+                if (rightOf(tx, ty, [tile, except]) &&
                     below(tx, ty, [tile, except]) &&
                     !belowRight(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 12;
-                }                                   
-                if (leftOf(tx, ty, [tile, except]) && 
+                }
+                if (leftOf(tx, ty, [tile, except]) &&
                     below(tx, ty, [tile, except]) &&
                     !belowLeft(tx, ty, [tile, except])) {
                     tileMap[tx][ty] = baseTile + 11;
-                }                    
+                }
             } else {
                 if(!tileMap[tx][ty]) {
                     tileMap[tx][ty] = baseTile;
                 }
             }
-        }    
+        }
     }
 };
 gameView.draw = function() {
@@ -210,7 +210,7 @@ gameView.draw = function() {
 gameView.scrollIntent = 0;
 gameView.scrollDelay = 1000;
 gameView.scrollHandler = function() {
-
+    return;
     if(!game.map) return;
 
     var now = (new Date()).getTime();
@@ -223,40 +223,40 @@ gameView.scrollHandler = function() {
 
     if(game.mousePosition.X < 148 + tileSize * 2 && !game.hud.inside(game.mousePosition) && game.map.offset.X > 0) {
         if(now - gameView.scrollIntent > gameView.scrollDelay) {
-            game.map.horizontal(1);    
+            game.map.horizontal(1);
         } else {
-            declareIntent();    
+            declareIntent();
         }
-        
-    }        
+
+    }
     if ((game.mousePosition.X > gameView.width - tileSize * 2) &&
         (game.map.offset.X < game.map.width - gameView.width / tileSize)) {
         if(now - gameView.scrollIntent > gameView.scrollDelay) {
-            game.map.horizontal(-1);    
-        } else {
-            declareIntent();
-        }        
-    }
-        
-    if(game.mousePosition.Y < tileSize * 2 && (game.map.offset.Y > 0)) {
-        if(now - gameView.scrollIntent > gameView.scrollDelay) {
-            game.map.vertical(1);    
+            game.map.horizontal(-1);
         } else {
             declareIntent();
         }
-        
     }
-        
-    if ((game.mousePosition.Y > game.canvas.height - tileSize * 2) && 
+
+    if(game.mousePosition.Y < tileSize * 2 && (game.map.offset.Y > 0)) {
+        if(now - gameView.scrollIntent > gameView.scrollDelay) {
+            game.map.vertical(1);
+        } else {
+            declareIntent();
+        }
+
+    }
+
+    if ((game.mousePosition.Y > game.canvas.height - tileSize * 2) &&
         (game.map.offset.Y < game.map.height - ((game.canvas.height / tileSize + 0.5) | 0)) ) {
         if(now - gameView.scrollIntent > gameView.scrollDelay) {
-            game.map.vertical(-1);    
+            game.map.vertical(-1);
         } else {
-            declareIntent();    
-        }        
+            declareIntent();
+        }
     }
     if(!intent) {
         gameView.scrollIntent = 0;
-    }    
+    }
 };
 

@@ -304,14 +304,20 @@ exports.Unit = function(tx, ty, unitObject, game) {
     });
 
     game.collisionMap[tx][ty] = unit.id;
-    if(unitObject.big) {
-        game.collisionMap[tx][ty + 1] = unit.id;
-        game.collisionMap[tx + 1][ty] = unit.id;
-        game.collisionMap[tx + 1][ty + 1] = unit.id;
-        /*
-        game.unitMap[tx][ty + 1] = unit;
-        game.unitMap[tx + 1][ty] = unit;
-        game.unitMap[tx + 1][ty + 1] = unit;*/
+    if(unitObject.shape) {
+        for(var px = 0; px < unitObject.shape.length; px++) {
+            for(var py = 0; py < unitObject.shape[0].length; py++) {
+                if(unitObject.shape[px][py] === 1) {
+                    game.collisionMap[tx + px][ty + py] = unit.id;
+                }
+            }
+        }
+    } else {
+        if(unitObject.big) {
+            game.collisionMap[tx][ty + 1] = unit.id;
+            game.collisionMap[tx + 1][ty] = unit.id;
+            game.collisionMap[tx + 1][ty + 1] = unit.id;
+        }
     }
     Events.attach(unit);
     return unit;

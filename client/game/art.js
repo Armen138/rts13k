@@ -84,13 +84,13 @@ var art = {
                 tiles.heavytank.layers[CANNON].angle = cannonAngle === 0 ? angle : cannonAngle;
                 tiles.heavytank.draw(X, Y, fill);
                 //draw circle
-                if(game.tacticalView){
+                /*if(game.tacticalView){
                     game.context.beginPath();
                     game.context.arc(X, Y, 6 * 32, 0, (Math.PI/180)*360 );
                     game.context.strokeStyle = "red";
                     game.context.stroke();
                     game.context.closePath();
-                }
+                }*/
 
             }
         } else {
@@ -123,7 +123,15 @@ var art = {
         game.context.restore();
         */
     },
-    factory: function(x, y, fill, stroke, angle, cannonAngle, notranslate) {
+    factory: function(x, y, fill, stroke, angle, cannonAngle, thumbnail) {
+        if(!thumbnail) {
+            var X = x - game.map.offset.X * tileSize + tileSize / 2,
+                Y = y - game.map.offset.Y * tileSize + tileSize / 2;
+            tiles.factory.draw(X, Y, fill);
+        } else {
+            tiles.factory.draw(x + 24, y + 24, fill, 48);
+        }
+        /*
         var lines = [[{"X":-12,"Y":3},{"X":11,"Y":3}],[{"X":10,"Y":3},{"X":10,"Y":-1}],[{"X":10,"Y":-1},{"X":-12,"Y":-1}],[{"X":-12,"Y":-1},{"X":-12,"Y":3}],[{"X":-6,"Y":-1},{"X":-6,"Y":-5}],[{"X":-6,"Y":-5},{"X":2,"Y":-5}],[{"X":2,"Y":-5},{"X":2,"Y":-1}],[{"X":2,"Y":-4},{"X":14,"Y":-4}],[{"X":13,"Y":-3},{"X":2,"Y":-3}],[{"X":-11,"Y":2},{"X":-13,"Y":5}],[{"X":-13,"Y":5},{"X":-10,"Y":7}],[{"X":-10,"Y":7},{"X":10,"Y":7}],[{"X":10,"Y":6},{"X":12,"Y":5}],[{"X":12,"Y":5},{"X":11,"Y":3}]];
         art.open(fill, stroke);
         if(!notranslate) {
@@ -134,6 +142,7 @@ var art = {
         art.box(!notranslate);
         art.lines(lines);
         game.context.restore();
+        */
     },
     turret: function (x, y, fill, stroke, angle, cannonAngle, thumbnail) {
         var BODY = 0,
@@ -174,13 +183,6 @@ var art = {
                 Y = y - game.map.offset.Y * tileSize + tileSize / 2;
             tiles.mine.draw(X, Y, fill);
         } else {
-            /*
-            game.context.save();
-            game.context.translate(x + tileSize / 2, y + tileSize / 2);
-            game.context.drawImage(qdip.images.mine, 0, 0, 128, 128, -16, -16, 32, 32);
-            game.context.restore();
-            */
-            //tiles.button.draw(x + tileSize / 2, y + tileSize / 2);
             tiles.mine.draw(x + 24, y + 24, fill, 48);
         }
     },
@@ -322,7 +324,8 @@ function loadTiles() {
         powerplant: Tile([qdip.images.powerplant_active], 64),
         mine: Tile([qdip.images.mine], 64),
         turret: Tile([qdip.images.turretbody, qdip.images.turretcannon], 32),
-        button: Tile([qdip.images.button64], 64)
+        button: Tile([qdip.images.button64], 64),
+        factory: Tile([qdip.images.factory], 96)
     };
 
     tiles.tank.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
@@ -330,6 +333,7 @@ function loadTiles() {
     tiles.powerplant.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
     tiles.mine.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
     tiles.turret.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
+    tiles.factory.cacheColors(["#3A3","#A3A","#AA3","#33A"]);
     tiles.powerplant.layers[0].fps = 8;
     tiles.powerplant.layers[0].yoyo = true;
 

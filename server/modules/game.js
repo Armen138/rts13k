@@ -306,6 +306,16 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                 return  (map[position.X] && map[position.X][position.Y] === spec.terrain &&
                         (game.collisionMap[position.X][position.Y] === 0));
             }
+            if(spec.shape) {
+                var l = true;
+                for(var x = 0; x < spec.shape.length; x++) {
+                    for(var y = 0; y < spec.shape[0].length; y++) {
+                        if(spec.shape[x][y] === 1 && game.collisionMap[position.X] && game.collisionMap[position.X + x][position.Y + y] !== collision.PASSABLE) {
+                            return false;
+                        }
+                    }
+                }
+            }
             if(spec.big) {
                 return (map[position.X] &&
                         map[position.X][position.Y] !== 0 &&

@@ -94,8 +94,11 @@
 				var button = b.at(game.mousePosition);
 				if(button !== -1 && buttons[button].tooltip) {
 					toolTipSize.H = buttons[button].tooltip.length * 20 + 8;
-					context.fillStyle = "gray";
+					context.fillStyle = "rgba(0, 0, 0, 0.5)";
+					context.strokeStyle = "black";
+					context.lineWidth = 3;
 					context.fillRect(toolTipLeft, game.mousePosition.Y, toolTipSize.W, toolTipSize.H);
+					context.strokeRect(toolTipLeft, game.mousePosition.Y, toolTipSize.W, toolTipSize.H);
 	//				context.fillStyle = "black";
 					context.fillStyle = "yellow";
 					context.font = "20px Arial";
@@ -107,6 +110,7 @@
 
 					context.textAlign ="left";
 					context.textBaseline = "hanging";
+
 
 					for(var t = 0; t < buttons[button].tooltip.length; t++) {
 						context.fillText(buttons[button].tooltip[t], toolTipLeft + 4, game.mousePosition.Y + 4 + t * 20);

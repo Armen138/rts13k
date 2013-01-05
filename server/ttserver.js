@@ -255,7 +255,8 @@ var ttServer = (function() {
                             if(game.legalPosition(data.position, definition)) {
                                 var unit = player.unit(data.position.X, data.position.Y, definition);
                                 if(unit && unit.mobile && data.destination) {
-                                    unit.go(data.position);
+                                    //unit.go(data.position);
+                                    unit.go(data.destination);
                                 }
                                 if(unit) {
                                     var unitMsg = Message("unit");

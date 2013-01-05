@@ -95,8 +95,8 @@ var Unit = function(tx, ty, tc, unitObject, id) {
                                     build.art(x, y, color, "black", 0, 0, true);
                                 },
                                 action: function() {
-                                    var p = game.spiral(1, unit.tile)[0];
-                                    var rallyPoint = game.spiral(1, unit.rallyPoint || unit.tile)[0];
+                                    var p = {X: tx + 1, Y: ty + 2};
+                                    var rallyPoint =  {X: tx + 1, Y: ty + 6}; //game.spiral(1, unit.rallyPoint || {X: unit.tile.X + 1, Y: unit.tile.Y + 4})[0];
                                     network.build(p, build, rallyPoint);
                                 },
                                 badge: "", //"$" + build.cost,

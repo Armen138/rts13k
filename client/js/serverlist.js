@@ -70,7 +70,8 @@
 			"mine": "images/mine.png",
 			"button64": "images/button64.png",
 			"hud": "images/hud1.png",
-			"hudborder": "images/hudborder.png"
+			"hudborder": "images/hudborder.png",
+			"factory": "images/factory.png"
 		});
 	}
 

@@ -50,6 +50,10 @@ var tileSize = 32,
         E: 69,
         R: 82,
         T: 84,
+        A: 65,
+        D: 68,
+        S: 83,
+        Z: 90,
         SHIFT: 16,
         CTRL: 17,
         ESC: 27,
@@ -197,16 +201,35 @@ game.init = function(difficulty) {
             }
         }
         var action = -1;
+        console.log(e.keyCode);
         switch(e.keyCode) {
             case key.CTRL:
                 game.tacticalView = true;
             break;
+            /*
             case key.Q:
                 action = 0;
             break;
-            case key.W:
-                action = 1;
+            */
+            case key.Q:
+            case key.A:
+                if(game.map.offset.X > 0)
+                    game.map.horizontal(1);
             break;
+            case key.D:
+                if(game.map.offset.X < game.map.width - gameView.width / tileSize)
+                    game.map.horizontal(-1);
+            break;
+            case key.S:
+                if(game.map.offset.Y < game.map.height - gameView.height / tileSize)
+                    game.map.vertical(-1);
+            break;
+            case key.Z:
+            case key.W:
+                if(game.map.offset.Y > 0)
+                    game.map.vertical(1);
+            break;
+            /*
             case key.E:
                 action = 2;
             break;
@@ -216,6 +239,7 @@ game.init = function(difficulty) {
             case key.T:
                 action = 4;
             break;
+            */
             case key.ESC:
                  game.deselectAll();
                  menu.hide('shortcuts');
