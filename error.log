@@ -1,0 +1,1 @@
+2013/03/05 21:19:03 [error] 3957#0: *4 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: 13tanks.com, request: "GET /list.json HTTP/1.1", upstream: "http://127.0.0.1:8080/list.json", host: "13tanks.com", referrer: "http://13tanks.com/"

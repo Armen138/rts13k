@@ -72,7 +72,8 @@ socket = new WebSocket(server, "tt.0");
             case "player":
                 game.init(0);
                 console.log(JSON.stringify(dataObject));
-                gameView(window.innerWidth, window.innerHeight, game.mapData);
+                //gameView(window.innerWidth, window.innerHeight, game.mapData);
+                gameView(1024, 768, game.mapData);
                 player = Player(10, 10, Player.modes.LOCAL, dataObject.credits, dataObject.id, dataObject.name);
                 game.players.push(player);
                 if(dataObject.otherPlayers) {

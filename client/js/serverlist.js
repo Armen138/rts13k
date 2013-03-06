@@ -97,7 +97,9 @@
 					button.addEventListener("click", function(e) {
 						var srv = button.getAttribute("server");
 						console.log(srv);
-						join(srv);
+						localStorage["server"] = "ws://" + ServerList.servers[srv].address + ":" + ServerList.servers[srv].port;
+						window.location = "http://13tanks.com/play.html";
+						//join(srv);
 					});
 				}(this));
 			});

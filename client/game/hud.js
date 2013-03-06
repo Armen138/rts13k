@@ -230,7 +230,7 @@
 
 	function Stats(x, y) {
 		var sideMargins = 160;
-		var width = window.innerWidth;
+		var width = 1024;//window.innerWidth;
 		return {
 			draw: function() {
 				var player = game.players[0];
@@ -259,7 +259,7 @@
 		context.fillStyle = "gray";
 		context.fillRect(0, 0, 148, window.innerHeight);
 		//context.drawImage(qdip.images.hudborder, 0, 0);
-		//context.drawImage(qdip.images.hud, 0, 0);
+		context.drawImage(qdip.images.hud, 0, 0);
 		context.restore();
 	}
 
@@ -275,7 +275,7 @@
 			draw: function() {
 				bg();
 				minimap.draw();
-				miniButtonSlots.draw();
+				//miniButtonSlots.draw();
 				//buttonSlots.draw();
 				if(hud.buttons) {
 					hud.buttons.draw();
@@ -301,7 +301,7 @@
 			SmallButtons: SmallButtons
 		};
 		document.addEventListener("click", function(e) {
-			var pos = { X: e.clientX, Y: e.clientY };
+			var pos = { X: e.clientX - game.position.X, Y: e.clientY - game.position.Y };
 			if(hud.inside(pos)) {
 				var p = minimap.inside(pos);
 				if(p !== -1) {

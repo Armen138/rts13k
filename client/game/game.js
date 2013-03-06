@@ -109,8 +109,19 @@ game.sell = function(building) {
 game.canvasInit = function() {
     game.canvas = document.getElementById("game");
     game.context = game.canvas.getContext("2d");
-    game.canvas.width = window.innerWidth;
-    game.canvas.height = window.innerHeight;
+    game.canvas.width = 1024;//window.innerWidth;
+    game.canvas.height = 768; //window.innerHeight;
+    game.position = (function() {
+            var x = 0,
+                y = 0,
+                parent = game.canvas;
+            while(parent) {
+                x += parent.offsetLeft;
+                y += parent.offsetTop;
+                parent = parent.parentElement;
+            }
+            return {X: x, Y: y};
+        }());
     game.log = NetLog(game.context,
         {
             top: 0,
@@ -152,15 +163,15 @@ game.init = function(difficulty) {
     });
     game.canvas.addEventListener("mousedown", function(e) {
         game.mouseDown = true;
-        game.dragStart = game.map.at(e.clientX, e.clientY);
+        game.dragStart = game.map.at((e.clientX - game.position.X), (e.clientY - game.position.Y));
         console.log(game.dragStart);
     });
     game.canvas.addEventListener("mousemove", function(e) {
-        game.mousePosition.X = e.clientX;
-        game.mousePosition.Y = e.clientY;
+        game.mousePosition.X = (e.clientX - game.position.X);
+        game.mousePosition.Y = (e.clientY - game.position.Y);
         if(game.mouseDown) {
             var topLeft = {X: game.dragStart.X, Y: game.dragStart.Y };//.shallow(),
-                corner = game.map.at(e.clientX, e.clientY);
+                corner = game.map.at((e.clientX - game.position.X), (e.clientY - game.position.Y));
                 w = Math.abs(corner.X - game.dragStart.X) + 1,
                 h = Math.abs(corner.Y - game.dragStart.Y) + 1;
             if(corner.X < topLeft.X) {
@@ -299,13 +310,13 @@ game.init = function(difficulty) {
         /* if(game.dragStart)
             game.dragStart.release(); */
         game.mouseDown = false;
-        if(game.hud.inside({X: e.clientX, Y:e.clientY})) {
+        if(game.hud.inside({X: (e.clientX - game.position.X), Y:(e.clientY - game.position.Y)})) {
 
         } else {
             if(game.buildMode) {
                 if(e.button === 0) {
                     var buildable = game.buildMode,
-                        pos = {X: ((e.clientX  - gameView.offset.X) / tileSize + game.map.offset.X) | 0, Y: (e.clientY / tileSize + game.map.offset.Y - gameView.offset.Y) | 0};
+                        pos = {X: (((e.clientX - game.position.X)  - gameView.offset.X) / tileSize + game.map.offset.X) | 0, Y: ((e.clientY - game.position.Y) / tileSize + game.map.offset.Y - gameView.offset.Y) | 0};
                     network.build(pos, buildable);
                 }
                 if(!e.shiftKey) {
@@ -313,18 +324,18 @@ game.init = function(difficulty) {
                 }
             } else {
                 if(!game.uiDrag) {
-                    //if(bt.Vec.distance(game.dragStart, {X: e.clientX , Y: e.clientY }) < 32) {
+                    //if(bt.Vec.distance(game.dragStart, {X: (e.clientX - game.position.X) , Y: (e.clientY - game.position.Y) }) < 32) {
                     if(!game.selection || (game.selection[2] < 2 && game.selection[3] < 2)) {
                         var selected = false;
                         if(e.button === 0) {
                             game.units.each(function() {
-                                if(this.click(e.clientX - gameView.offset.X, e.clientY - gameView.offset.Y)) {
+                                if(this.click((e.clientX - game.position.X) - gameView.offset.X, (e.clientY - game.position.Y) - gameView.offset.Y)) {
                                     selected = true;
                                     game.hud.buttons = game.hud.Buttons(this.buttons());
                                 }
                             });
                             if(!selected) {
-                                var p = game.map.at(e.clientX, e.clientY),
+                                var p = game.map.at((e.clientX - game.position.X), (e.clientY - game.position.Y)),
                                     destinations = game.spiral(game.selectedUnits.length, p);
                                 game.selectedUnits.each(function() {
                                     this.targetUnit = null;
