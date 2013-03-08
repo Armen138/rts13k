@@ -7,6 +7,7 @@ var tileSize = 32,
         root: ns.Node(),
         count: 0,
         frames: 0,
+        scrollDirection: [0, 0],
         selectedUnits: ns.Node(),
         selection: [0, 0, 0, 0],
         mousePosition: {X: window.innerWidth / 2, Y: window.innerHeight / 2},
@@ -54,6 +55,10 @@ var tileSize = 32,
         D: 68,
         S: 83,
         Z: 90,
+        ARROW_LEFT: 37,
+        ARROW_UP: 38,
+        ARROW_RIGHT: 39,
+        ARROW_DOWN: 40,
         SHIFT: 16,
         CTRL: 17,
         ESC: 27,
@@ -187,6 +192,24 @@ game.init = function(difficulty) {
         if(e.keyCode === key.CTRL) {
             game.tacticalView = false;
         }
+        else {
+            switch(e.keyCode) {
+                case key.Q:
+                case key.A:
+                case key.D:
+                case key.ARROW_LEFT:
+                case key.ARROW_RIGHT:
+                    game.scrollDirection[0] = 0;
+                    break;
+                case key.Z:
+                case key.W:
+                case key.S:
+                case key.ARROW_UP:
+                case key.ARROW_DOWN:
+                    game.scrollDirection[1] = 0;
+                    break;
+            }
+        }
     });
     document.addEventListener("keydown", function(e) {
         if(game.log && game.log.inputMode) {
@@ -224,21 +247,22 @@ game.init = function(difficulty) {
             */
             case key.Q:
             case key.A:
-                if(game.map.offset.X > 0)
-                    game.map.horizontal(1);
+            case key.ARROW_LEFT:
+                game.scrollDirection[0] = 1;
+                    
             break;
             case key.D:
-                if(game.map.offset.X < game.map.width - gameView.width / tileSize)
-                    game.map.horizontal(-1);
+            case key.ARROW_RIGHT:
+                game.scrollDirection[0] = -1;
             break;
             case key.S:
-                if(game.map.offset.Y < game.map.height - gameView.height / tileSize)
-                    game.map.vertical(-1);
+            case key.ARROW_DOWN:
+                game.scrollDirection[1] = -1;
             break;
             case key.Z:
             case key.W:
-                if(game.map.offset.Y > 0)
-                    game.map.vertical(1);
+            case key.ARROW_UP:
+                game.scrollDirection[1] = 1;
             break;
             /*
             case key.E:
@@ -413,6 +437,15 @@ game.run = function() {
     if(game.log && game.hud) {
         game.log.draw();
         game.hud.draw();
+    }
+
+    if((game.scrollDirection[0] === 1 && game.map.offset.X > 0) ||
+       (game.scrollDirection[0] === -1) && game.map.offset.X < game.map.width - gameView.width / tileSize) {
+        game.map.horizontal(game.scrollDirection[0]);
+    }
+    if((game.scrollDirection[1] === 1 && game.map.offset.Y > 0) || 
+       (game.scrollDirection[1] === -1 && game.map.offset.Y < game.map.height - gameView.height / tileSize)){
+        game.map.vertical(game.scrollDirection[1]);
     }
 
     //ts.collisionDebug();
