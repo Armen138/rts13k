@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+	<head>
+		<title>13 Tanks Client v0.2</title>
+		<style>
+			html {
+				height: 100%;
+			}
+			body {
+				height: 100%;
+				position: relative;
+				background-color: #CCC;
+				margin: 0;
+				padding: 0;
+				background-image: url(images/weave1.png);
+			}
+			.centered {
+				height: 100%;
+				width: 1024px;
+				position: relative;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.container {
+				position: absolute;
+				width: 1024px;
+				height: 768px;
+				top: 50%;
+				margin-top: -384px;
+				box-shadow: 0 0 32px black;
+				border: 1px solid black;
+			}
+		</style>
+		<script data-main="js/main" src="js/require.js"></script>		
+	</head>
+	<body oncontextmenu="return false;">
+		<div class="centered">
+			<div class="container">
+				<canvas id="game" width=1024 height=768></canvas>
+			</div>
+		</div>
+	</body>
+</html>
