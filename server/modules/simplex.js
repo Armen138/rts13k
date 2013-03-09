@@ -43,6 +43,9 @@ exports.SimplexNoise = function() {
   function contrib(t, gi, x, y) {
     return  t < 0 ? 0 : Math.pow(t, 4) * dot(grad[gi], x, y);
   }
+
+  this.seeds = { F2: F2, G2: G2, p: p };
+
   // 2D simplex noise
   this.noise = function(xin, yin) {
     // Skew the input space to determine which simplex cell we're in

@@ -8,7 +8,6 @@ var procedural = require('./procedural'),
     http = require('http'),
     lobby = "13tanks.com";
 
-
 var map = procedural.noiseMapFine(128, 128, 50, 4),
     players = [],
     units = Node(),
@@ -41,13 +40,20 @@ var map = procedural.noiseMapFine(128, 128, 50, 4),
                 res.on('data', function (chunk) {
                     //console.log('BODY: ' + chunk);
                     if(cb) {
-                        cb(JSON.parse(chunk));
+                        try {
+                            cb(JSON.parse(chunk));
+                        } catch(e) {
+                            console.log("failed to register at lobby server");
+                            cb({error: true});
+                        }
+                        
                     }
                 });
             });
             request.write(dataSerialized);
             request.on("error", function(e) {
                 logger.info("Lobby server down? " + e.message);
+                cb({error: true});
             });
             request.end();
         },

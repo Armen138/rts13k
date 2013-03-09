@@ -14,23 +14,20 @@ define(["network", "player", "map", "raf", "canvas"], function(Network, Player, 
         if(map) {
             map.mini.draw();
             map.draw();
-            for(var c in clients) {
-                clients[c].draw();
-            }
         }
         raf.requestAnimationFrame.call(window, game.run);
     };
 
     var init = function() {
         //opening handshake
-        Network.send({ type: "map" });
+        Network.send({ type: "map.v2" });
         Network.send({ type: "user", name: "guest", session: game.session }); 
     };
 
     var message = function(msg) {
         console.log(msg);
         switch(msg.type) {
-            case "map":                        
+            case "map.v2":                        
                 map = Map(msg.map, clients);
             break;
             case "player":

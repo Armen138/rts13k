@@ -12,6 +12,9 @@ exports.noiseMap = function(w, h, res, lvl) {
             map[x * 2 + 1][y * 2 + 1] = value;
         }
     }
+    map.seeds = noise.seeds;
+    map.width = w;
+    map.height = h;
     return map;
 };
 
@@ -24,5 +27,8 @@ exports.noiseMapFine = function(w, h, res, lvl) {
             map[x][y] = parseInt((((noise.noise(x / res, y / res) + 1 )/ 2)  * lvl), 10);
         }
     }
+    map.seeds = noise.seeds;
+    map.width = w;
+    map.height = h;
     return map;
 };

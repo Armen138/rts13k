@@ -158,6 +158,11 @@ var ttServer = (function() {
                             player.ping = now - data.timestamp;
                             //console.log(player.ping);
                         break;
+                        case "map.v2":
+                            var mapdata = Message("map.v2");
+                            mapdata.map = { seeds: game.map.seeds, width: game.map.width, height: game.map.height };
+                            connection.sendUTF(mapdata.serialized);
+                        break;
                         case "map":
                             var mapdata = Message("map");
                                 mapdata.map = game.map;

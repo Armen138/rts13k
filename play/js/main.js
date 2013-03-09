@@ -1,6 +1,11 @@
 require(["resources", "canvas", "game"], function(Resources, Canvas, Game) {
 	if(!localStorage.server) {
 		console.log("don't know which server to join.");
+		var srv = window.prompt("enter server address or leave empty for ws://localhost:10138");
+		if(srv === "") {
+			srv = "ws://localhost:10138";
+		}
+		localStorage.server = srv;
 	}
 
 	Resources.on("load", function() {
