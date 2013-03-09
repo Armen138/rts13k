@@ -87,6 +87,7 @@ define(["canvas", "settings", "resources", "simplex"], function(Canvas, settings
 
         var map = {
             position: {X: 0, Y: 0},
+            scale: { X: 1, Y: 1 },
             mini: {
                 draw: function() {
                     Canvas.context.drawImage(minimap.element, 10, 10);
@@ -94,15 +95,23 @@ define(["canvas", "settings", "resources", "simplex"], function(Canvas, settings
             },
             draw: function() {
                 Canvas.context.save();
+                //Canvas.context.scale(map.scale.X, map.scale.Y);
                 //ensure nothing gets drawn outside the map area
                 Canvas.context.beginPath();
-                Canvas.context.moveTo(settings.hud.width, 0);
-                Canvas.context.lineTo(settings.hud.width, settings.viewPort.height);
+                Canvas.context.moveTo(settings.hud.width / map.scale.X, 0);
+                Canvas.context.lineTo(settings.hud.width / map.scale.X, settings.viewPort.height);
                 Canvas.context.lineTo(settings.viewPort.width, settings.viewPort.height);
                 Canvas.context.lineTo(settings.viewPort.width, 0);
                 Canvas.context.closePath();
                 Canvas.context.clip();
-                Canvas.context.drawImage(mapCanvas.element, map.position.X, map.position.Y, settings.viewPort.width - settings.hud.width, settings.viewPort.height, settings.hud.width, 0, settings.viewPort.width - settings.hud.width, settings.viewPort.height);
+                Canvas.context.drawImage(mapCanvas.element, 
+                                            map.position.X, 
+                                            map.position.Y, 
+                                            settings.viewPort.width * map.scale.X - settings.hud.width, 
+                                            settings.viewPort.height * map.scale.Y, settings.hud.width, 
+                                            0, 
+                                            settings.viewPort.width  - settings.hud.width, 
+                                            settings.viewPort.height);
                 Canvas.context.translate(-map.position.X + settings.hud.width, -map.position.Y);
                 //draw entities on map                
                 for(var c in clients) {
